@@ -1,0 +1,1 @@
+export default { name:'search',menuOrder:1 }

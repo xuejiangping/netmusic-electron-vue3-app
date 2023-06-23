@@ -1,0 +1,1 @@
+export default { name:'mvlist',menuOrder:3 }

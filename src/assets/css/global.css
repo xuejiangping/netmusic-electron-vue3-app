@@ -1,0 +1,62 @@
+:root {
+  --color-text-main: #2d2d2d;
+  --color-text: #909090;
+  --color-text-height: #ff641e;
+}
+@media screen and (max-height: 400px) {
+  html {
+    font-size: 14px;
+  }
+}
+@media screen and (min-height: 600px) {
+  html {
+    font-size: 21px;
+  }
+}
+@media screen and (min-height: 800px) {
+  html {
+    font-size: 28px;
+  }
+}
+* {
+  padding: 0;
+  margin: 0;
+}
+html,
+body {
+  height: 100%;
+  font-family: PingFang SC, Arial, Microsoft YaHei, sans-serif;
+  color: var(--color-text-main);
+  background-color: #fafafa;
+  user-select: none;
+}
+a {
+  text-decoration: none;
+  color: var(--color-text-main);
+}
+*,
+*:focus,
+*:hover,
+input {
+  outline: none;
+}
+::-webkit-scrollbar {
+  width: 0px;
+}
+::-webkit-scrollbar-track {
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background: #ccc;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #999;
+}
+#app {
+  width: 100vw;
+  height: 100%;
+}
