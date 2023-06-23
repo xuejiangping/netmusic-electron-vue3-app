@@ -1,0 +1,1 @@
+export default { name:'singer',menuOrder:6 }

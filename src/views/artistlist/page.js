@@ -1,0 +1,1 @@
+export default { name:'artistlist',menuOrder:5 }
