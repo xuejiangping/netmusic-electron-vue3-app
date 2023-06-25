@@ -28,6 +28,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SearchPanel: typeof import('./../components/SearchPanel.vue')['default']
+    SingerTable: typeof import('./../components/SingerTable.vue')['default']
     SongTable: typeof import('./../components/SongTable.vue')['default']
   }
 }

@@ -1,37 +1,40 @@
-<script setup lang="tsx">
-
-const $http = getCurrentInstance()?.appContext.config.globalProperties.$http
-const $utils = getCurrentInstance()?.appContext.config.globalProperties.$utils
+<script setup lang="ts">
+import SongTable from '../../components/SongTable.vue'
 
 
+const { $http, $utils, $COMMON } = (getCurrentInstance() as ComponentInternalInstance).appContext.config.globalProperties
+
+const tagInfo = $COMMON.SEARCH_TYPE
+
+const components_path = ['@/components/SongTable.vue']
+console.log('components_path', components_path)
+
+let a = import.meta.glob(['@/components/SongTable.vue'], {})
+console.log('a', a)
 const route = useRoute()
 const keyword = computed(() => route.query.keyword)
 
 
+
 defineProps<{ text?: string }>()
 const activeName = ref(1)
-const tagInfo = {
-  '单曲': 1,
-  '歌手': 2,
-  '专辑': 3,
-  '视频': 4,
-  '歌单': 5
-}
+
+
 //标签页切换，选择搜索类型
-const handleChange = console.log
+const handleTabsChange = console.log
+
+watch(keyword, (newVal) => {
+  $http?.cloudsearch({ keywords: String(newVal), limit: 5, offset: 2 }).then(res => {
+    const { songs } = res.result
+    const val = $utils?.formatSongs(songs)
+    songSDataList.value = val
+  })
+}, { immediate: true })
 
 
-
-const test = console.log
+// const test = console.log
 
 const songSDataList = ref<SongRecord[]>()
-$http?.cloudsearch({ keywords: '许嵩素颜', limit: 5, offset: 2 }).then(res => {
-  const { songs } = res.result
-  const val = $utils?.formatSongs(songs)
-  songSDataList.value = val
-
-  // console.log('songSData', songSDataList)
-})
 
 
 </script>
@@ -40,10 +43,11 @@ $http?.cloudsearch({ keywords: '许嵩素颜', limit: 5, offset: 2 }).then(res =
   <div class="search">
 
     <h3 class="title">搜索 <span>{{ keyword }}</span></h3>
-    <el-tabs class="tabs" v-model="activeName" @tab-change="handleChange">
-      <el-tab-pane v-for="(val, key) in tagInfo" :key="val" :label="key" :name="val"></el-tab-pane>
+    <el-tabs class="tabs" v-model="activeName" @tab-change="handleTabsChange">
+      <el-tab-pane v-for="(item, index) in tagInfo" :key="index" :label="item?.label" :name="item?.val"></el-tab-pane>
     </el-tabs>
-    <SongTable v-if="songSDataList" :songDataList="songSDataList" @play="test" />
+    <component :is="SongTable" :songDataList="songSDataList"></component>
+    <!-- <SongTable v-if="songSDataList" :songDataList="songSDataList" @play="test" /> -->
 
   </div>
 </template>

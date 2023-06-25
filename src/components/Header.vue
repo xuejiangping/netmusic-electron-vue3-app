@@ -10,8 +10,12 @@ import SearchPanel from '@components/SearchPanel.vue'
       <span>网易云音乐</span>
     </div>
     <div class="middle">
-      <img src="@/assets/img/arrow-left.png">
-      <img src="@/assets/img/arrow-right.png">
+      <span @click="$router.back">
+        <img src="@/assets/img/arrow-left.png">
+      </span>
+      <span @click="$router.forward">
+        <img src="@/assets/img/arrow-right.png">
+      </span>
       <SearchPanel></SearchPanel>
     </div>
     <div class="right">

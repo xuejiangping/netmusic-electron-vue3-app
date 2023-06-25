@@ -3,14 +3,22 @@ import { Search } from '@element-plus/icons-vue'
 const router = useRouter()
 // const $http = getCurrentInstance()?.appContext.config.globalProperties.$http
 const keyword = ref('')
-
+const $message = getCurrentInstance()?.appContext.config.globalProperties.$message
 const isOpen = ref(false)
 const placeholder = ref('占位符')
 // const searchHotList = ref(null)
-const handleChange = (keyword: string) => {
-  keyword = keyword.trim()
-  if (keyword === '') return
-  router.push({ name: 'search', query: { keyword } })
+const handleEnterKeydown = () => {
+  const keywordStr = keyword.value.trim()
+  if (keywordStr === '') {
+    const otpion = {
+      message: '搜索内容不能为空',
+      type: 'warning',
+      duration: 1000
+    }
+    return $message ? $message(otpion) : console.log('搜索内容不能为空')
+
+  }
+  router.push({ name: 'search', query: { keyword: keywordStr } })
 }
 
 interface PanelDataRaw {
@@ -36,7 +44,7 @@ panelData.value?.push({
 <template>
   <div class="search">
     <el-input @focus="() => isOpen = true" @blur="() => isOpen = false" size="small" class="input" :prefix-icon="Search"
-      @change="handleChange" v-model="keyword" :placeholder="placeholder" clearable />
+      @keydown.enter="handleEnterKeydown" v-model="keyword" :placeholder="placeholder" clearable />
     <div class="panel" v-show="isOpen">
       <el-card>
         <div v-for="(item, index) in panelData" :key="index">
