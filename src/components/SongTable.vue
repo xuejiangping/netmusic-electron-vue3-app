@@ -28,13 +28,13 @@ const emit = defineEmits<{
   (even: 'play', data: any): void
 }>()
 const props = defineProps<{
-  songDataList: SongRecord[] | undefined
+  dataList: SongRecord[] | null
 }>()
 //格式化后的表格数据
-const tableData = computed(() => props.songDataList?.map(songData => ({
+const tableData = computed(() => props.dataList?.map(songData => ({
   id: songData.id,
   title: songData.name,
-  singer: songData.singer.map(({ name, id }) => ({ name, id })),
+  singer: songData.singer?.map(({ name, id }) => ({ name, id })),
   album: { name: songData.album.name, id: songData.album.id },
   duration: songData.duration,
   url: songData.url
@@ -44,10 +44,11 @@ const handleRowDbclick = (row: TableColumsProps) => emit('play', row)
 
 
 
+
 </script>
 
 <template>
-  <el-table @row-dblclick="handleRowDbclick" class="table" :data="tableData" stripe>
+  <el-table v-if="Boolean(dataList)" @row-dblclick="handleRowDbclick" class="table" :data="tableData" stripe>
     <el-table-column>
       <template #default="scope">
         <span v-pad2="scope.$index"></span>

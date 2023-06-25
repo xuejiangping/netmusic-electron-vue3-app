@@ -7,6 +7,8 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    AAA: typeof import('./../components/AAA.vue')['default']
+    AlbumTable: typeof import('./../components/AlbumTable.vue')['default']
     AsideNav: typeof import('./../components/AsideNav.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
@@ -25,10 +27,12 @@ declare module 'vue' {
     ElTabs: typeof import('element-plus/es')['ElTabs']
     Header: typeof import('./../components/Header.vue')['default']
     Loading: typeof import('./../components/Loading.vue')['default']
+    PlaylistTable: typeof import('./../components/PlaylistTable.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SearchPanel: typeof import('./../components/SearchPanel.vue')['default']
     SingerTable: typeof import('./../components/SingerTable.vue')['default']
     SongTable: typeof import('./../components/SongTable.vue')['default']
+    VideoTable: typeof import('./../components/VideoTable.vue')['default']
   }
 }
