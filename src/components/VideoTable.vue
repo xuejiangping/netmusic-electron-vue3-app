@@ -9,7 +9,7 @@ const formatedData = computed(() => {
         artists: artists.map(({ name: artistName, id }: { name: string, id: number }) => ({ artistName, id }))
     }))
 });
-12
+
 </script>
 
 <template>
