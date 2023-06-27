@@ -10,7 +10,7 @@ const vPad2 = (el: HTMLElement, binding: { value: string }) => {
   el.textContent = String(val + 1).padStart(2, '0')
 }
 
-
+console.log(231)
 
 enum tableColums1 {
   title = '音乐标题',
