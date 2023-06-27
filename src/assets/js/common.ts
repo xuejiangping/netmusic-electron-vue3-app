@@ -25,7 +25,10 @@ enum SEARCH_TYPE_ENUM {
     '歌单' = 1000,
 }
 
+const IMG_SMALL_SIZE_SEARCH_PARAMS = '?param=100y100'
+
 export default {
+    IMG_SMALL_SIZE_SEARCH_PARAMS,
     SEARCH_TYPE_ENUM,
     SEARCH_TYPE,
     ALBUM_AREA,

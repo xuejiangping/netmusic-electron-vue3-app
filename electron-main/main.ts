@@ -9,6 +9,7 @@ const createWin = () => {
     width: 800, height: 600,
     minWidth: 650,
     minHeight: 400,
+
     // skipTaskbar: true,
     title: '网易云音乐',
     autoHideMenuBar: true,

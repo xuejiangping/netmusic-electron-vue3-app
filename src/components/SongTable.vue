@@ -24,9 +24,6 @@ enum tableColums1 {
 }
 
 
-const emit = defineEmits<{
-  (even: 'play', data: any): void
-}>()
 const props = defineProps<{
   dataList: SongRecord[] | null
 }>()
@@ -40,25 +37,24 @@ const tableData = computed(() => props.dataList?.map(songData => ({
   url: songData.url
 })))
 // 双击播放
-const handleRowDbclick = (row: TableColumsProps) => emit('play', row)
 
-
+const play = (row: TableColumsProps) => console.log('play  ', row)
 
 
 </script>
 
 <template>
-  <el-table v-if="Boolean(dataList)" @row-dblclick="handleRowDbclick" class="table" :data="tableData" stripe>
+  <el-table v-if="Boolean(dataList)" @row-dblclick="play" class="table" :data="tableData" stripe>
     <el-table-column>
       <template #default="scope">
         <span v-pad2="scope.$index"></span>
       </template>
     </el-table-column>
 
-    <el-table-column prop="title" :label="tableColums1.title"></el-table-column>
+    <el-table-column class-name="title" prop="title" :label="tableColums1.title"></el-table-column>
     <el-table-column prop="singer" :label="tableColums1.singer">
       <template #default="scope">
-        <router-link v-for="item in scope.row.singer" :to="{ name: 'singer', query: item }">
+        <router-link v-for="(item) in scope.row.singer" :to="{ name: 'singer', query: item }">
           <i>{{ item.name }}</i>
         </router-link>
       </template>
@@ -81,4 +77,9 @@ const handleRowDbclick = (row: TableColumsProps) => emit('play', row)
 .table {
   font-size: 0.8rem;
 }
+
+/* 
+:deep(.title) {
+  color: #4e7bac;
+} */
 </style>

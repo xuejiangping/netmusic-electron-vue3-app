@@ -2,6 +2,7 @@
   --color-text-main: #2d2d2d;
   --color-text: #909090;
   --color-text-height: #ff641e;
+  --el-color-primary: #e72929 !important;
 }
 @media screen and (max-height: 400px) {
   html {
@@ -57,6 +58,5 @@ input {
   background: #999;
 }
 #app {
-  width: 100vw;
   height: 100%;
 }

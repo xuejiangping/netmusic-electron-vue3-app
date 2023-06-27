@@ -60,7 +60,7 @@ const footer = ref(true)
 
 #main {
   animation: collapse 0.3s ease-in;
-  padding: 1rem;
+  padding: 1.5rem;
 }
 
 .header {

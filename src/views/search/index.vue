@@ -6,8 +6,8 @@ import AlbumTable from '@components/AlbumTable.vue'
 import PalylistTable from '@components/PlaylistTable.vue'
 
 
-const { $http, $utils, $COMMON } = (getCurrentInstance() as ComponentInternalInstance).appContext.config.globalProperties
-const PAGE_LIMIT = 3
+const { $http, $utils, $COMMON } = getCurrentInstance()!.appContext.config.globalProperties
+const PAGE_LIMIT = 5
 const tagInfo = $COMMON.SEARCH_TYPE
 /** tags 和 搜索类型的枚举 */
 const tagInfoEnum = $COMMON.SEARCH_TYPE_ENUM
@@ -16,7 +16,8 @@ const tagInfoEnum = $COMMON.SEARCH_TYPE_ENUM
 const route = useRoute()
 const keyword = computed(() => route.query.keyword)
 const resultCount = ref(0)
-const page_offset = ref(1)
+const currentPage = ref(1)
+const isloading = ref(false)
 
 // 当前标签页类型
 const activeName = ref(tagInfoEnum.单曲)
@@ -27,7 +28,7 @@ const componentsInfo: Record<number, [Component, string, string]> = {
   [tagInfoEnum.歌手]: [SingerTable, 'artists', 'artistCount'],
   [tagInfoEnum.视频]: [VideoTable, 'mvs', 'mvCount'],
   [tagInfoEnum.专辑]: [AlbumTable, 'albums', 'albumCount'],
-  [tagInfoEnum.歌单]: [PalylistTable, 'palylists', 'playlistCount'],
+  [tagInfoEnum.歌单]: [PalylistTable, 'playlists', 'playlistCount'],
 }
 
 /** 关于当前搜索词的 数据数组 */
@@ -48,6 +49,7 @@ const dataListInfo = shallowReactive<{
 const resetDataListInfo = () => { for (let k in dataListInfo) dataListInfo[k] = null }
 // const resetDataListInfo = () => dataListInfo=ref({})
 
+
 //标签页切换，选择搜索类型
 const handleTabsChange = () => {
   //缓存了数据，若类型一样，则不需要请求数据
@@ -56,22 +58,22 @@ const handleTabsChange = () => {
   }
 }
 
-const updateDataList = () => {
+const updateDataList = async (isPagination = false) => {
+  isloading.value = true
   const type = unref(activeName)
-  const offset = unref(page_offset)
-  console.log(offset)
-  $http.cloudsearch({ keywords: String(keyword.value), limit: PAGE_LIMIT, offset, type: String(type) })
-    .then(({ result }) => {
-      const countKey = componentsInfo[type][2]
-      const dataListKey = componentsInfo[type][1]
-      resultCount.value = result[countKey]
-      if (activeName.value === tagInfoEnum.单曲) {
-        dataListInfo[activeName.value] = $utils?.formatSongs(result[dataListKey])
-      } else {
-        dataListInfo[activeName.value] = result[dataListKey]
-      }
-      console.log('dataListInfo', dataListInfo)
-    })
+  const offset = (unref(currentPage) - 1) * PAGE_LIMIT
+  const { result } = await $http.cloudsearch({ keywords: String(keyword.value), limit: PAGE_LIMIT, offset, type: String(type) })
+  isloading.value = false
+  const countKey = componentsInfo[type][2]
+  const dataListKey = componentsInfo[type][1]
+  if (!isPagination) { resultCount.value = result[countKey] }
+  if (activeName.value === tagInfoEnum.单曲) {
+    dataListInfo[activeName.value] = $utils?.formatSongs(result[dataListKey])
+  } else {
+    dataListInfo[activeName.value] = result[dataListKey]
+
+  }
+  console.log('dataListInfo', dataListInfo)
 }
 
 
@@ -81,13 +83,7 @@ watch(keyword, () => {
   resetDataListInfo()
   updateDataList()
 }, { immediate: true })
-
-watch(page_offset, () => {
-  updateDataList()
-})
-// const play = console.log
-
-// const isloading = ref(false)
+watch(currentPage, () => updateDataList(true))
 
 </script>
 
@@ -100,12 +96,16 @@ watch(page_offset, () => {
       <el-tab-pane v-for="(item, index) in tagInfo" :key="index" :label="item.label" :name="item.val"></el-tab-pane>
     </el-tabs>
 
-    <!-- <loading v-if="isloading" /> -->
-    <keep-alive>
+    <loading v-if="isloading" />
+    <keep-alive v-else>
       <component :is="componentsInfo[activeName][0]" :dataList="dataListInfo[activeName]"></component>
     </keep-alive>
     <!-- <SongTable v-if="songSDataList" :songDataList="songSDataList" @play="test" /> -->
-
+    <div class="page">
+      <el-pagination small hide-on-single-page @next-click="currentPage++" @prev-click="currentPage--"
+        @current-change="num => currentPage = num" background layout="prev, pager, next" :page-size="PAGE_LIMIT"
+        :total="resultCount" />
+    </div>
   </div>
 </template>
 
@@ -129,6 +129,11 @@ watch(page_offset, () => {
     }
   }
 
-
+  .page {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+    font-size: 2rem;
+  }
 }
 </style>
