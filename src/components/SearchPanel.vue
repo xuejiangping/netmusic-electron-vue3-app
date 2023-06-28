@@ -3,9 +3,12 @@ import { Search } from '@element-plus/icons-vue'
 const router = useRouter()
 // const $http = getCurrentInstance()?.appContext.config.globalProperties.$http
 const keyword = ref('')
-const $message = getCurrentInstance()?.appContext.config.globalProperties.$message
+const { $message } = getCurrentInstance()!.appContext.config.globalProperties
 const isOpen = ref(false)
 const placeholder = ref('占位符')
+
+const inputContainer = ref(null)
+
 // const searchHotList = ref(null)
 const handleEnterKeydown = () => {
   const keywordStr = keyword.value.trim()
@@ -13,12 +16,16 @@ const handleEnterKeydown = () => {
     const otpion = {
       message: '搜索内容不能为空',
       type: 'warning',
-      duration: 1000
+      duration: 1000,
+      offset: 100
     }
     return $message ? $message(otpion) : console.log('搜索内容不能为空')
 
   }
+  isOpen.value = false
   router.push({ name: 'search', query: { keyword: keywordStr } })
+
+
 }
 
 interface PanelDataRaw {
@@ -39,12 +46,16 @@ panelData.value?.push({
 
 
 
+
 </script>
 
 <template>
   <div class="search">
-    <el-input @focus="() => isOpen = true" @blur="() => isOpen = false" size="small" class="input" :prefix-icon="Search"
-      @keydown.enter="handleEnterKeydown" v-model="keyword" :placeholder="placeholder" clearable />
+    <div ref="inputContainer">
+      <el-input @focus="() => isOpen = true" @blur="() => isOpen = false" size="small" class="input" :prefix-icon="Search"
+        @keydown.enter="handleEnterKeydown" v-model="keyword" :placeholder="placeholder" clearable />
+
+    </div>
     <div class="panel" v-show="isOpen">
       <el-card>
         <div v-for="(item, index) in panelData" :key="index">

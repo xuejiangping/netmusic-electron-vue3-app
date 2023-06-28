@@ -1,4 +1,7 @@
 <script setup lang="ts">
+
+
+
 interface TableColumsProps {
   title: string,
   singer: string,

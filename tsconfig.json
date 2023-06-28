@@ -20,7 +20,13 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "allowJs": true,
-    "types": ["element-plus/global"]
+    "types": ["element-plus/global"],
+    "baseUrl": ".",
+    "paths": {
+      "@/": ["src/"],
+      "@components/": ["src/components/"],
+      "@store/": ["src/store/"]
+    }
   },
   "include": [
     "src/**/*.ts",
@@ -36,6 +42,7 @@
     "electron-preload/index.js",
     "electron-preload/createViewsDir.js"
   ],
+
   "references": [
     {
       "path": "./tsconfig.node.json"

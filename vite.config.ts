@@ -12,8 +12,7 @@ const PORT = 5173
 export default defineConfig({
   css: {
     preprocessorOptions: {
-      less: {
-      }
+      less: {}
     }
   },
   plugins: [
@@ -21,7 +20,7 @@ export default defineConfig({
     vueJsx(),
     AutoImport({
       resolvers: [ElementPlusResolver()],
-      imports: ['vue', 'vue-router'],
+      imports: ['vue', 'vue-router', 'pinia'],
       dts: 'src/types/auto-imports.d.ts'
     }),
     Components({
@@ -31,7 +30,7 @@ export default defineConfig({
     electron({
       'entry': path.join(__dirname, './electron-main/main.ts'),
     }),
-    cjsExternals({ externals: ['path', 'fs/promises'] })
+    cjsExternals({ externals: ['path', 'fs/promises'] })  //转换cjs的模块为esmodule使用
   ],
 
   server: { port: PORT },
@@ -42,7 +41,8 @@ export default defineConfig({
     alias: {
       '@': path.join(__dirname, './src'),
       '@components': path.join(__dirname, './src/components'),
-    },
+      '@store': path.join(__dirname, './src/store'),
+    }
   }
 
 })

@@ -1,3 +1,11 @@
+//==========================================================
+//
+//
+//        一些业务相关常量
+//
+//
+//==========================================================
+
 // 专辑
 const ALBUM_AREA = [{ name: '全部', code: 'all' }, { name: '华语', code: 'zh' }, { name: '欧美', code: 'ea' }, { name: '韩国', code: 'kr' }, { name: '日本', code: 'jp' }];
 
@@ -10,27 +18,24 @@ const ARTIST_AREA = [{ label: '全部', val: -1 }, { label: '华语', val: 7 }, 
 const ARTIST_TYPE = [{ label: '全部', val: -1 }, { label: '男歌手', val: 1 }, { label: '女歌手', val: 2 }, { label: '乐队', val: 3 }];
 
 
-const SEARCH_TYPE = [
-    { label: '单曲', val: 1 },
-    { label: '歌手', val: 100 },
-    { label: '视频', val: 1004 },
-    { label: '专辑', val: 10 },
-    { label: '歌单', val: 1000 }
-]
-enum SEARCH_TYPE_ENUM {
-    '单曲' = 1,
-    '歌手' = 100,
-    '视频' = 1004,
-    '专辑' = 10,
-    '歌单' = 1000,
+const SEARCH_TYPE_ENUM: {
+    '单曲': 1,
+    '歌手': 100,
+    '视频': 1004,
+    '专辑': 10,
+    '歌单': 1000,
+} = {
+    '单曲': 1,
+    '歌手': 100,
+    '视频': 1004,
+    '专辑': 10,
+    '歌单': 1000,
 }
-
 const IMG_SMALL_SIZE_SEARCH_PARAMS = '?param=100y100'
 
 export default {
     IMG_SMALL_SIZE_SEARCH_PARAMS,
     SEARCH_TYPE_ENUM,
-    SEARCH_TYPE,
     ALBUM_AREA,
     MV_AREA,
     MV_TYPE,

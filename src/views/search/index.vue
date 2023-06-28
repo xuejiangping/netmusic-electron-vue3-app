@@ -4,26 +4,32 @@ import SingerTable from '@components/SingerTable.vue'
 import VideoTable from '@components/VideoTable.vue'
 import AlbumTable from '@components/AlbumTable.vue'
 import PalylistTable from '@components/PlaylistTable.vue'
+import { useSearchPanelStore } from '../../store/search-panel-store'
 
-
+/************************************************/
+const store = useSearchPanelStore()
+const { dataListInfo } = storeToRefs(store)
+const { setLastActiveIndex, lastActiveIndex, setLastKeyword, resetDataListInfo, setDataListInfo, lastKeyword } = store
 const { $http, $utils, $COMMON } = getCurrentInstance()!.appContext.config.globalProperties
 const PAGE_LIMIT = 5
-const tagInfo = $COMMON.SEARCH_TYPE
 /** tags 和 搜索类型的枚举 */
 const tagInfoEnum = $COMMON.SEARCH_TYPE_ENUM
-
-
 const route = useRoute()
 const keyword = computed(() => route.query.keyword)
+
 const resultCount = ref(0)
-const currentPage = ref(1)
+const currentPage = ref(1)  //分页器当前页码
 const isloading = ref(false)
-
-// 当前标签页类型
-const activeName = ref(tagInfoEnum.单曲)
+// useSearchPanelStore()
 
 
-const componentsInfo: Record<number, [Component, string, string]> = {
+//activeIndex 由pinai 状态维护，tab标签组件需要一个v-model prop ,所以维护一个中间变量 activeIndex
+const activeIndex = ref(lastActiveIndex || tagInfoEnum.单曲)
+
+
+type TagInfoEnumValue = GetValue<typeof tagInfoEnum>
+
+const TAB_OPTONS: Record<TagInfoEnumValue, [Component, string, string]> = {
   [tagInfoEnum.单曲]: [SongTable, 'songs', 'songCount'],
   [tagInfoEnum.歌手]: [SingerTable, 'artists', 'artistCount'],
   [tagInfoEnum.视频]: [VideoTable, 'mvs', 'mvCount'],
@@ -31,80 +37,79 @@ const componentsInfo: Record<number, [Component, string, string]> = {
   [tagInfoEnum.歌单]: [PalylistTable, 'playlists', 'playlistCount'],
 }
 
-/** 关于当前搜索词的 数据数组 */
-const dataListInfo = shallowReactive<{
-  [tagInfoEnum.单曲]: any[] | null,
-  [tagInfoEnum.歌手]: any[] | null,
-  [tagInfoEnum.视频]: any[] | null,
-  [tagInfoEnum.专辑]: any[] | null,
-  [tagInfoEnum.歌单]: any[] | null
-}>({
-  [tagInfoEnum.单曲]: null,
-  [tagInfoEnum.歌手]: null,
-  [tagInfoEnum.视频]: null,
-  [tagInfoEnum.专辑]: null,
-  [tagInfoEnum.歌单]: null
-})
-//@ts-ignore  忽视 for in 循环 报错
-const resetDataListInfo = () => { for (let k in dataListInfo) dataListInfo[k] = null }
-// const resetDataListInfo = () => dataListInfo=ref({})
 
+//路由跳转时储存keyword 和 tab标签的active状态
+onBeforeRouteLeave(() => {
+  setLastActiveIndex(activeIndex.value)
+  setLastKeyword(String(keyword.value))
+
+})
 
 //标签页切换，选择搜索类型
 const handleTabsChange = () => {
-  //缓存了数据，若类型一样，则不需要请求数据
-  if (dataListInfo[activeName.value] === null) {
+
+  //缓存了数据，若tab标签一样，不需要请求数据
+  if (dataListInfo.value[activeIndex.value].data === null) {
+
     updateDataList()
   }
 }
 
 const updateDataList = async (isPagination = false) => {
   isloading.value = true
-  const type = unref(activeName)
-  const offset = (unref(currentPage) - 1) * PAGE_LIMIT
+  const type = unref(activeIndex)
+  const offset = (unref(currentPage) - 1) * PAGE_LIMIT  // 分页参数：（currentPage-1）*limit
   const { result } = await $http.cloudsearch({ keywords: String(keyword.value), limit: PAGE_LIMIT, offset, type: String(type) })
   isloading.value = false
-  const countKey = componentsInfo[type][2]
-  const dataListKey = componentsInfo[type][1]
-  if (!isPagination) { resultCount.value = result[countKey] }
-  if (activeName.value === tagInfoEnum.单曲) {
-    dataListInfo[activeName.value] = $utils?.formatSongs(result[dataListKey])
-  } else {
-    dataListInfo[activeName.value] = result[dataListKey]
+  const countKey = TAB_OPTONS[type][2]
+  const dataKey = TAB_OPTONS[type][1]
+  //如果不是分页请求，更新 resultCount 搜索结果的数量
+  // if (!isPagination) { resultCount.value = result[countKey] }
 
+
+  let data = result[dataKey]
+  let count = result[countKey]
+  if (activeIndex.value === tagInfoEnum.单曲) data = $utils?.formatSongs(data)
+
+  if (isPagination) { //若分页请求，不更新总数count 
+    setDataListInfo(activeIndex.value, { data })
+  } else {
+    setDataListInfo(activeIndex.value, { data, count })
   }
-  console.log('dataListInfo', dataListInfo)
+
+  // console.log('dataListInfo', dataListInfo)
 }
 
+// console.time('测试路由缓存')
 
 
-
-watch(keyword, () => {
+watch(keyword, (newVal) => {
+  // 观察关键词，只有变化了请求数据
+  if (newVal === lastKeyword) return
   resetDataListInfo()
   updateDataList()
 }, { immediate: true })
 watch(currentPage, () => updateDataList(true))
-
 </script>
 
 <template>
   <div class="search">
     <!-- HTML 中的 kebab-case -->
     <h3 class="title">搜索 <span>{{ keyword }}</span></h3>
-    <div class="search-count"><span>搜索结果{{ resultCount }}</span></div>
-    <el-tabs class="tabs" v-model="activeName" @tab-change="handleTabsChange">
-      <el-tab-pane v-for="(item, index) in tagInfo" :key="index" :label="item.label" :name="item.val"></el-tab-pane>
+    <div class="search-count"><span>搜索结果{{ dataListInfo[activeIndex].count }}</span></div>
+    <el-tabs class="tabs" v-model="activeIndex" @tab-change="handleTabsChange">
+      <el-tab-pane v-for="(type, label) in tagInfoEnum" :key="type" :label="label" :name="type"></el-tab-pane>
     </el-tabs>
 
-    <loading v-if="isloading" />
-    <keep-alive v-else>
-      <component :is="componentsInfo[activeName][0]" :dataList="dataListInfo[activeName]"></component>
+    <loading v-show="isloading" />
+    <keep-alive v-show="!isloading">
+      <component :is="TAB_OPTONS[activeIndex][0]" :dataList="dataListInfo[activeIndex].data"></component>
     </keep-alive>
     <!-- <SongTable v-if="songSDataList" :songDataList="songSDataList" @play="test" /> -->
     <div class="page">
       <el-pagination small hide-on-single-page @next-click="currentPage++" @prev-click="currentPage--"
         @current-change="num => currentPage = num" background layout="prev, pager, next" :page-size="PAGE_LIMIT"
-        :total="resultCount" />
+        :total="dataListInfo[activeIndex].count" />
     </div>
   </div>
 </template>

@@ -1,14 +1,14 @@
 import { ComponentCustomProperties } from "vue";
 import { RouteMeta, RouteRaw } from 'vue-router'
 import $http from '../apis/http.ts'
-import common from '../assets/js/common.js';
+import $common from '../assets/js/common.js';
 import $utils, { formatSongInfo } from '../utils/util.js'
 
-export { }
+export { }  //
 declare module 'vue' {
   interface ComponentCustomProperties {
     $http: typeof $http; // 这里填类型
-    $COMMON: typeof common
+    $COMMON: typeof $common
     $message: Function
     $loading: Function
     $alert: Function
@@ -46,4 +46,6 @@ declare module 'vue-router' {
 // 定义全局 和 window
 declare global {
   type SongRecord = ReturnType<typeof formatSongInfo>
+  type GetValue<T> = T[keyof T]
+
 }
