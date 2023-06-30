@@ -4,10 +4,10 @@
 import axios, { AxiosInstance } from 'axios';
 // import type {} from 'axios'
 import app from '../utils/app.ts'
-const { $alert } = app.config.globalProperties
+const appProxy = app.config.globalProperties
 const baseURL = 'https://service-0kp9q9xl-1312772435.cd.apigw.tencentcs.com/release/'
 const instance = axios.create({
-  timeout: 1000 * 60,
+  timeout: 1000 * 30,
   // `withCredentials` 表示跨域请求时是否需要使用凭证
   withCredentials: true,
   // `validateStatus` 定义对于给定的HTTP 响应状态码是 resolve 或 reject  promise 。
@@ -24,7 +24,7 @@ instance.interceptors.request.use(function (config) {
   return config;
 }, function (error) {
   // 对请求错误做些什么
-  $alert('请求数据出错！')
+  appProxy.$alert('请求数据出错！')
 
   return Promise.reject(error);
 });
@@ -33,26 +33,26 @@ instance.interceptors.request.use(function (config) {
 // 添加响应拦截器
 instance.interceptors.response.use(function (response) {
   // 对响应数据做点什么
-  if (response.data.code && response.data.code === 200) {
+  const code = response.data?.code
+  if (code && code === 200) {
     return response.data
   } else {
-    $alert('响应数据失败！', 'code :', response.data.code)
-    return Promise.reject('响应数据失败！')
+    appProxy.$alert('响应数据失败,code:' + code)
+    return Promise.reject('响应数据失败,code:' + code)
   }
 
 }, function (error) {
   // 对响应错误做点什么
-  $alert('响应数据出错！')
+  appProxy.$alert('响应数据出错！' + error)
 
   return Promise.reject(error);
 });
 
-interface ResponseData { code: number, [data: string]: any }
 
 
 interface API {
-  get: (...args: Parameters<AxiosInstance['get']>) => Promise<ResponseData>
-  post: (...args: Parameters<AxiosInstance['post']>) => Promise<ResponseData>
+  get: (...args: Parameters<AxiosInstance['get']>) => Promise<any>
+  post: (...args: Parameters<AxiosInstance['post']>) => Promise<any>
 
 }
 
@@ -61,4 +61,7 @@ const api: API = {
   post: (...args) => instance['post'](...args)
 }
 
+
+
+// api.get('https://www.baidu.com').then(console.log).catch(console.log)
 export default api;

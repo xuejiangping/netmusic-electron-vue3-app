@@ -12,11 +12,11 @@ const asideDir = ref({
   discover: {
     title: '',
     items: [
-      { index: 'index', text: '发现音乐', icon: '' },
-      { index: 'rank', text: '排行榜', icon: '' },
-      { index: 'playlist', text: '歌单', icon: '' },
-      { index: 'mvlist', text: 'MV', icon: '' },
-      { index: 'artist', text: '歌手', icon: '' },
+      { index: 'index', text: '发现音乐', icon: 'icon-index' },
+      { index: 'rank', text: '排行榜', icon: 'icon-rank' },
+      { index: 'playlist', text: '歌单', icon: 'icon-playlist' },
+      { index: 'mvlist', text: 'MV', icon: 'icon-mvlist' },
+      { index: 'artist', text: '歌手', icon: 'icon-artist' },
 
     ],
   },
@@ -27,7 +27,7 @@ const asideDir = ref({
 <template>
   <el-menu class="menu" router :default-active="default_active" @select="handSelect">
     <el-menu-item-group v-for="(value, key) in asideDir" :key="key" :title="value.title">
-      <el-menu-item route v-for="(item, index) in value.items" :key="index" :index="item.index"
+      <el-menu-item route="" v-for="(item, index) in value.items" :key="index" :index="item.index"
         :class="['menu-item', item.index === activeIndex && 'active-select']">
         <i :class="['iconfont', item.icon]"></i>
         <span style="padding-left: 0.5rem">{{ item.text }}</span>
@@ -40,6 +40,10 @@ const asideDir = ref({
 .menu-item {
   height: 2.5rem;
   font-size: 0.8rem;
+
+  .iconfont {
+    font-size: 1rem;
+  }
 }
 
 

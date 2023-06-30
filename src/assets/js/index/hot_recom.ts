@@ -3,46 +3,44 @@ import { getCurrentInstance, reactive, onMounted } from 'vue';
 export default function hot_recom(playlist_params = { limit: 6, offset: 0, cat: '' }) {
     const { globalProperties: proxy } = getCurrentInstance()!.appContext.config
 
+
+    // type a = Omit<Parameters<typeof proxy.$http.playList>['0'],'limit'|'offset'|'cat'>
+
     // -------------- 推荐歌单
     // 热门推荐歌单
     const playlist_info = reactive({
-        playlist_tags: [{ name: '' }],
-        playlist_list: [],
+        playlist_tags: [{ name: '流行' }],
+        playlist_list: [] as any[],
         playlist_index: 0,
         playlist_params,
         playlist_count: 6,
-        playlist_loading: true
+        playlist_loading: false
     });
 
     // 获取热门推荐歌单标签
     const getHotTags = async () => {
-        const { data: res } = await proxy.$http.hotList()
-
-        if (res.code !== 200) {
-            return proxy.$msg.error('数据请求失败')
-        }
-
+        const res = await proxy.$http.hotList()
         res.tags.unshift({ name: '为您推荐' })
-        playlist_info['playlist_tags'] = res.tags.splice(0, 6);
+        playlist_info['playlist_tags'] = res.tags.splice(0, 6)
     }
     // 切换歌单类别
-    const choosePlayListType = (index: number) => {
+    const choosePlayListType = async (index: number) => {
         playlist_info['playlist_index'] = index;
-        playlist_info['playlist_params']['cat'] = index !== 0 ? playlist_info['playlist_tags'][index].name : '';
-        playlist_info['playlist_loading'] = true;
-        getPlayList(playlist_info['playlist_params']);
+        playlist_info['playlist_params']['cat'] = playlist_info['playlist_tags'][index].name
+        await getPlayList(playlist_info['playlist_params'])
+
     }
 
     // 分类歌单列表
+
     const getPlayList = async (params: Parameters<typeof proxy.$http.playList>['0']) => {
-        const { data: res } = await proxy.$http.playList(params)
+        playlist_info['playlist_loading'] = true;
 
-        if (res.code !== 200) {
-            return proxy.$msg.error('数据请求失败')
-        }
-
-        playlist_info['playlist_list'] = res.playlists;
+        const { playlists, total } = await proxy.$http.playList(params)
+        playlist_info['playlist_list'] = playlists;
+        playlist_info['playlist_count'] = total
         playlist_info['playlist_loading'] = false;
+
     }
 
     onMounted(() => {

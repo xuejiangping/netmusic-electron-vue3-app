@@ -18,6 +18,8 @@ const ARTIST_AREA = [{ label: '全部', val: -1 }, { label: '华语', val: 7 }, 
 const ARTIST_TYPE = [{ label: '全部', val: -1 }, { label: '男歌手', val: 1 }, { label: '女歌手', val: 2 }, { label: '乐队', val: 3 }];
 
 
+
+/*********************** 搜索的类型 *************************/
 const SEARCH_TYPE_ENUM: {
     '单曲': 1,
     '歌手': 100,
@@ -31,10 +33,29 @@ const SEARCH_TYPE_ENUM: {
     '专辑': 10,
     '歌单': 1000,
 }
-const IMG_SMALL_SIZE_SEARCH_PARAMS = '?param=100y100'
+const _IMG_SIZE = {
+    small: 80,
+    middle: 300,
+    large: 600,
+    aspect: 16 / 10,
+    _get_params: (w: number, aspect: number) => `?param=${w}y${Math.ceil(w / aspect)}`
+
+}
+const IMG_SIZE_SEARCH_PARAMS = {
+    squar: {
+        small: _IMG_SIZE._get_params(_IMG_SIZE.small, 1),
+        middle: _IMG_SIZE._get_params(_IMG_SIZE.middle, 1),
+        large: _IMG_SIZE._get_params(_IMG_SIZE.large, 1),
+    },
+    rect: {
+        small: _IMG_SIZE._get_params(_IMG_SIZE.small, _IMG_SIZE.aspect),
+        middle: _IMG_SIZE._get_params(_IMG_SIZE.middle, _IMG_SIZE.aspect),
+        large: _IMG_SIZE._get_params(_IMG_SIZE.large, _IMG_SIZE.aspect),
+    },
+}
 
 export default {
-    IMG_SMALL_SIZE_SEARCH_PARAMS,
+    IMG_SIZE_SEARCH_PARAMS,
     SEARCH_TYPE_ENUM,
     ALBUM_AREA,
     MV_AREA,

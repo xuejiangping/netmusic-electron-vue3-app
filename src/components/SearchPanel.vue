@@ -75,11 +75,14 @@ panelData.value?.push({
 
   .input {
     flex: 1;
-    padding: 0 1rem;
-    height: 1.5rem;
+    padding: 0 16px;
+    height: 28px;
 
     :deep(.el-input__wrapper) {
       border-radius: 20px;
+      background-color: #c64343;
+      box-shadow: none;
+
     }
   }
 

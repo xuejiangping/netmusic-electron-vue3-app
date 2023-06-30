@@ -10,14 +10,13 @@ import { useSearchPanelStore } from '../../store/search-panel-store'
 const store = useSearchPanelStore()
 const { dataListInfo } = storeToRefs(store)
 const { setLastActiveIndex, lastActiveIndex, setLastKeyword, resetDataListInfo, setDataListInfo, lastKeyword } = store
-const { $http, $utils, $COMMON } = getCurrentInstance()!.appContext.config.globalProperties
+const { $http, $COMMON } = getCurrentInstance()!.appContext.config.globalProperties
 const PAGE_LIMIT = 5
 /** tags 和 搜索类型的枚举 */
 const tagInfoEnum = $COMMON.SEARCH_TYPE_ENUM
 const route = useRoute()
 const keyword = computed(() => route.query.keyword)
 
-const resultCount = ref(0)
 const currentPage = ref(1)  //分页器当前页码
 const isloading = ref(false)
 // useSearchPanelStore()
@@ -63,13 +62,9 @@ const updateDataList = async (isPagination = false) => {
   isloading.value = false
   const countKey = TAB_OPTONS[type][2]
   const dataKey = TAB_OPTONS[type][1]
-  //如果不是分页请求，更新 resultCount 搜索结果的数量
-  // if (!isPagination) { resultCount.value = result[countKey] }
-
 
   let data = result[dataKey]
   let count = result[countKey]
-  if (activeIndex.value === tagInfoEnum.单曲) data = $utils?.formatSongs(data)
 
   if (isPagination) { //若分页请求，不更新总数count 
     setDataListInfo(activeIndex.value, { data })

@@ -2,7 +2,7 @@
 import { RouteRecordRaw, RouteRaw } from 'vue-router'
 
 
-const pageModules: Record<string, { name: string, menuOrder: number }> = import.meta.glob('@/views/**/*.js', { import: 'default', eager: true })
+const pageModules: Record<string, { name: string, menuOrder: number }> = import.meta.glob('@/views/**/*.ts', { import: 'default', eager: true })
 
 const componentsModules = import.meta.glob('@/views/**/*.vue', { import: 'default' })
 
@@ -10,16 +10,17 @@ const componentsModules = import.meta.glob('@/views/**/*.vue', { import: 'defaul
 
 // type A =({ children:A}) extends RouteRecordRaw[]
 
-const routes: RouteRaw[] = Object.entries(pageModules).map(([pagePath, config]) => {
-  const componentPath = pagePath.replace('page.js', 'index.vue')
-  return {
-    name: config.name,
-    path: `/${String(config.name)}`,
-    // props: true,
-    meta: config,
-    component: componentsModules[componentPath],
-  }
-})
+const routes: RouteRaw[] = Object.entries(pageModules)
+  .map(([pagePath, config]) => {
+    const componentPath = pagePath.replace('page.ts', 'index.vue')
+    return {
+      name: config.name,
+      path: `/${String(config.name)}`,
+      // props: true,
+      meta: config,
+      component: componentsModules[componentPath],
+    }
+  })
 routes.push({
   path: `/`,
   redirect: '/index'

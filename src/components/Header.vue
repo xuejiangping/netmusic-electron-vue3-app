@@ -35,16 +35,16 @@ import SearchPanel from '@components/SearchPanel.vue'
   font-weight: 500;
   height: 100%;
   overflow-wrap: nowrap;
-  font-size: 1rem;
+  font-size: 16px;
 
   .left {
     max-width: 20vw;
-    padding-right: 10vw;
+    padding-right: 20px;
 
     .logo {
-      height: 2rem;
+      height: 36px;
       vertical-align: middle;
-      padding-right: 0.5rem;
+      padding-right: 10px;
     }
   }
 
@@ -56,8 +56,8 @@ import SearchPanel from '@components/SearchPanel.vue'
     justify-content: center; // 水平对齐，不然会有竖直线。。。。。。。。
 
     img {
-      height: 1rem;
-      padding: 0 0.2rem;
+      height: 16px;
+      padding: 0 4px;
       vertical-align: middle;
 
     }
@@ -68,6 +68,10 @@ import SearchPanel from '@components/SearchPanel.vue'
 
     .avatar {
       vertical-align: middle;
+      margin-right: 0.5rem;
+      // height: 30px;
+      width: 36px;
+      height: 36px;
     }
   }
 

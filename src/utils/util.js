@@ -49,7 +49,8 @@ export default {
         return second;
     },
     // 歌曲毫秒格式化处理 03:30
-    formatSongTime(duration = 0) {
+    formatSongTime(duration) {
+        if (!duration && duration !== 0) return
         duration = duration >= 0 ? duration / 1000 : 0;
         const m = (Math.floor(duration / 60) + '').padStart(2,'0')
         const s = (Math.floor(duration % 60) + '').padStart(2,'0')
@@ -88,12 +89,24 @@ export default {
     },
     // 处理歌曲
     formatSongs(list = []) {
-
         const ret = list.map((item,index) => {
             // 是否有版权播放
             item.license = item.privilege.cp
             return formatSongInfo(item)
         })
         return ret
+    },
+    //节流
+    throttle(fn,t = 1000) {
+        let last = Date.now()
+        return function (...args) {
+            const now = Date.now()
+            if (now - last >= t) {
+                fn(...args)
+                last = now
+            }
+            else return
+        }
     }
+
 }

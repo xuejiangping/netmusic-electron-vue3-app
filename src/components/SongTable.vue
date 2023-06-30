@@ -29,15 +29,22 @@ enum tableColums1 {
 const props = defineProps<{
   dataList: SongRecord[] | null
 }>()
+const { $utils } = getCurrentInstance()!.appContext.config.globalProperties
+
 //格式化后的表格数据
-const tableData = computed(() => props.dataList?.map(songData => ({
-  id: songData.id,
-  title: songData.name,
-  singer: songData.singer?.map(({ name, id }) => ({ name, id })),
-  album: { name: songData.album.name, id: songData.album.id },
-  duration: songData.duration,
-  url: songData.url
-})))
+const tableData = computed(() => {
+  if (props.dataList === null) return []
+  const formatedData = $utils.formatSongs(props.dataList)
+  return formatedData.map(songData => ({
+    id: songData.id,
+    title: songData.name,
+    singer: songData.singer?.map(({ name, id }) => ({ name, id })),
+    album: { name: songData.album.name, id: songData.album.id },
+    duration: songData.duration,
+    url: songData.url
+  }))
+}
+)
 // 双击播放
 
 const play = (row: TableColumsProps) => console.log('play  ', row)
@@ -75,9 +82,16 @@ const play = (row: TableColumsProps) => console.log('play  ', row)
   </el-table>
 </template>
 
-<style scoped>
+<style scoped lang="less">
+@import (reference) "@/assets/css/global.less";
+
 .table {
   font-size: 0.8rem;
+
+  :deep(tr) {
+    .hover-scale-mixin();
+
+  }
 }
 
 /* 

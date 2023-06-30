@@ -2,6 +2,9 @@
 const props = defineProps<{
 	dataList: any[] | null
 }>()
+
+
+
 const formatedData = computed(() => {
 	return props.dataList?.map(({ name, img1v1Url, accountId, trans, id }) => {
 		return {

@@ -29,6 +29,32 @@
   }
 }
 
+// 文字超出省略
+.text-in-oneline {
+  color: red;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.my-text-shadow {
+  text-shadow: 0 0 0.6rem BLACK,
+    0 0 0.6rem red;
+}
+
+// 
+.hover-scale-mixin() {
+  &:hover {
+    // box-shadow: var(--el-box-shadow-light);
+    transform: scale(1.05);
+    background-color: #f2f2f3;
+    border-radius: 5%;
+
+  }
+
+  transition: all 0.5s;
+}
+
 
 * {
   padding: 0;

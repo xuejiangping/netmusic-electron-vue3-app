@@ -33,7 +33,7 @@ async function createViewsDir(root,routesInfo) {
             console.log('创建路径',pathA)
             await fs.mkdir(pathA)
             let pathB = path.join(pathA,'index.vue')
-            let pathC = path.join(pathA,'page.js')
+            let pathC = path.join(pathA,'page.ts')
             fs.writeFile(pathB,vueTemplateStr(item.name),{ flag: 'w' })
             fs.writeFile(pathC,pageJsStr(item.name,i),{ flag: 'w' })
             if (item.children && item.children.length > 0) {
