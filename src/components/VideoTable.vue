@@ -1,10 +1,13 @@
 <script setup lang="ts">
 const { IMG_SIZE_SEARCH_PARAMS } = getCurrentInstance()!.appContext.config.globalProperties.$COMMON
 const props = defineProps<{
-  dataList: any[] | null
+  dataList: any[] | null,
+  squar?: boolean,
+  type?: string
+
 }>()
 
-
+const pathName = computed(() => props.type || 'mvlist')
 const formatedData = computed(() => {
   return props.dataList?.map(({ name, artistId, artistName, cover, duration, id, playCount, artists }) => ({
     artistId, artistName,
@@ -12,7 +15,9 @@ const formatedData = computed(() => {
     duration, id, playCount, name,
     artists: artists?.map(({ name: artistName, id }: { name: string; id: number }) => ({ artistName, id })),
   }))
-})
+});
+
+
 </script>
 
 <template>
@@ -20,9 +25,9 @@ const formatedData = computed(() => {
   <div class="grid-container ">
 
     <router-link v-for="({ artistName, name, artists, cover, duration, playCount, id }, index) in formatedData"
-      :key="index" class="item" :to="{ name: 'mvlist', query: { id, name } }">
+      :key="index" class="item" :to="{ name: pathName, query: { id, name } }">
       <div class="block">
-        <el-image class="img" :src="cover" lazy />
+        <el-image class="img" :style="{ 'aspect-ratio': squar ? '1/1' : 'unset' }" :src="cover" lazy />
         <span class="paly-count">{{ $utils.formartNum(playCount) }}</span>
         <span class="duration">{{ $utils.formatSongTime(duration) }}</span>
         <span class="artist">{{ artistName }}</span>
@@ -46,7 +51,7 @@ const formatedData = computed(() => {
 .grid-container {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
 
   gap: 16px;
   margin: 1rem 0;

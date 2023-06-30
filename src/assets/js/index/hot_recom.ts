@@ -14,20 +14,29 @@ export default function hot_recom(playlist_params = { limit: 6, offset: 0, cat: 
         playlist_index: 0,
         playlist_params,
         playlist_count: 6,
-        playlist_loading: false
+        playlist_loading: false,
+        playlist_currentPage: 1
     });
 
+    const resetInfo = () => {
+        // playlist_info.playlist_count=0
+        playlist_info.playlist_currentPage = 1
+        playlist_info.playlist_list = []
+    }
     // 获取热门推荐歌单标签
     const getHotTags = async () => {
         const res = await proxy.$http.hotList()
-        res.tags.unshift({ name: '为您推荐' })
-        playlist_info['playlist_tags'] = res.tags.splice(0, 6)
+        // res.tags.unshift({ name: '为您推荐' })
+        playlist_info['playlist_tags'] = res.tags
     }
     // 切换歌单类别
     const choosePlayListType = async (index: number) => {
         playlist_info['playlist_index'] = index;
         playlist_info['playlist_params']['cat'] = playlist_info['playlist_tags'][index].name
-        await getPlayList(playlist_info['playlist_params'])
+        // 重置歌单列表为空
+        // playlist_info['playlist_list'] = []
+        resetInfo()
+        getPlayList(playlist_info['playlist_params'])
 
     }
 
@@ -37,7 +46,7 @@ export default function hot_recom(playlist_params = { limit: 6, offset: 0, cat: 
         playlist_info['playlist_loading'] = true;
 
         const { playlists, total } = await proxy.$http.playList(params)
-        playlist_info['playlist_list'] = playlists;
+        playlist_info['playlist_list'].push(...playlists)
         playlist_info['playlist_count'] = total
         playlist_info['playlist_loading'] = false;
 
@@ -48,9 +57,17 @@ export default function hot_recom(playlist_params = { limit: 6, offset: 0, cat: 
         getPlayList(playlist_info['playlist_params']);
     });
 
+    const getMore = () => {
+
+        playlist_info.playlist_params['offset'] = (++playlist_info.playlist_currentPage - 1) * playlist_params.limit
+        return getPlayList(playlist_info['playlist_params'])
+
+    }
+
     return {
         playlist_info,
         getHotTags,
-        choosePlayListType
+        choosePlayListType,
+        getMore
     }
 }
