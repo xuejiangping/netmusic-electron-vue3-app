@@ -6,7 +6,8 @@ const pageModules: Record<string, { name: string, menuOrder: number }> = import.
 
 const componentsModules = import.meta.glob('@/views/**/*.vue', { import: 'default' })
 
-
+// console.log('pageModules', pageModules)
+// console.log('componentsModules', componentsModules)
 
 // type A =({ children:A}) extends RouteRecordRaw[]
 

@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs/promises');
-const viewsDir = require('./viewsDir.js')
+const viewsDir = require('./views_dir.js')
 // // import fs from 'fs/promises'
 // // import path from 'path'
 
@@ -45,7 +45,7 @@ async function createViewsDir(root,routesInfo) {
         })
     })
   } catch (err) {
-    console.log('根目录不存在',root)
+    console.log('目录不存在',root)
     await fs.mkdir(root)
     console.log('新建根目录,重新调用createViewsDir',root)
     createViewsDir(root,routesInfo)

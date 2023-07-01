@@ -1,0 +1,12 @@
+<script setup>
+
+</script>
+
+<template>
+  <div>
+    <DetailTemplate></DetailTemplate>
+
+  </div>
+</template>
+
+<style scoped></style>

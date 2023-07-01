@@ -10,6 +10,8 @@ declare module 'vue' {
     AAA: typeof import('./../components/AAA.vue')['default']
     AlbumTable: typeof import('./../components/AlbumTable.vue')['default']
     AsideNav: typeof import('./../components/AsideNav.vue')['default']
+    Detail: typeof import('./../components/Detail.vue')['default']
+    DetailTemplate: typeof import('./../components/Detail-Template.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElCard: typeof import('element-plus/es')['ElCard']

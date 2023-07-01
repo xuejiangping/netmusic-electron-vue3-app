@@ -48,7 +48,7 @@ const load = () => {
   </header>
   <Loading v-if="playlist_info.playlist_loading"></Loading>
   <div class="container" v-infinite-scroll="load">
-    <VideoTable type="playlist" squar :data-list="formatedData"></VideoTable>
+    <VideoTable type="playlist-detail" squar :data-list="formatedData"></VideoTable>
   </div>
 </template>
 
@@ -58,10 +58,9 @@ header {
   grid-template-columns: 1fr 2fr;
   margin: 1rem 0;
 
-  // .hotTags {
-  //   // display: flex;
-  //   // column-gap: 5px;
-  // }
+  .hotTags {
+    display: flex;
+  }
 
 }
 </style>

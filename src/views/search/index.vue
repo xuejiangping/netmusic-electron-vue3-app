@@ -98,7 +98,8 @@ watch(currentPage, () => updateDataList(true))
 
     <loading v-show="isloading" />
     <keep-alive v-show="!isloading">
-      <component :is="TAB_OPTONS[activeIndex][0]" :dataList="dataListInfo[activeIndex].data"></component>
+      <component :is="TAB_OPTONS[activeIndex][0]" routeName="mvlist" :dataList="dataListInfo[activeIndex].data">
+      </component>
     </keep-alive>
     <!-- <SongTable v-if="songSDataList" :songDataList="songSDataList" @play="test" /> -->
     <div class="page">

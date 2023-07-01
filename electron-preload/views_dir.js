@@ -10,6 +10,7 @@ module.exports = [
   {
     name: 'playlist',
     path: '/playlist',
+
   },
   {
     name: 'mvlist',
@@ -31,6 +32,7 @@ module.exports = [
   {
     name: 'album',
     path: '/album',
+
 
   }
 ]
