@@ -1,6 +1,6 @@
 # Get-Content -Path views_dir.json | let a
-$path = $PSCommandPath | Split-Path 
-Set-Location $path
+# $path = $PSCommandPath | Split-Path 
+# Set-Location $path
 
 function _vue_template_str($msg) {
   @"
@@ -53,5 +53,7 @@ function _main {
 
 $list = Get-Content $path/'views_dir.json' | ConvertFrom-Json 
 
-_main  -list $list[2] -root '.'
+# _main  -list $list[2] -root '.'
 
+# Join-Path -Path $path -ChildPath '../src/views/' | Convert-Path | Write-Output
+_main  -list $list[2] -root '../src/views/'
