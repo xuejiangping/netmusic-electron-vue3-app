@@ -9,7 +9,13 @@
   },
   {
     "name": "playlist",
-    "path": "/playlist"
+    "path": "/playlist",
+    "children": [
+      {
+        "name": "playlist-detail",
+        "path": "/playlist/detail"
+      }
+    ]
   },
   {
     "name": "mvlist",
