@@ -16,8 +16,7 @@ const asideDir = ref({
       { index: 'rank', text: '排行榜', icon: 'icon-rank' },
       { index: 'playlist', text: '歌单', icon: 'icon-playlist' },
       { index: 'mvlist', text: 'MV', icon: 'icon-mvlist' },
-      { index: 'artist', text: '歌手', icon: 'icon-artist' },
-
+      { index: 'artistlist', text: '歌手', icon: 'icon-artist' },
     ],
   },
   myMusic: { title: '我的音乐', items: [{ text: '我喜欢的音乐', icon: 'icon-my', index: 'like' }] },
@@ -27,7 +26,7 @@ const asideDir = ref({
 <template>
   <el-menu class="menu" router :default-active="default_active" @select="handSelect">
     <el-menu-item-group v-for="(value, key) in asideDir" :key="key" :title="value.title">
-      <el-menu-item route="" v-for="(item, index) in value.items" :key="index" :index="item.index"
+      <el-menu-item route v-for="(item, index) in value.items" :key="index" :index="item.index"
         :class="['menu-item', item.index === activeIndex && 'active-select']">
         <i :class="['iconfont', item.icon]"></i>
         <span style="padding-left: 0.5rem">{{ item.text }}</span>

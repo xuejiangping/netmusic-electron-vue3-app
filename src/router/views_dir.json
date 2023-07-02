@@ -1,0 +1,39 @@
+[
+  {
+    "name": "index",
+    "path": "/index"
+  },
+  {
+    "name": "search",
+    "path": "/search"
+  },
+  {
+    "name": "playlist",
+    "path": "/playlist",
+    "children": []
+  },
+  {
+    "name": "playlist-detail",
+    "path": "/playlist-detail"
+  },
+  {
+    "name": "mvlist",
+    "path": "/mvlist"
+  },
+  {
+    "name": "rank",
+    "path": "/rank"
+  },
+  {
+    "name": "artistlist",
+    "path": "/artistlist"
+  },
+  {
+    "name": "singer",
+    "path": "/singer"
+  },
+  {
+    "name": "album",
+    "path": "/album"
+  }
+]

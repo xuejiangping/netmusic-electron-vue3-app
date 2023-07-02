@@ -34,6 +34,7 @@ const load = () => {
 </script>
 
 <template>
+  <!-- <RouterView></RouterView> -->
   <header>
     <div> <el-tag round>全部</el-tag></div>
 
@@ -48,7 +49,7 @@ const load = () => {
   </header>
   <Loading v-if="playlist_info.playlist_loading"></Loading>
   <div class="container" v-infinite-scroll="load">
-    <VideoTable type="playlist-detail" squar :data-list="formatedData"></VideoTable>
+    <VideoTable route-name="playlist-detail" squar :data-list="formatedData"></VideoTable>
   </div>
 </template>
 
