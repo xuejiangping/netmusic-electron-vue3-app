@@ -41,7 +41,7 @@
 		"src/apis/http1.jss",
 		"electron-preload/index.js",
 		"electron-preload/createViewsDir.js",
-		"src/utils/util.js"
+		"src/utils/util.ts"
 	],
 
 	"references": [

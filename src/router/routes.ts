@@ -9,9 +9,8 @@ type RouteLike = Partial<{
   component: Function, redirect: string
 }>
 
-
 console.log('views_dir', views_dir)
-
+//根据 views_dir 生成路由
 const generateRoutes = (routesLike: RouteLike[], root = '/src/views') => {
   return routesLike.map(({ name, path, children }) => {
     const $path = `${root}/${name}`

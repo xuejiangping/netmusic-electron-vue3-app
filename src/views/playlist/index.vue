@@ -17,14 +17,14 @@ const hotTags = computed(() => playlist_info.playlist_tags)
 
 const formatedData = computed(() => {
   return playlist_info.playlist_list.map((raw) => {
-    const { coverImgUrl, name, playCount, creator: { nickname, userId } } = raw
+    const { coverImgUrl, name, playCount, id, creator: { nickname, userId } } = raw
     return {
-      cover: coverImgUrl, name, playCount, artistName: nickname, artistId: userId, raw
+      cover: coverImgUrl, name, playCount, id, artistName: nickname, artistId: userId
     }
   })
 })
 
-const debounced_getmore = debounce(() => { getMore().then(() => console.log(playlist_info)); console.count('debounce') })
+const debounced_getmore = debounce(() => { getMore().then(() => console.log(playlist_info)); console.count('debounce') }, 2000)
 
 const load = () => {
   console.count('load')
@@ -56,8 +56,8 @@ const load = () => {
 <style scoped lang="less">
 header {
   display: grid;
-  grid-template-columns: 1fr 2fr;
-  margin: 1rem 0;
+  grid-template-columns: 100px 1fr;
+  margin: 2rem 0;
 
   .hotTags {
     display: flex;

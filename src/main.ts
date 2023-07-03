@@ -18,7 +18,7 @@ import './assets/fonts/fonts.css'
 app.config.globalProperties.$http = $http
 app.config.globalProperties.$utils = $utils
 
-
+window.$http = $http
 /***********************全局指令*************************/
 // 使用自定分割符 分割多个元素
 app.directive('split', (el: HTMLElement, { value }) => {
@@ -43,7 +43,6 @@ app.directive('my-infinite-scroll', (el: HTMLElement, { value }) => {
 })
 /************************************************/
 const pinia = createPinia()
-
 //*********************************************************** */
 app.config.globalProperties['$COMMON'] = $common;
 app.use(router).use(pinia).use(ElementPlus).mount('#app')

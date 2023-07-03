@@ -1,28 +1,24 @@
 <script setup lang="ts">
-const props = defineProps<{
-    dataList: any[] | null
+defineProps<{
+    dataList: Pick<AllProps, 'name' | 'img1v1Url' | 'alias' | 'id' | 'artists'>[] | null
 }>()
-const formatedData = computed(() => {
-    return props.dataList?.map(({ name, picUrl, artist, alias, id }) => {
-        return {
-            name, picUrl, artist: { name: artist.name, id: artist.id }, alias, id
-        }
-    })
-})
+
 </script>
 
 <template>
     <div>
-        <router-link v-for="({ picUrl, artist, name, id, alias }, index) in formatedData" :key="index"
+        <router-link v-for="({ img1v1Url, artists, name, id, alias }, index) in dataList" :key="index"
             :to="{ name: 'album', query: { name, id } }">
-            <ListItem :img1v1-url="picUrl">
+            <ListItem :img1v1-url="img1v1Url">
                 <div>
                     <span>{{ name }}</span>
                     <span v-if="alias.length > 0">
-                        ( <i v-for="(item, i) in alias" v-split="[i, ' / ']" :key="index">{{ item }}</i> )
+                        ( <i v-for="(alia, i) in alias" v-split="[i, ' / ']" :key="index">{{ alia }}</i> )
                     </span>
                 </div>
-                <span>{{ artist.name }}</span>
+                <RouterLink v-for="({ id, name }) in artists" :to="{ name: 'singer', query: { name, id } }">
+                    <span>{{ name }}</span>
+                </RouterLink>
             </ListItem>
         </router-link>
     </div>

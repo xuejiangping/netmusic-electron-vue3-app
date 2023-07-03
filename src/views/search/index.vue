@@ -10,7 +10,7 @@ import { useSearchPanelStore } from '../../store/search-panel-store'
 const store = useSearchPanelStore()
 const { dataListInfo } = storeToRefs(store)
 const { setLastActiveIndex, lastActiveIndex, setLastKeyword, resetDataListInfo, setDataListInfo, lastKeyword } = store
-const { $http, $COMMON } = getCurrentInstance()!.appContext.config.globalProperties
+const { $http, $COMMON, $utils } = getCurrentInstance()!.appContext.config.globalProperties
 const PAGE_LIMIT = 5
 /** tags 和 搜索类型的枚举 */
 const tagInfoEnum = $COMMON.SEARCH_TYPE_ENUM
@@ -49,7 +49,6 @@ const handleTabsChange = () => {
 
   //缓存了数据，若tab标签一样，不需要请求数据
   if (dataListInfo.value[activeIndex.value].data === null) {
-
     updateDataList()
   }
 }
@@ -57,7 +56,7 @@ const handleTabsChange = () => {
 const updateDataList = async (isPagination = false) => {
   isloading.value = true
   const type = unref(activeIndex)
-  const offset = (unref(currentPage) - 1) * PAGE_LIMIT  // 分页参数：（currentPage-1）*limit
+  const offset = (currentPage.value - 1) * PAGE_LIMIT  // 分页参数：（currentPage-1）*limit
   const { result } = await $http.cloudsearch({ keywords: String(keyword.value), limit: PAGE_LIMIT, offset, type: String(type) })
   isloading.value = false
   const countKey = TAB_OPTONS[type][2]
@@ -70,6 +69,7 @@ const updateDataList = async (isPagination = false) => {
     setDataListInfo(activeIndex.value, { data })
   } else {
     setDataListInfo(activeIndex.value, { data, count })
+    console.log('data', data)
   }
 
   // console.log('dataListInfo', dataListInfo)
@@ -84,7 +84,34 @@ watch(keyword, (newVal) => {
   resetDataListInfo()
   updateDataList()
 }, { immediate: true })
+
 watch(currentPage, () => updateDataList(true))
+
+const dataList = computed(() => {
+  const rawDataList = dataListInfo.value[activeIndex.value].data
+  if (rawDataList === null) return []
+  let formatedDataList
+  switch (activeIndex.value) {
+    case tagInfoEnum.单曲:
+      formatedDataList = $utils.formatSongs(rawDataList)
+      break;
+    case tagInfoEnum.专辑:
+      formatedDataList = $utils.formatAlbumlist(rawDataList)
+      break;
+    case tagInfoEnum.歌手:
+      formatedDataList = $utils.formatSingerlist(rawDataList)
+      break;
+    case tagInfoEnum.歌单:
+      formatedDataList = $utils.formatPlaylist(rawDataList)
+      break;
+    case tagInfoEnum.视频:
+      formatedDataList = $utils.formatVideolist(rawDataList)
+      break;
+  }
+  return formatedDataList
+})
+
+
 </script>
 
 <template>
@@ -98,7 +125,7 @@ watch(currentPage, () => updateDataList(true))
 
     <loading v-show="isloading" />
     <keep-alive v-show="!isloading">
-      <component :is="TAB_OPTONS[activeIndex][0]" routeName="mvlist" :dataList="dataListInfo[activeIndex].data">
+      <component :is="TAB_OPTONS[activeIndex][0]" routeName="mvlist" :dataList="dataList">
       </component>
     </keep-alive>
     <!-- <SongTable v-if="songSDataList" :songDataList="songSDataList" @play="test" /> -->

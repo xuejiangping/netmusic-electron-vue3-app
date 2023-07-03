@@ -8,22 +8,25 @@
   --el-color-primary: rgb(231, 41, 41) !important;
 }
 
-@a: 20vh;
+li {
+  list-style: none;
+}
 
 // 响应式处理
-@media screen and (max-height: 400px) {
+
+@media screen and (min-height: 400px) and(min-width:600px) {
   html {
     font-size: @bassFontSize;
   }
 }
 
-@media screen and (min-height: 600px) {
+@media screen and (min-height: 600px) and (min-width:900px) {
   html {
     font-size: @bassFontSize*1.5;
   }
 }
 
-@media screen and (min-height: 800px) {
+@media screen and (min-height: 800px)and (min-width:1300px) {
   html {
     font-size: @bassFontSize*2;
   }

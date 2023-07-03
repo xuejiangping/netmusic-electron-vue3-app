@@ -1,48 +1,41 @@
 <script setup lang="ts">
 const { IMG_SIZE_SEARCH_PARAMS } = getCurrentInstance()!.appContext.config.globalProperties.$COMMON
 const props = withDefaults(defineProps<{
-  dataList: any[] | null,
+  dataList: Pick<AllProps, 'artistName' | 'name' | 'artists' | 'cover' | 'duration' | 'playCount' | 'id'>[],
   squar?: boolean,
   routeName?: string
 }>(), {
-  dataList: null,
   squar: false,
   routeName: 'index'
 })
 
 
-// const pathName = computed(() => props.type || 'mvlist')
-const formatedData = computed(() => {
-  return props.dataList?.map(({ name, artistId, artistName, cover, duration, id, playCount, artists }) => ({
-    artistId, artistName,
-    cover: cover + IMG_SIZE_SEARCH_PARAMS.rect.middle,
-    duration, id, playCount, name,
-    artists: artists?.map(({ name: artistName, id }: { name: string; id: number }) => ({ artistName, id })),
-  }))
-});
+
 const imgStyle = computed(() => ({ 'aspect-ratio': props.squar ? '1/1' : 'unset' }))
 
+
+// artistName, name, artists, cover, duration, playCount, id 
 </script>
 
 <template>
   <!-- <div>VideoTable</div> -->
   <div class="grid-container ">
 
-    <router-link v-for="({ artistName, name, artists, cover, duration, playCount, id }, index) in formatedData"
-      :key="index" class="item" :to="{ name: routeName, query: { id, name } }">
+    <router-link v-for="({ artistName, name, artists, cover, duration, playCount, id }, index) in dataList" :key="index"
+      class="item" :to="{ name: routeName, query: { id, cover, name } }">
       <div class="block">
-        <el-image class="img" :style="imgStyle" :src="cover" lazy />
-        <span class="paly-count">{{ $utils.formartNum(playCount) }}</span>
-        <span class="duration">{{ $utils.formatSongTime(duration) }}</span>
+        <el-image class="img" :style="imgStyle" :src="cover + IMG_SIZE_SEARCH_PARAMS.rect.middle" lazy />
+        <span class="paly-count">{{ playCount }}</span>
+        <span class="duration">{{ duration }}</span>
         <span class="artist">{{ artistName }}</span>
 
       </div>
       <div class="describe ">
         <span class="title  text-in-oneline">{{ name }}</span>
         <span class="artists text-in-oneline">
-          <router-link v-for=" ({ artistName, id }, i) in artists" v-split="[i, ' / ']"
-            :to="{ name: 'artistlist', query: { id, artistName } }">
-            <span>{{ artistName }}</span>
+          <router-link v-for=" ({ name, id }, i) in artists" v-split="[i, ' / ']"
+            :to="{ name: 'artistlist', query: { id, name } }">
+            <span>{{ name }}</span>
           </router-link></span>
       </div>
     </router-link>
