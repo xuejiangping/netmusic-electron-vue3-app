@@ -69,11 +69,13 @@ const updateDataList = async (isPagination = false) => {
     setDataListInfo(activeIndex.value, { data })
   } else {
     setDataListInfo(activeIndex.value, { data, count })
-    console.log('data', data)
+    // console.log('data', data)
   }
 
   // console.log('dataListInfo', dataListInfo)
 }
+
+
 
 // console.time('测试路由缓存')
 
@@ -125,14 +127,13 @@ const dataList = computed(() => {
 
     <loading v-show="isloading" />
     <keep-alive v-show="!isloading">
-      <component :is="TAB_OPTONS[activeIndex][0]" routeName="mvlist" :dataList="dataList">
+      <component :is="TAB_OPTONS[activeIndex][0]" routeName="mv-detail" :dataList="dataList">
       </component>
     </keep-alive>
     <!-- <SongTable v-if="songSDataList" :songDataList="songSDataList" @play="test" /> -->
-    <div class="page">
-      <el-pagination small hide-on-single-page @next-click="currentPage++" @prev-click="currentPage--"
-        @current-change="num => currentPage = num" background layout="prev, pager, next" :page-size="PAGE_LIMIT"
-        :total="dataListInfo[activeIndex].count" />
+    <div class="pagination">
+      <el-pagination small hide-on-single-page v-model:current-page="currentPage" background layout="prev, pager, next"
+        :page-size="PAGE_LIMIT" :total="dataListInfo[activeIndex].count" />
     </div>
   </div>
 </template>
@@ -157,7 +158,7 @@ const dataList = computed(() => {
     }
   }
 
-  .page {
+  .pagination {
     display: flex;
     justify-content: center;
     margin-top: 1.5rem;

@@ -2,10 +2,15 @@
   --color-text-main: #2d2d2d;
   --color-text: #909090;
   --color-text-height: #ff641e;
+  --color-text-link: #507daf;
+  --color-text-light: #c3c2c2;
   --el-color-primary: #e72929 !important;
+  --color-bg-light: #f2f2f3;
+  --color-bg-main: #eaeaed;
 }
 li {
   list-style: none;
+  line-height: 1rem;
 }
 @media screen and (min-height: 400px) and (min-width: 600px) {
   html {
@@ -23,13 +28,17 @@ li {
   }
 }
 .text-in-oneline {
-  color: red;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  word-break: break-all;
   overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
 .my-text-shadow {
   text-shadow: 0 0 0.6rem BLACK, 0 0 0.6rem red;
+}
+.separator {
+  color: var(--color-text-main);
 }
 * {
   padding: 0;
@@ -45,7 +54,7 @@ body {
 }
 a {
   text-decoration: none;
-  color: var(--color-text-main);
+  color: var(--color-text-link);
 }
 *,
 *:focus,

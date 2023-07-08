@@ -33,12 +33,12 @@ instance.interceptors.request.use(function (config) {
 // 添加响应拦截器
 instance.interceptors.response.use(function (response) {
   // 对响应数据做点什么
-  const code = response.data?.code
+  const { code, message } = response.data
   if (code && code === 200) {
     return response.data
   } else {
-    appProxy.$alert('响应数据失败,code:' + code)
-    return Promise.reject('响应数据失败,code:' + code)
+    appProxy.$alert(`响应数据失败,code:${code} message:${message}`)
+    return Promise.reject(['响应数据失败,code:' + code, response])
   }
 
 }, function (error) {

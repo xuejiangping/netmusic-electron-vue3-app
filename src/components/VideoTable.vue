@@ -51,7 +51,7 @@ const imgStyle = computed(() => ({ 'aspect-ratio': props.squar ? '1/1' : 'unset'
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
 
   gap: 16px;
-  margin: 1rem 0;
+  margin: 2rem 0;
 
   &:deep(.el-image__inner) {
     border-radius: 5%;
@@ -99,6 +99,10 @@ const imgStyle = computed(() => ({ 'aspect-ratio': props.squar ? '1/1' : 'unset'
       display: grid;
       grid-template-rows: 1fr 1fr;
       row-gap: 2px;
+
+      .title {
+        color: var(--color-text-main);
+      }
 
       .artists {
         color: #cccccc;

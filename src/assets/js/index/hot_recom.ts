@@ -9,7 +9,7 @@ export default function hot_recom(playlist_params = { limit: 6, offset: 0, cat: 
     // -------------- 推荐歌单
     // 热门推荐歌单
     const playlist_info = reactive({
-        playlist_tags: [{ name: '流行' }],
+        playlist_hot_tags: [{ name: '流行' }],
         playlist_list: [] as any[],
         playlist_index: 0,
         playlist_params,
@@ -26,13 +26,12 @@ export default function hot_recom(playlist_params = { limit: 6, offset: 0, cat: 
     // 获取热门推荐歌单标签
     const getHotTags = async () => {
         const res = await proxy.$http.hotList()
-        // res.tags.unshift({ name: '为您推荐' })
-        playlist_info['playlist_tags'] = res.tags
+        playlist_info['playlist_hot_tags'] = res.tags
     }
     // 切换歌单类别
     const choosePlayListType = async (index: number) => {
         playlist_info['playlist_index'] = index;
-        playlist_info['playlist_params']['cat'] = playlist_info['playlist_tags'][index].name
+        playlist_info['playlist_params']['cat'] = playlist_info['playlist_hot_tags'][index].name
         // 重置歌单列表为空
         // playlist_info['playlist_list'] = []
         resetInfo()
@@ -44,7 +43,6 @@ export default function hot_recom(playlist_params = { limit: 6, offset: 0, cat: 
 
     const getPlayList = async (params: Parameters<typeof proxy.$http.playList>['0']) => {
         playlist_info['playlist_loading'] = true;
-
         const { playlists, total } = await proxy.$http.playList(params)
         playlist_info['playlist_list'].push(...playlists)
         playlist_info['playlist_count'] = total
@@ -58,10 +56,8 @@ export default function hot_recom(playlist_params = { limit: 6, offset: 0, cat: 
     });
 
     const getMore = () => {
-
         playlist_info.playlist_params['offset'] = (++playlist_info.playlist_currentPage - 1) * playlist_params.limit
         return getPlayList(playlist_info['playlist_params'])
-
     }
 
     return {

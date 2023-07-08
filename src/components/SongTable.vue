@@ -41,22 +41,26 @@ const play = (row: TableColumsProps) => console.log('play  ', row)
   <el-table v-if="Boolean(dataList)" @row-dblclick="play" class="table" :data="dataList" stripe>
     <el-table-column>
       <template #default="scope">
-        <span v-pad2="scope.$index"></span>
+        <div class="col-1">
+          <span v-pad2="scope.$index"></span>
+        </div>
       </template>
     </el-table-column>
 
     <el-table-column class-name="title" prop="name" :label="tableColums1.name"></el-table-column>
     <el-table-column prop="singer" :label="tableColums1.artists">
       <template #default="scope">
-        <router-link v-for="(item) in scope.row.artists" :to="{ name: 'singer', query: item }">
-          <i>{{ item.name }}</i>
-        </router-link>
+        <div class="singer">
+          <router-link v-for="(item, i) in scope.row.artists" v-split="[i]" :to="{ name: 'singer', query: item }">
+            <span>{{ item.name }}</span>
+          </router-link>
+        </div>
       </template>
     </el-table-column>
     <el-table-column prop="album" :label="tableColums1.album">
       <template #default="scope">
         <router-link :to="{ name: 'album', query: scope.row.album }">
-          <i>{{ scope.row.album.name }}</i>
+          <span>{{ scope.row.album.name }}</span>
         </router-link>
       </template>
     </el-table-column>
@@ -78,9 +82,16 @@ const play = (row: TableColumsProps) => console.log('play  ', row)
 .table {
   font-size: 0.8rem;
 
-  :deep(tr) {
+  :deep(tbody tr) {
     .hover-scale-mixin();
+  }
 
+  .col-1 {
+    color: var(--color-text);
+  }
+
+  .singer {
+    .multi-line(2)
   }
 }
 

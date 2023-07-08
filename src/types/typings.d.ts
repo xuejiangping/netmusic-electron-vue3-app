@@ -47,7 +47,7 @@ declare module 'vue-router' {
 declare global {
   type GetValue<T> = T[keyof T]
   // 索有请求数据的 类型
-  type AllProps = {
+  type AllProps = Partial<{
     alias: string[]
     name: string,
     img1v1Url: string,
@@ -67,6 +67,6 @@ declare global {
     playCount: number,
     creator: { id: string | number, name: string },
 
-  }
+  }>
 
 }

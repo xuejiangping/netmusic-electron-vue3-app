@@ -16,7 +16,7 @@ export default {
     return num
   },
   // 时间毫秒格式化处理 2020-10-30 09:30:00
-  formartDate(originVal, fmt) {
+  formartDate(originVal, fmt = 'yyyy-MM-dd') {
     const dt = new Date(originVal)
     const opt = {
       yyyy: dt.getFullYear(),
@@ -114,7 +114,7 @@ export default {
   formatSongs(list: any[]) {
     const val = list.map((item) => {
       // 是否有版权播放
-      item.license = item.privilege.cp
+      item.license = item.privilege?.cp
       const { license, name, id, ar: artists, al: album, dt: duration } = item
       return {
         license, name, id, artists, album, duration: this.formatSongTime(duration),
@@ -140,9 +140,11 @@ export default {
     const val = list.map((item) => {
       // 是否有版权播放
       const { artistName, name, id, artists, duration, playCount, cover } = item
+      // console.log('item', item)
       return {
-        artistName, name, id, artists, duration: this.formatSongTime(duration),
+        artistName, name, id, artists, duration: duration && this.formatSongTime(duration),
         playCount: this.formartNum(playCount),
+
         cover: cover + $common.IMG_SIZE_SEARCH_PARAMS.rect.middle
       }
     })
@@ -167,12 +169,13 @@ export default {
       // 是否有版权播放
       const { name, id, artists, picUrl, alias } = item
       return {
-        name, id, artists, alias, artists,
+        name, id, artists, alias,
         img1v1Url: picUrl + $common.IMG_SIZE_SEARCH_PARAMS.squar.small
       }
     })
     return val
   },
+
 
 
 

@@ -21,6 +21,10 @@
     "path": "/mvlist"
   },
   {
+    "name": "mv-detail",
+    "path": "/mv-detail"
+  },
+  {
     "name": "rank",
     "path": "/rank"
   },

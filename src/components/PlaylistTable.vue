@@ -11,7 +11,7 @@ defineProps<{
 <template>
   <div>
     <router-link v-for="{ name, trackCount, creator, id, playCount, img1v1Url } in dataList"
-      :to="{ name: 'playlist', query: { name, id } }">
+      :to="{ name: 'playlist-detail', query: { name, id } }">
       <ListItem :img1v1-url="img1v1Url">
         <span>{{ name }}</span>
         <span class="link-text">{{ trackCount }}首</span>

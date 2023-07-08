@@ -2,6 +2,7 @@ import router from './router'
 import app from './utils/app'
 import ElementPlus from 'element-plus'
 import { createPinia } from 'pinia'
+import vue3videoPlay from 'vue3-video-play' // 引入组件
 /************************************************/
 import $http from './apis/http'
 import $common from './assets/js/common';
@@ -12,18 +13,26 @@ import $utils from './utils/util.js'
 import './assets/css/global.less'
 import 'element-plus/dist/index.css'
 import './assets/fonts/fonts.css'
+import 'vue3-video-play/dist/style.css' // 引入css
+
 
 
 /************************************************/
 app.config.globalProperties.$http = $http
 app.config.globalProperties.$utils = $utils
 
-window.$http = $http
+// window.$http = $http
 /***********************全局指令*************************/
 // 使用自定分割符 分割多个元素
 app.directive('split', (el: HTMLElement, { value }) => {
-  const [i, separator] = value
-  if (i > 0) el.prepend(document.createTextNode(separator))
+  let [i, separator] = value
+  if (!separator) separator = ' / '
+  if (i > 0 && !el.textContent?.includes(separator)) {
+    const span = document.createElement('span')
+    span.classList.add('separator')
+    span.textContent = separator
+    el.prepend(span)
+  }
 })
 
 
@@ -45,4 +54,9 @@ app.directive('my-infinite-scroll', (el: HTMLElement, { value }) => {
 const pinia = createPinia()
 //*********************************************************** */
 app.config.globalProperties['$COMMON'] = $common;
-app.use(router).use(pinia).use(ElementPlus).mount('#app')
+/************************************************/
+app.use(vue3videoPlay)
+  .use(router)
+  .use(pinia)
+  .use(ElementPlus)
+  .mount('#app')

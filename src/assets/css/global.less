@@ -5,11 +5,17 @@
   --color-text-main: #2d2d2d;
   --color-text: #909090;
   --color-text-height: #ff641e;
+  --color-text-link: #507daf;
+  --color-text-light: #c3c2c2;
+
   --el-color-primary: rgb(231, 41, 41) !important;
+  --color-bg-light: #f2f2f3;
+  --color-bg-main: #eaeaed;
 }
 
 li {
   list-style: none;
+  line-height: 1rem;
 }
 
 // 响应式处理
@@ -32,12 +38,22 @@ li {
   }
 }
 
-// 文字超出省略
+// 文字单行省略
 .text-in-oneline {
-  color: red;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  // text-overflow: ellipsis;
+  // // white-space: nowrap;
+  // word-break: break-all;
+  // overflow: hidden;
+  .multi-line(1)
+}
+
+// 多行省略
+.multi-line(@lines) {
+  word-break: break-all;
   overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: @lines;
+  -webkit-box-orient: vertical;
 }
 
 .my-text-shadow {
@@ -45,13 +61,21 @@ li {
     0 0 0.6rem red;
 }
 
+// v-split 指令分隔符的样式
+.separator {
+  color: var(--color-text-main);
+}
+
+
+
 // 
 .hover-scale-mixin() {
   &:hover {
     // box-shadow: var(--el-box-shadow-light);
     transform: scale(1.05);
-    background-color: #f2f2f3;
-    border-radius: 5%;
+
+    background-color: var(--color-bg-light);
+    // border-radius: 5%;
 
   }
 
@@ -78,7 +102,7 @@ body {
 
 a {
   text-decoration: none;
-  color: var(--color-text-main);
+  color: var(--color-text-link);
 }
 
 *,

@@ -2,12 +2,14 @@
 
 
 const activeIndex = ref(0)
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
   cover: string,
-  tagInfoEnum?: { [key: string]: number }
+  tagInfoEnum?: {
+    [key: string]: { index: number, suffix?: string }
+  }
 }>(), {
   cover: "http://p1.music.126.net/w2b9v-oFdi2eirpvK5gblg==/109951168630690220.jpg?imageView=1&thumbnail=800y800&enlarge=1%7CimageView=1&watermark&type=1&image=b2JqL3c1bkRrTUtRd3JMRGpEekNtOE9tLzI4NzMxNTcwNzA2L2E0ZDAvMjAyMzUxNDEwNDU1MC94MzEzMTY4NjcxMDc1MDc1NS5wbmc=&dx=0&dy=0%7Cwatermark&type=1&image=b2JqL3dvbkRsc0tVd3JMQ2xHakNtOEt4LzI3NjEwNDk3MDYyL2VlOTMvOTIxYS82NjE4LzdhMDc5ZDg0NTYyMDAwZmVkZWJmMjVjYjE4NjhkOWEzLnBuZw==&dx=0&dy=0%7CimageView=1&thumbnail=140y140&",
-  tagInfoEnum: () => ({ 标签1: 0, 标签2: 1, 标签3: 2 }),
+  tagInfoEnum: () => ({ 标签1: { index: 0 }, 标签2: { index: 1 }, 标签3: { index: 2 } })
 })
 
 const emit = defineEmits<{
@@ -47,8 +49,8 @@ const emit = defineEmits<{
     <div class="middle">
       <slot name="middle">
         <el-tabs class="tabs" v-model="activeIndex" @tab-change="(i) => emit('handleTabsChange', i)">
-          <el-tab-pane v-for="(type, label ) in tagInfoEnum" :key="type" :label="(label as string)"
-            :name="type"></el-tab-pane>
+          <el-tab-pane v-for="({ index, suffix }, label ) in tagInfoEnum" :key="index" :label="label + (suffix || '')"
+            :name="index"></el-tab-pane>
         </el-tabs>
       </slot>
     </div>
@@ -65,11 +67,10 @@ const emit = defineEmits<{
 
   .top {
     display: grid;
-    grid-template-columns: minmax(140px, 1fr) 3fr;
+    grid-template-columns: minmax(140px, 180px) 1fr;
     font-size: .75rem;
 
     .cover {
-      padding-right: 20px;
 
       img {
         width: 100%;
@@ -78,16 +79,28 @@ const emit = defineEmits<{
       }
     }
 
+    .info {
+      padding: 0 20px;
+
+    }
+
     .lists {
+
+
       li {
-        margin: 3px 0;
+        margin: 8px 0;
 
         &:nth-child(1) {
           color: red;
           font-weight: bolder;
         }
-      }
 
+        &:deep(>*) {
+          padding-right: 1rem;
+        }
+
+
+      }
     }
   }
 }
