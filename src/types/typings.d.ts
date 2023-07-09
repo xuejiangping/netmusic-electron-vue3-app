@@ -52,6 +52,7 @@ declare global {
     name: string,
     img1v1Url: string,
     id: string | number,
+    mv: number,
     accountId: number,
     trans: string,
     artistName: string,

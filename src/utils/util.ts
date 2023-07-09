@@ -115,9 +115,9 @@ export default {
     const val = list.map((item) => {
       // 是否有版权播放
       item.license = item.privilege?.cp
-      const { license, name, id, ar: artists, al: album, dt: duration } = item
+      const { license, name, id, ar: artists, al: album, dt: duration, mv } = item
       return {
-        license, name, id, artists, album, duration: this.formatSongTime(duration),
+        license, name, id, artists, album, mv, duration: this.formatSongTime(duration),
         audioUrl: `https://music.163.com/song/media/outer/url?id=${id}.mp3`
       }
     })

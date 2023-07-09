@@ -4,15 +4,8 @@ import get_recom_playlist from '../../assets/js/index/hot_recom'
 const { $utils } = getCurrentInstance()!.appContext.config.globalProperties
 const { playlist_info, getMore, choosePlayListType } = get_recom_playlist({ limit: 5, offset: 0, cat: '为您推荐' })
 
-// const hotTags = computed(() => playlist_info.playlist_hot_tags)
 const isloading = computed(() => playlist_info.playlist_loading)
-// setTimeout(() => {
-//   console.log('formatedData', formatedData)
-//   console.log('hotTags', hotTags)
-//   console.log('playlist_info', playlist_info)
-//   console.log(playlist_info.playlist_loading)
 
-// }, 2000);
 console.log('playlist_info', playlist_info)
 
 
@@ -26,7 +19,7 @@ const formatedData = computed(() => {
   })
 })
 
-const debounced_getmore = $utils.debounce(() => { getMore().then(() => console.log(playlist_info)); console.count('debounce') }, 2000)
+const debounced_getmore = $utils.debounce(() => { getMore().then(() => console.log(playlist_info)); console.count('debounce') }, 500)
 
 const load = () => {
   console.count('load')

@@ -24,13 +24,13 @@ const change = ({ label, index }: Parameter) => {
   else if (label === '排序') mv_info.mv_order_index = index
 }
 const dataList = computed(() => $utils.formatVideolist(mv_info.mv_list))
-const currentPage = toRef(mv_info, 'currentPage')
-console.log('mv_info', mv_info)
+// console.log('mv_info', mv_info)
 
 </script>
 
 <template>
-  <div>
+  <Loading v-if="mv_info.mv_loading"></Loading>
+  <div v-else>
     <ul class="cat">
       <li v-for="(data, label) in cat">
         <span>{{ label }}: </span>
@@ -39,9 +39,8 @@ console.log('mv_info', mv_info)
       </li>
     </ul>
     <VideoTable route-name="mv-detail" :data-list="dataList"></VideoTable>
-
     <div class="pagination">
-      <el-pagination small v-model:current-page="currentPage" background layout="prev, pager, next"
+      <el-pagination small v-model:current-page="mv_info.currentPage" background layout="prev, pager, next"
         :total="mv_info.mv_count" />
     </div>
   </div>

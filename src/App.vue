@@ -1,13 +1,10 @@
 <script setup lang="ts">
-
+import { usePageShowStore } from './store/page-show-state-store'
 // import hot_recom from './assets/js/index/hot_recom'
 const color = ref('blue')
 
-// const main = ref(true)
-// const footer = ref(true)
 
-
-
+const { aside, footer } = storeToRefs(usePageShowStore())
 </script>
 
 <template>
@@ -16,14 +13,14 @@ const color = ref('blue')
       <Header></Header>
     </el-header>
     <el-container style=" overflow: auto">
-      <el-aside class="aside" width="20vw" style="background-color: antiquewhite">
+      <el-aside v-show="aside" class="aside" width="20vw" style="background-color: antiquewhite">
         <AsideNav></AsideNav>
       </el-aside>
       <el-main id="main">
         <router-view></router-view>
       </el-main>
     </el-container>
-    <el-footer style=" background-color: bisque">Footer</el-footer>
+    <el-footer v-show="footer" style=" background-color: bisque">Footer</el-footer>
   </el-container>
 </template>
 

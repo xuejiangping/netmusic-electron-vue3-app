@@ -62,8 +62,8 @@ const updateDataList = async (isPagination = false) => {
   const countKey = TAB_OPTONS[type][2]
   const dataKey = TAB_OPTONS[type][1]
 
-  let data = result[dataKey]
-  let count = result[countKey]
+  let data = result[dataKey] || null
+  let count = result[countKey] || null
 
   if (isPagination) { //若分页请求，不更新总数count 
     setDataListInfo(activeIndex.value, { data })

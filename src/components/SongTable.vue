@@ -27,7 +27,7 @@ enum tableColums1 {
 
 
 defineProps<{
-  dataList: Pick<AllProps, 'name' | 'id' | 'artists' | 'album' | 'duration' | 'audioUrl'>[]
+  dataList: Pick<AllProps, 'mv' | 'name' | 'id' | 'artists' | 'album' | 'duration' | 'audioUrl'>[]
 }>()
 
 // 双击播放
@@ -47,21 +47,31 @@ const play = (row: TableColumsProps) => console.log('play  ', row)
       </template>
     </el-table-column>
 
-    <el-table-column class-name="title" prop="name" :label="tableColums1.name"></el-table-column>
+    <el-table-column class-name="title" min-width="150" prop="name" :label="tableColums1.name">
+      <template #default="scope">
+        <div class="title" v-title>
+          <span>{{ scope.row.name }}</span>
+          <router-link v-if="scope.row.mv" :to="{ name: 'mv-detail', query: { id: scope.row.mv, name: scope.row.name } }">
+            <i class=" iconfont icon-mv"></i></router-link>
+        </div>
+      </template>
+    </el-table-column>
     <el-table-column prop="singer" :label="tableColums1.artists">
       <template #default="scope">
-        <div class="singer">
+        <div class="singer" v-title>
           <router-link v-for="(item, i) in scope.row.artists" v-split="[i]" :to="{ name: 'singer', query: item }">
             <span>{{ item.name }}</span>
           </router-link>
         </div>
       </template>
     </el-table-column>
-    <el-table-column prop="album" :label="tableColums1.album">
+    <el-table-column prop="album" min-width="150" :label="tableColums1.album">
       <template #default="scope">
-        <router-link :to="{ name: 'album', query: scope.row.album }">
-          <span>{{ scope.row.album.name }}</span>
-        </router-link>
+        <div class="album" v-title>
+          <router-link :to="{ name: 'album', query: scope.row.album }">
+            <span>{{ scope.row.album.name }}</span>
+          </router-link>
+        </div>
       </template>
     </el-table-column>
     <el-table-column prop="duration" :label="tableColums1.duration">
@@ -82,6 +92,8 @@ const play = (row: TableColumsProps) => console.log('play  ', row)
 .table {
   font-size: 0.8rem;
 
+
+
   :deep(tbody tr) {
     .hover-scale-mixin();
   }
@@ -90,8 +102,21 @@ const play = (row: TableColumsProps) => console.log('play  ', row)
     color: var(--color-text);
   }
 
-  .singer {
-    .multi-line(2)
+  .singer,
+  .title,
+  .album {
+    .multi-line(1)
+  }
+
+  .title {
+    >* {
+      margin-right: 5px;
+    }
+
+    i {
+      color: var(--color-theme);
+      font-size: inherit;
+    }
   }
 }
 

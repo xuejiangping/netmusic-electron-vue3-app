@@ -3,6 +3,7 @@ import app from './utils/app'
 import ElementPlus from 'element-plus'
 import { createPinia } from 'pinia'
 import vue3videoPlay from 'vue3-video-play' // 引入组件
+
 /************************************************/
 import $http from './apis/http'
 import $common from './assets/js/common';
@@ -34,7 +35,8 @@ app.directive('split', (el: HTMLElement, { value }) => {
     el.prepend(span)
   }
 })
-
+// 给元素自动添加title
+app.directive('title', (el: HTMLElement) => el.title = el.textContent!)
 
 app.directive('my-infinite-scroll', (el: HTMLElement, { value }) => {
   const pEl = el.parentElement
@@ -56,7 +58,8 @@ const pinia = createPinia()
 app.config.globalProperties['$COMMON'] = $common;
 /************************************************/
 app.use(vue3videoPlay)
-  .use(router)
-  .use(pinia)
-  .use(ElementPlus)
-  .mount('#app')
+app.use(router)
+app.use(pinia)
+app.use(ElementPlus)
+
+app.mount('#app')
