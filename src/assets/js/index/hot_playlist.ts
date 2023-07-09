@@ -32,8 +32,6 @@ export default function hot_recom(playlist_params = { limit: 6, offset: 0, cat: 
     const choosePlayListType = async (index: number) => {
         playlist_info['playlist_index'] = index;
         playlist_info['playlist_params']['cat'] = playlist_info['playlist_hot_tags'][index].name
-        // 重置歌单列表为空
-        // playlist_info['playlist_list'] = []
         resetInfo()
         getPlayList(playlist_info['playlist_params'])
 

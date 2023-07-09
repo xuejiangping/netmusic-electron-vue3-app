@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { IMG_SIZE_SEARCH_PARAMS } = getCurrentInstance()!.appContext.config.globalProperties.$COMMON
 const props = withDefaults(defineProps<{
-  dataList: Pick<AllProps, 'artistName' | 'name' | 'artists' | 'cover' | 'duration' | 'playCount' | 'id'>[],
+  dataList: Pick<AllProps, 'artistName' | 'name' | 'artists' | 'cover' | 'duration' | 'playCount' | 'id' | 'artistId'>[],
   squar?: boolean,
   routeName?: string
 }>(), {
@@ -11,10 +11,8 @@ const props = withDefaults(defineProps<{
 
 
 
-const imgStyle = computed(() => ({ 'aspect-ratio': props.squar ? '1/1' : 'unset' }))
 
 
-// artistName, name, artists, cover, duration, playCount, id 
 </script>
 
 <template>
@@ -24,7 +22,8 @@ const imgStyle = computed(() => ({ 'aspect-ratio': props.squar ? '1/1' : 'unset'
     <router-link v-for="({ artistName, name, artists, cover, duration, playCount, id }, index) in dataList" :key="index"
       class="item" :to="{ name: routeName, query: { id, cover, name } }">
       <div class="block">
-        <el-image class="img" :style="imgStyle" :src="cover + IMG_SIZE_SEARCH_PARAMS.rect.middle" lazy />
+        <el-image class="img" :style="props.squar ? '1/1' : 'unset'" :src="cover + IMG_SIZE_SEARCH_PARAMS.rect.middle"
+          lazy />
         <span class="paly-count">{{ playCount }}</span>
         <span class="duration">{{ duration }}</span>
         <span class="artist">{{ artistName }}</span>

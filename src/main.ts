@@ -63,3 +63,4 @@ app.use(pinia)
 app.use(ElementPlus)
 
 app.mount('#app')
+window.$http = $http

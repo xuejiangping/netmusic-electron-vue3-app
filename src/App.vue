@@ -20,7 +20,9 @@ const { aside, footer } = storeToRefs(usePageShowStore())
         <router-view></router-view>
       </el-main>
     </el-container>
-    <el-footer v-show="footer" style=" background-color: bisque">Footer</el-footer>
+    <el-footer class="footer" v-show="footer">
+      <PlayBar></PlayBar>
+    </el-footer>
   </el-container>
 </template>
 
@@ -50,5 +52,12 @@ const { aside, footer } = storeToRefs(usePageShowStore())
     transform: translateY(0);
     // transform: scale(1);
   }
+}
+
+.footer {
+  height: 60px;
+  background-color: bisque;
+  padding: 0px;
+
 }
 </style>

@@ -1,7 +1,6 @@
 
 <script setup lang="ts">
 /**  listitem  用于列表组件的列 如歌手 专辑 歌单*/
-const { IMG_SIZE_SEARCH_PARAMS } = getCurrentInstance()!.appContext.config.globalProperties.$COMMON
 
 defineProps<{
   img1v1Url: string
@@ -11,7 +10,7 @@ defineProps<{
 
 <template>
   <div class="item">
-    <img class="img" :src="img1v1Url + IMG_SIZE_SEARCH_PARAMS.squar.small">
+    <img class="img" :src="img1v1Url">
     <div class="left">
       <slot></slot>
     </div>

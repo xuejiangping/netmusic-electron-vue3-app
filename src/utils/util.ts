@@ -1,12 +1,13 @@
-//@ts-nocheck
+// @ts-nocheck
 
 import { formatSongInfo } from './song';
 import $common from '../assets/js/common.ts'
-export { formatSongInfo }
+// export { formatSongInfo }
+type CoverSize = keyof typeof $common.IMG_SIZE_SEARCH_PARAMS.rect
 export default {
   // 数字过万的处理
   formartNum(val) {
-    let num = 0
+    let num: string | number = 0
     if (val > 9999) {
       num = Math.round(val / 10000 * 10) / 10 + '万'
     } else {
@@ -117,26 +118,26 @@ export default {
       item.license = item.privilege?.cp
       const { license, name, id, ar: artists, al: album, dt: duration, mv } = item
       return {
-        license, name, id, artists, album, mv, duration: this.formatSongTime(duration),
+        license, name, id, artists, album, mv, duration: duration && this.formatSongTime(duration),
         audioUrl: `https://music.163.com/song/media/outer/url?id=${id}.mp3`
       }
     })
     return val
   },
-  formatPlaylist(list: any[]) {
+  formatPlaylist(list: any[], coverSize: CoverSize = 'small') {
     const val = list.map((item) => {
 
-      // 'name' | 'trackCount' | 'creator' | 'id' | 'playCount' | 'img1v1Url' 
-      const { trackCount, playCount, name, id, creator, coverImgUrl } = item
+      const { trackCount, playCount, name, id, creator: { nickname, userId }, coverImgUrl } = item
       return {
-        trackCount, playCount, name, id, creator,
-        img1v1Url: coverImgUrl + $common.IMG_SIZE_SEARCH_PARAMS.squar.small
+        trackCount, playCount: this.formartNum(playCount), name, id, artistName: nickname,
+        artistId: userId,
+        cover: coverImgUrl + $common.IMG_SIZE_SEARCH_PARAMS.squar[coverSize]
       }
     })
     return val
   },
   // 视频
-  formatVideolist(list: any[]) {
+  formatVideolist(list: any[], coverSize: CoverSize = 'middle') {
     const val = list.map((item) => {
       // 是否有版权播放
       const { artistName, name, id, artists, duration, playCount, cover } = item
@@ -144,33 +145,32 @@ export default {
       return {
         artistName, name, id, artists, duration: duration && this.formatSongTime(duration),
         playCount: this.formartNum(playCount),
-
-        cover: cover + $common.IMG_SIZE_SEARCH_PARAMS.rect.middle
+        cover: cover + $common.IMG_SIZE_SEARCH_PARAMS.rect[coverSize]
       }
     })
     return val
   },
   // 歌手
 
-  formatSingerlist(list: any[]) {
+  formatSingerlist(list: any[], coverSize: CoverSize = 'small') {
     const val = list.map((item) => {
       // 是否有版权播放
       const { accountId, id, img1v1Url, trans, name, alias } = item
       return {
-        accountId, id, img1v1Url: img1v1Url + $common.IMG_SIZE_SEARCH_PARAMS.squar.small,
+        accountId, id, img1v1Url: img1v1Url + $common.IMG_SIZE_SEARCH_PARAMS.squar[coverSize],
         trans, name, alias
       }
     })
     return val
   },
   // 专辑
-  formatAlbumlist(list: any[]) {
+  formatAlbumlist(list: any[], coverSize: CoverSize = 'small') {
     const val = list.map((item) => {
       // 是否有版权播放
-      const { name, id, artists, picUrl, alias } = item
+      const { name, id, artists, picUrl, alias, description, publishTime } = item
       return {
         name, id, artists, alias,
-        img1v1Url: picUrl + $common.IMG_SIZE_SEARCH_PARAMS.squar.small
+        img1v1Url: picUrl + $common.IMG_SIZE_SEARCH_PARAMS.squar[coverSize], publishTime: this.formartDate(publishTime), description
       }
     })
     return val

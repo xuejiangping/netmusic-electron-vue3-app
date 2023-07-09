@@ -48,7 +48,8 @@ declare global {
   type GetValue<T> = T[keyof T]
   // 索有请求数据的 类型
   type AllProps = Partial<{
-    alias: string[]
+    alias: string[],
+    artistId: number,
     name: string,
     img1v1Url: string,
     id: string | number,

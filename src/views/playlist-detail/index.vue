@@ -51,7 +51,7 @@ const handleTabsChange = (index: number) => {
   <!-- <div>playlist-detail</div> -->
   <Loading v-if="loading"></Loading>
   <div v-if="!loading">
-    <detail-template :tag-info-enum="tagInfoEnum" :cover="cover" @handle-tabs-change="handleTabsChange">
+    <detail-template :tag-info-enum="tagInfoEnum" type="歌单" :cover="cover" @handle-tabs-change="handleTabsChange">
       <!-- 1231 -->
       <template #info-line-1>
         {{ name }}
@@ -74,15 +74,11 @@ const handleTabsChange = (index: number) => {
       </template>
 
       <KeepAlive>
-        <component :commentData="commentData" v-show="!loading" :is="currentComponent" :data-list="(dataList as any[])">
+        <component :commentData="commentData" :is="currentComponent" :data-list="(dataList as any[])">
         </component>
       </KeepAlive>
     </detail-template>
   </div>
 </template>
 
-<style scoped lang="less">
-.desc {
-  color: var(--color-text);
-}
-</style>
+<style scoped lang="less"></style>
