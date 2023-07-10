@@ -1,6 +1,7 @@
 <script setup lang="ts">
+
 defineProps<{
-  dataList: Pick<AllProps, 'name' | 'trackCount' | 'artistName' | 'artistId' | 'id' | 'playCount' | 'cover'>[] | null
+  dataList: PlaylistItem[]
 }>()
 
 

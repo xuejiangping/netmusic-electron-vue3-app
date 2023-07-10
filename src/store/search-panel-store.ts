@@ -3,6 +3,7 @@
 //
 //          这个store主要由于seach界面的动态组件数据
 //          因为search 界面有多个选项卡数据，且使用了动态组件而非路由，路由到其它界面再回来，
+//            需要缓存数据
 //          所以需要这个store来储存 来缓存这些数据
 //        
 //==========================================================
@@ -20,7 +21,7 @@ type DataListInfo = { [P in TagInfoEnumValue]: DataRaw }
 
 
 
-export const useSearchPanelStore = defineStore('SearchPaneData', () => {
+export const useSearchPanelStore = defineStore('search_pane_data', () => {
   const lastActiveIndex = ref<TagInfoEnumValue>(tagInfoEnum.单曲)
   const lastKeyword = ref('')
   const dataListInfo = shallowReactive<DataListInfo>({

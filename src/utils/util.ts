@@ -176,7 +176,23 @@ export default {
     return val
   },
 
-
+  /**
+   * 区别单双击,只触发大于t的点击
+   */
+  setOnlyClick(fn: Function, t = 300) {
+    let timer: any
+    return function (...args: any[]) {
+      if (timer) {
+        clearTimeout(timer);
+        timer = null
+      } else {
+        timer = setTimeout(() => {
+          timer = null
+          fn(...args)
+        }, t);
+      }
+    }
+  }
 
 
 }

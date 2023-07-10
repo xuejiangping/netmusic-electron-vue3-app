@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps<{
-	dataList: Pick<AllProps, 'alias' | 'accountId' | 'id' | 'img1v1Url' | 'name' | 'trans'>[] | null
+	dataList: SingerItem[]
 }>()
 
 
@@ -9,10 +9,10 @@ defineProps<{
 </script>
 
 <template>
-	<div>
+	<div v-if="dataList">
 		<router-link v-for="({ name, alias, img1v1Url, trans, id, accountId }, index) in dataList" :key="index"
 			:to="{ name: 'artistlist', query: { id, accountId, name } }">
-			<ListItem :img1v1-url="img1v1Url">
+			<ListItem :img1v1-url="img1v1Url || ''">
 				<router-link :to="{ name: 'artistlist', query: { id, accountId, name } }">
 					<span>{{ name }}</span>
 

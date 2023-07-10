@@ -8,27 +8,27 @@
  **************************************************/
 
 
-export const usePageShowStore = defineStore('pageShow', () => {
+export const usePageShowStore = defineStore('page_show', () => {
   const state = reactive({
     aside: true,
     main: true,
     footer: true
   })
-  const { aside, main, footer } = toRefs(state)
 
   // 只展示 haeder 和 main  
   function display1() {
-    aside.value = false
-    footer.value = false
+    state.aside = false
+    state.footer = false
   }
 
   // 还原初始布局  header - aside - main -footer
   function reset() {
-    aside.value = true
-    footer.value = true
+
+    state.aside = true
+    state.footer = true
   }
 
   return {
-    aside, main, footer, display1, reset
+    ...toRefs(state), display1, reset
   }
 })

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps<{
-    dataList: Pick<AllProps, 'name' | 'img1v1Url' | 'alias' | 'id' | 'artists'>[] | null
+    dataList: AlbumItem[]
 }>()
 
 </script>

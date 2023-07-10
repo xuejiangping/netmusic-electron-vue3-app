@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { IMG_SIZE_SEARCH_PARAMS } = getCurrentInstance()!.appContext.config.globalProperties.$COMMON
 const props = withDefaults(defineProps<{
-  dataList: Pick<AllProps, 'artistName' | 'name' | 'artists' | 'cover' | 'duration' | 'playCount' | 'id' | 'artistId'>[],
+  dataList: VideoItem[],
   squar?: boolean,
   routeName?: string
 }>(), {
