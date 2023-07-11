@@ -3,11 +3,11 @@ import SongTable from '../../components/SongTable.vue'
 import Comment from '../../components/Comment.vue'
 const { id, name } = useRoute().query as any
 const { $http, $utils } = getCurrentInstance()?.appContext.config.globalProperties!
-interface AlbumState {
+interface AlbumInfo {
   album: null | ReturnType<typeof $utils.formatAlbumlist>[0],
   songs: null | ReturnType<typeof $utils.formatSongs>
 }
-const state = reactive<AlbumState>({
+const state = reactive<AlbumInfo>({
   album: null, songs: null
 })
 const { album, songs } = toRefs(state)
@@ -43,7 +43,8 @@ const handleTabsChange = (index: number) => {
 </script>
 
 <template>
-  <DetailTemplate type="专辑" @handle-tabs-change="handleTabsChange" :tag-info-enum="tagInfoEnum" :cover="album?.img1v1Url">
+  <DetailTemplate v-if="album" type="专辑" @handle-tabs-change="handleTabsChange" :tag-info-enum="tagInfoEnum"
+    :cover="album?.img1v1Url">
     <template #info-line-1>
       <span>{{ name }}</span>
     </template>
@@ -64,7 +65,7 @@ const handleTabsChange = (index: number) => {
 
     <!-- <SongTable v-if="songs" :data-list="songs"></SongTable> -->
     <KeepAlive>
-      <component :commentData="commentData" :is="currentComponent" :data-list="(songs as any[])">
+      <component :listId="id" :commentData="commentData" :is="currentComponent" :data-list="(songs as any[])">
       </component>
     </KeepAlive>
   </DetailTemplate>

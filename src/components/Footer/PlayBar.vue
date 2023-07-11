@@ -3,102 +3,171 @@ import { Share, StarFilled, Download } from '@element-plus/icons-vue'
 
 import usePlayStateStore from '../../store/play_state_store'
 
-const store = usePlayStateStore()
 
+//==========================================================
+//
+//
+//        数据
+//
+//
+//==========================================================
+const store = usePlayStateStore()
+const { currenPlayingSong, playList, stateId, isPaused } = toRefs(store)
+const { next, prev } = store
+const { $utils } = getCurrentInstance()?.appContext.config.globalProperties!
 let a = 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
 
-const isMuted = computed(() => volume.value == 0)
-
-
-const { playing, val, volume, lastVol, isShowPlayListBox } = toRefs(reactive({
-  playing: false,  //播放状态
-  val: 20,  //播放进度
-  volume: 50,   //当前音量
-  lastVol: 0,    //静音前的音量
-  isShowPlayListBox: false,
-}))
+const carousel = ref()   //左边的轮播 
+const { playing, currenPlayingTime, inputVal,
+  currentPlayProgress, volume, lastVol, isShowPlayListBox }
+  = toRefs(reactive({
+    playing: false,  //播放状态
+    currentPlayProgress: 20,  //播放进度
+    volume: 50,   //当前音量
+    lastVol: 0,    //静音前的音量
+    isShowPlayListBox: true,
+    inputVal: 0,   //输入的播放时间，用于更改播放进度，单位秒
+    currenPlayingTime: 0,//当前 歌曲播放时间
+  }))
+/**************************************************
+*
+*
+*        业务
+*
+*
+ **************************************************/
 // 
 function switchMute() {
-  console.log('121', 121)
+  // console.log('121', 121)
   if (isMuted.value) volume.value = lastVol.value;
   else {
     lastVol.value = volume.value
     volume.value = 0
   }
 }
-let list = Array(20).fill(0).map((_, id) => ({ name: '121', id }))
+/**************************************************
+*
+*
+*        计算属性
+*
+*
+ **************************************************/
+
+const isMuted = computed(() => volume.value == 0)
+
+/**将当前歌曲播放时间转换为百分比，供进度条使用 */
+const formatedCurTime = computed(() => {
+  if (!currenPlayingSong.value) return '0'
+  const time = $utils.transformSongTime({ dt: currenPlayingSong.value.dt, percent: currentPlayProgress.value })
+  return $utils.formatSongTime(time ?? 0)
+})
+/**************************************************
+*
+*
+*        watch
+*
+*
+ **************************************************/
+
+watch(currenPlayingTime, (val) => {
+  let per = $utils.transformSongTime({ dt: currenPlayingSong.value.dt, time: val * 1000 })
+  currentPlayProgress.value = per ?? 0
+
+})
+
+
 </script>
 
 <template>
   <ul class="container">
-    <li class="left">
+    <!-- 左边显示当前歌曲信息部分 -->
 
-      <el-carousel :initial-index="1" indicator-position="none" ref="carousel" height="46px" direction="vertical"
-        :autoplay="false">
-        <el-carousel-item>
-          <div class="left-top">
-            <div class="arrow-down" @click="carousel.next"> <i class="iconfont icon-arrow"></i></div>
-            <el-button color="#fff5" circle :icon="StarFilled" />
-            <el-button color="#fff5" circle :icon="Download" />
-            <el-button color="#fff5" circle :icon="Share" />
-          </div>
-        </el-carousel-item>
-
-        <el-carousel-item>
-          <div class="left-bottom">
-            <div @click="carousel.next">
-              <img :src="a">
+    <li>
+      <div v-if="currenPlayingSong" class="left">
+        <el-carousel :initial-index="1" indicator-position="none" ref="carousel" height="46px" direction="vertical"
+          :autoplay="false">
+          <el-carousel-item>
+            <div class="left-top">
+              <div class="arrow-down" @click="carousel.next"> <i class="iconfont icon-arrow"></i></div>
+              <el-button color="#fff5" circle :icon="StarFilled" />
+              <el-button color="#fff5" circle :icon="Download" />
+              <el-button color="#fff5" circle :icon="Share" />
             </div>
-            <div class="info">
-              <div v-title class="name">歌名</div>
-              <div v-title>歌手</div>
-            </div>
-          </div>
-        </el-carousel-item>
+          </el-carousel-item>
 
-      </el-carousel>
+          <el-carousel-item>
+            <div class="left-bottom">
+              <div @click="carousel.next">
+                <img :src="a">
+              </div>
+              <div class="info">
+                <div v-title class="name">{{ currenPlayingSong.name }}</div>
+                <div v-title>{{ currenPlayingSong.artists[0].name }}</div>
+              </div>
+            </div>
+          </el-carousel-item>
+
+        </el-carousel>
+      </div>
     </li>
-    <li class="middle">
+    <!-- 中间播放 控制 部分 -->
+
+    <li v-if="currenPlayingSong" class="middle">
       <div>
         <div class="top">
 
           <span class="loop"><i class="iconfont icon-loop"></i></span>
-          <i class="iconfont icon-audio-prev"></i>
-          <i v-show="playing" @click="playing = !playing" class="iconfont icon-play"></i>
-          <i v-show="!playing" @click="playing = !playing" class="iconfont icon-pause"></i>
-          <i class="iconfont icon-audio-next"></i>
+          <i @click="prev" class="iconfont icon-audio-prev"></i>
+          <i v-if="isPaused" @click="playing = !playing" class="iconfont icon-pause"></i>
+          <i v-else @click="playing = !playing" class="iconfont icon-play"></i>
+
+          <i @click="next" class="iconfont icon-audio-next"></i>
           <span class="lyric">词</span>
         </div>
         <div class="bottom">
-          <span>00:01</span>
-          <div class="progress"><progress-bar body-style="padding:0" v-model="val"></progress-bar></div><span>03:12</span>
+          <span>{{ formatedCurTime }}</span>
+          <div class="progress"><progress-bar
+              @change="val => inputVal = $utils.transformSongTime({ dt: currenPlayingSong.dt / 1000, percent: val })"
+              v-model="currentPlayProgress"></progress-bar></div>
+          <span>{{ currenPlayingSong.duration }}</span>
         </div>
       </div>
     </li>
-    <li class="right">
+    <!-- 右边部分 -->
 
-      <div class="volume">
-        <div class="icon" @click="switchMute">
-          <i v-if="isMuted" class="iconfont icon-volume-active"></i>
-          <i v-else class="iconfont icon-volume"></i>
-        </div>
-        <div class="box">
-          <progress-bar :height="5" v-model="volume"></progress-bar>
-        </div>
+    <li>
+      <div v-if="playList.length > 0" class="right">
+        <div class="volume">
+          <div class="icon" @click="switchMute">
+            <i v-if="isMuted" class="iconfont icon-volume-active"></i>
+            <i v-else class="iconfont icon-volume"></i>
+          </div>
+          <div class="box">
+            <progress-bar :height="5" v-model="volume"></progress-bar>
+          </div>
 
-      </div>
-      <div class="playlist">
-        <i @click="isShowPlayListBox = true" title="当前播放列表" class="iconfont icon-playlist "></i>
-        <div class="box" @mouseleave="isShowPlayListBox = false" v-if="isShowPlayListBox">
-          <h2>当前播放</h2>
-          <div class="info"> <span>总{{ 0 }}首</span> <a href="javascript:;">清空列表</a></div>
-          <div class="list">
-            <song-table :data-list="list" :show-header="true"
-              :need-show-items="['singer', 'duration', 'title']"></song-table>
+        </div>
+        <div class="playlist">
+          <div class="icon">
+            <i @click="isShowPlayListBox = true" title="当前播放列表" class="iconfont icon-playlist "></i>
+          </div>
+          <div class="box" @mouseleave="isShowPlayListBox = false" v-show="isShowPlayListBox">
+            <h2>当前播放</h2>
+            <div class="info"> <span>总{{ playList.length }}首</span> <a href="javascript:;"><i
+                  class="iconfont icon-del"></i> 清空列表</a></div>
+            <div class="list">
+              <song-table :list-id="stateId" :data-list="playList" :show-header="true"
+                :need-show-items="['singer', 'duration', 'title']"></song-table>
+            </div>
           </div>
         </div>
       </div>
 
+    </li>
+    <!-- audio元素 -->
+    <li v-show="false">
+      <audio-box @update-song-time="val => currenPlayingTime = val" :inputVal="inputVal"
+        :play-progress="currentPlayProgress" :volume="volume" :cur-song-info="currenPlayingSong"></audio-box>
     </li>
   </ul>
 </template>
@@ -111,6 +180,7 @@ let list = Array(20).fill(0).map((_, id) => ({ name: '121', id }))
   display: grid;
   position: relative;
   grid-template-columns: 1fr 2fr 1fr;
+  align-items: center;
   font-size: .625rem;
   max-height: 60px;
   padding: 7px;
@@ -173,22 +243,25 @@ let list = Array(20).fill(0).map((_, id) => ({ name: '121', id }))
         justify-content: space-evenly;
         align-items: center;
 
-        >* {
-          font-size: 20px;
+        >.iconfont {
+          font-size: 24px;
+          color: var(--color-text-main);
         }
 
-        .loop i {
+        .loop i,
+        .lyric {
           font-size: small;
         }
 
-        .lyric {
-          font-size: smaller;
-        }
       }
 
       .bottom {
         display: flex;
         color: var(--color-text);
+
+        >span {
+          font-size: small;
+        }
 
         .progress {
           flex: 1;
@@ -206,8 +279,11 @@ let list = Array(20).fill(0).map((_, id) => ({ name: '121', id }))
     justify-content: space-evenly;
     align-items: center;
 
-    .iconfont {
-      font-size: large;
+    .icon {
+      .iconfont {
+        font-size: large;
+        color: var(--color-text-main);
+      }
     }
 
     .volume {
@@ -268,7 +344,7 @@ let list = Array(20).fill(0).map((_, id) => ({ name: '121', id }))
 
     .box {
       position: absolute;
-      z-index: 1;
+      z-index: 3;
       padding: 10px;
       padding-top: 8px;
       box-shadow: var(--el-box-shadow);

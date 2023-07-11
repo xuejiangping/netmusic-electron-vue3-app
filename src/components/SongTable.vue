@@ -2,7 +2,9 @@
 
 import usePlayStateStore from '../store/play_state_store'
 
-const { currentPlayingSongId } = usePlayStateStore()
+const store = usePlayStateStore()
+const { updatePlayList, addSong, play } = store
+const { currentPlayingSongId, stateId, } = storeToRefs(store)
 /**序号前补足两位 01 02   */
 const vPad2 = (el: HTMLElement, binding: { value: string }) => {
   const val = binding.value
@@ -20,12 +22,17 @@ enum tableColums1 {
   '专辑' = 'album',
   '时长' = 'duration'
 }
-
+/**
+ * listId 当前列表所属哪个类型，如歌单：1231313 ，专辑：2314144,默认为0
+ * needShowItems  渲染哪些 tableColums1 ,如： 'index', 'title', 'singer', 'album', 'duration'
+ * dataList 包含歌曲信息的列表 
+ */
 const props = withDefaults(defineProps<{
   dataList: SongItem[],
-  needShowItems?: ('index' | 'title' | 'singer' | 'album' | 'duration')[]
+  needShowItems?: ('index' | 'title' | 'singer' | 'album' | 'duration')[],
+  listId?: string
 }>(), {
-  needShowItems: () => ['index', 'title', 'singer', 'album', 'duration']
+  needShowItems: () => ['index', 'title', 'singer', 'album', 'duration'],
 })
 
 // const currentPlayingSongId = ref(0)
@@ -36,10 +43,27 @@ const props = withDefaults(defineProps<{
 
 
 function row_dbclick(row: SongItem) {
-  if (!row.id) return
-  // currentPlayingSongId.value = row.id
-  console.log('双击', { id: row.id, list: props.dataList })
 
+  /**
+   * 一、 needUpdatePlayList 是一个系统设置 ，当在列表双击时是否替换当前整个播放列表
+   * 若为是，则替换，若不是 则只添加当前 点击的歌曲到播放列表
+   * 
+   */
+
+  const needUpdatePlayList = true
+  const songId = row.id
+
+  // 判断双击 是否更新播放列表，若不是则只添加歌曲到列表
+
+  if (needUpdatePlayList && props.listId) { //listId 存在，比较 当前的stateId
+    if (props.listId === stateId.value) {  // 当前歌单已添加到 播放列表，播放点击歌曲即可
+      play(songId)
+    } else {  // 歌单未添加到播放列表，更新歌单
+      updatePlayList(props.dataList, songId, props.listId)
+    }
+  } else {
+    addSong(row, true)
+  }
 }
 
 
@@ -50,7 +74,7 @@ function row_dbclick(row: SongItem) {
   <el-table v-if="Boolean(dataList)" @row-dblclick="row_dbclick" class="table" :data="dataList" stripe
     highlight-current-row>
 
-    <el-table-column v-if="needShowItems.includes('index')" width="100px">
+    <el-table-column v-if="needShowItems.includes('index')" width="60px">
       <template #default="scope">
         <div class="col-1">
           <span v-if="currentPlayingSongId === scope.row.id"><i class="active iconfont icon-audio-play"></i></span>
@@ -59,9 +83,12 @@ function row_dbclick(row: SongItem) {
       </template>
     </el-table-column>
 
-    <el-table-column v-if="needShowItems.includes('title')" class-name="title" prop="name" :label="tableColums1.name">
+    <el-table-column min-width="100px" v-if="needShowItems.includes('title')" class-name="title" prop="name"
+      :label="tableColums1.name">
       <template #default="scope">
         <div :class="{ active: scope.row.id === currentPlayingSongId }" class="title" v-title>
+          <span v-if="!needShowItems.includes('index') && scope.row.id === currentPlayingSongId"><i
+              class="iconfont icon-volume"></i></span>
           <span>{{ scope.row.name }}</span>
           <router-link v-if="scope.row.mv" :to="{ name: 'mv-detail', query: { id: scope.row.mv, name: scope.row.name } }">
             <i class=" iconfont icon-mv"></i></router-link>
@@ -89,7 +116,7 @@ function row_dbclick(row: SongItem) {
       </template>
     </el-table-column>
 
-    <el-table-column width="120px" v-if="needShowItems.includes('duration')" prop="duration"
+    <el-table-column width="100px" v-if="needShowItems.includes('duration')" prop="duration"
       :label="tableColums1.duration">
 
       <template #default="scope">
@@ -106,9 +133,9 @@ function row_dbclick(row: SongItem) {
 @import (reference) "@/assets/css/global.less";
 
 .active {
-  // background-color: yellow;
   color: var(--color-theme);
   font-size: large;
+  // background-color: rgb(234, 206, 206);
   font-weight: bold;
 }
 

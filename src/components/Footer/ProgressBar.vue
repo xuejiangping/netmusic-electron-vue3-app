@@ -1,18 +1,23 @@
 <script setup lang="ts">
 // const val = ref(80)
 
+import usePlayStateStore from '../../store/play_state_store'
+
+// const { playProgressBarIsPressed } = usePlayStateStore()
+const { setPlayProgressBarIsPressedVal } = usePlayStateStore()
+
 const props = withDefaults(defineProps<{
   color1?: string,
   color2?: string,
   height?: number
   modelValue: number,
   power?: number,
-  thumb_color?: string
+  thumb_color?: string,
 }>(), {
   height: 4,
   modelValue: 80,
   power: 2.5,
-  thumb_color: 'red'
+  thumb_color: 'red',
 })
 const { h, thumb_height, thumb_width, thumb_color } = {
   h: props.height + 'px',
@@ -21,12 +26,18 @@ const { h, thumb_height, thumb_width, thumb_color } = {
   thumb_color: props.thumb_color
 }
 const gradient = computed(() => `linear-gradient(to right, red ${props.modelValue}%,pink ${props.modelValue}%)`)
+defineEmits(['change', 'update:modelValue'])
+
+/***********************进度条是否按下，即拖动开始*************************/
+
 </script>
 
 
 <template>
   <div>
-    <input type="range" v-bind="modelValue" :value="modelValue"
+    <input type="range" v-bind="modelValue" :value="modelValue" @mousedown="setPlayProgressBarIsPressedVal(true)"
+      @mouseup="setPlayProgressBarIsPressedVal(false)"
+      @change="$emit('change', ($event.target as HTMLInputElement).valueAsNumber)"
       @input="$emit('update:modelValue', ($event.target as HTMLInputElement).valueAsNumber)">
   </div>
 </template>

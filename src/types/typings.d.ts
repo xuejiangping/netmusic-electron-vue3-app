@@ -44,27 +44,32 @@ declare module 'vue-router' {
 }
 
 /**所有关于 音乐数据的 类型 */
-type AllProps = {
+type BaseProps = { name: string, id: string }
+/**
+ * 说明：dt 是歌曲 原时间，单位 ms;
+ * duration 是dt经过 formatSongTime 函数格式化后的字符,格式如：02：34;
+ */
+interface AllProps extends BaseProps {
   alias: string[],
-  artistId: number,
-  name: string,
+  artistId: string,
   img1v1Url: string,
-  id: number,
-  mv: number,
-  accountId: number,
+  mv: string,
+  accountId: string,
   trans: string,
   artistName: string,
-  artists: { name: string, id: number }[],
-  cover: string, duration: number,
+  artists: BaseProps[],
+  cover: string,
+  duration: string,
+  dt: number,
   title: string,
-  singer: { name: string, id: string | number },
-  album: { name: string, id: string | number },
+  singer: BaseProps,
+  album: BaseProps,
   audioUrl: string,
-  userId: string | number,
+  userId: string,
   trackCount: number,
   bookCount: number,
   playCount: number,
-  creator: { id: string | number, name: string }
+  creator: BaseProps
 }
 
 
@@ -73,7 +78,7 @@ type AllProps = {
 declare global {
   type SomePartial<T, U extends keyof T> = Partial<Pick<T, U>> & Omit<T, U>
   type GetValue<T> = T[keyof T]
-  type SongItem = Pick<AllProps, 'mv' | 'name' | 'id' | 'artists' | 'album' | 'duration' | 'audioUrl'>
+  type SongItem = Pick<AllProps, 'mv' | 'name' | 'id' | 'artists' | 'album' | 'duration' | 'dt' | 'audioUrl'>
   type AlbumItem = Pick<AllProps, 'name' | 'img1v1Url' | 'alias' | 'id' | 'artists'>
   type PlaylistItem = Pick<AllProps, 'name' | 'trackCount' | 'artistName' | 'artistId' | 'id' | 'playCount' | 'cover'>
   type VideoItem = Pick<AllProps, 'artistName' | 'name' | 'artists' | 'cover' | 'duration' | 'playCount' | 'id' | 'artistId'>

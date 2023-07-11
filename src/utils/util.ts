@@ -116,9 +116,9 @@ export default {
     const val = list.map((item) => {
       // 是否有版权播放
       item.license = item.privilege?.cp
-      const { license, name, id, ar: artists, al: album, dt: duration, mv } = item
+      const { license, name, id, ar: artists, al: album, dt, mv } = item
       return {
-        license, name, id, artists, album, mv, duration: duration && this.formatSongTime(duration),
+        dt, license, name, id, artists, album, mv, duration: dt && this.formatSongTime(dt),
         audioUrl: `https://music.163.com/song/media/outer/url?id=${id}.mp3`
       }
     })
@@ -192,7 +192,17 @@ export default {
         }, t);
       }
     }
-  }
+  },
+  transformSongTime
 
-
+}
+/** 歌曲当前时间 和 百分比 互相转换;;;
+ * dt 歌曲总时长，单位 秒 或者 毫秒;;;
+ */
+function transformSongTime(option: { dt: number, time: number }): number
+function transformSongTime(option: { dt: number, percent: number }): number
+function transformSongTime(option: { dt: number, time?: number, percent?: number }) {
+  const { time, percent, dt } = option
+  if (time) return time / dt * 100
+  if (percent) return percent / 100 * dt
 }
