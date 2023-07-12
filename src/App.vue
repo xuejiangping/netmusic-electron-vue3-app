@@ -56,7 +56,7 @@ const { aside, footer } = storeToRefs(usePageShowStore())
 
 .footer {
   height: 60px;
-  background-color: bisque;
+  // background-color: bisque;
   padding: 0px;
 
 }

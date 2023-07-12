@@ -44,7 +44,7 @@ declare module 'vue-router' {
 }
 
 /**所有关于 音乐数据的 类型 */
-type BaseProps = { name: string, id: string }
+interface BaseProps { name: string, id: string }
 /**
  * 说明：dt 是歌曲 原时间，单位 ms;
  * duration 是dt经过 formatSongTime 函数格式化后的字符,格式如：02：34;
@@ -63,7 +63,7 @@ interface AllProps extends BaseProps {
   dt: number,
   title: string,
   singer: BaseProps,
-  album: BaseProps,
+  album: BaseProps & { picUrl: string },
   audioUrl: string,
   userId: string,
   trackCount: number,

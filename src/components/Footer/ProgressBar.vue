@@ -4,7 +4,7 @@
 import usePlayStateStore from '../../store/play_state_store'
 
 // const { playProgressBarIsPressed } = usePlayStateStore()
-const { setPlayProgressBarIsPressedVal } = usePlayStateStore()
+const { setIsUpdateCurTime } = usePlayStateStore()
 
 const props = withDefaults(defineProps<{
   color1?: string,
@@ -35,9 +35,8 @@ defineEmits(['change', 'update:modelValue'])
 
 <template>
   <div>
-    <input type="range" v-bind="modelValue" :value="modelValue" @mousedown="setPlayProgressBarIsPressedVal(true)"
-      @mouseup="setPlayProgressBarIsPressedVal(false)"
-      @change="$emit('change', ($event.target as HTMLInputElement).valueAsNumber)"
+    <input type="range" v-bind="modelValue" :value="modelValue" @mousedown="setIsUpdateCurTime(true)"
+      @mouseup="setIsUpdateCurTime(false)" @change="$emit('change', ($event.target as HTMLInputElement).valueAsNumber)"
       @input="$emit('update:modelValue', ($event.target as HTMLInputElement).valueAsNumber)">
   </div>
 </template>

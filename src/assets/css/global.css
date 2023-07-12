@@ -12,6 +12,9 @@
 li {
   list-style: none;
 }
+.iconfont {
+  cursor: pointer;
+}
 @media screen and (min-height: 400px) and (min-width: 600px) {
   html {
     font-size: 14px;

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 
 import usePlayStateStore from '../../store/play_state_store'
-
-const { playProgressBarIsPressed } = storeToRefs(usePlayStateStore())
-
+const store = usePlayStateStore()
+const { isUpdateCurTime } = storeToRefs(store)
+const { setIsPaused, next } = store
+const { $notify } = getCurrentInstance()?.appContext.config.globalProperties!
 /**
  * inputVal  输入值，用来更新播放器的curtime
  */
@@ -17,7 +18,6 @@ const props = defineProps<{
 }>()
 const audioEL = ref<HTMLAudioElement>()
 
-
 //*************************************************
 watch(() => props.volume, (newVal) => {
   setVolume(newVal)
@@ -28,8 +28,9 @@ watch(() => props.inputVal, (newVal) => {
   if (newVal !== undefined) {
     setPlayProgress(newVal)
   }
-
 })
+
+
 
 //==========================================================
 //
@@ -54,15 +55,16 @@ function setPlayProgress(val: number) {
 
 /**************************************************
 *
-*
 *        audio事件处理函数
 *
-*
  **************************************************/
-function errorSong() { }
+function errorSong() {
+  next()
+  $notify('播放出错 ,自送跳到下一首')
+}
 function updateSongTime() {
-  //playProgressBarIsPressed 进度条被按下期间 不更新歌曲时间
-  if (playProgressBarIsPressed.value) return
+  //isUpdateCurTime 进度条被按下期间 不更新歌曲时间
+  if (isUpdateCurTime.value) return
   const el = unref(audioEL)
   if (!el) return
   const time = el.currentTime
@@ -72,15 +74,19 @@ function updateSongTime() {
 function canplaySong() {
   audioEL.value?.play()
 }
-function playSong() { }
+function playSong() {
+  // console.log('playSong', playSong)
 
-function endedSong() { }
+}
+
+function endedSong() {
+  console.log('endedSong')
+  next()
+}
 
 //==========================================================
 //
-//
 //        emits 
-//
 //
 //==========================================================
 /**
@@ -91,12 +97,17 @@ const emit = defineEmits<{
   (event: 'updateSongTime', time: number): any
 }>()
 
+defineExpose({
+  play() { audioEL.value?.play() },
+  pause() { audioEL.value?.pause() }
+})
 
 </script>
 
 <template>
   <audio v-if="curSongInfo" ref="audioEL" preload="auto" @canplay="canplaySong" @playing="playSong" @ended="endedSong"
-    @error="errorSong" @timeupdate="updateSongTime" :src="curSongInfo.audioUrl"></audio>
+    @play="setIsPaused(false)" @pause="setIsPaused(true)" @error="errorSong" @timeupdate="updateSongTime"
+    :src="curSongInfo.audioUrl"></audio>
 </template>
 
 <style scoped></style>

@@ -6,35 +6,46 @@ import usePlayStateStore from '../../store/play_state_store'
 
 //==========================================================
 //
-//
 //        数据
-//
 //
 //==========================================================
 const store = usePlayStateStore()
-const { currenPlayingSong, playList, stateId, isPaused } = toRefs(store)
-const { next, prev } = store
-const { $utils } = getCurrentInstance()?.appContext.config.globalProperties!
-let a = 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
+const { currentSong, playList, stateId, isPaused, currentLoopOption } = toRefs(store)
+const { next, prev, switchLoopOption } = store
+const { $utils, $COMMON } = getCurrentInstance()?.appContext.config.globalProperties!
 
-const carousel = ref()   //左边的轮播 
-const { playing, currenPlayingTime, inputVal,
+
+
+const cover = computed(() => {
+  let sizeQuery = $COMMON.IMG_SIZE_SEARCH_PARAMS.squar.small
+  return currentSong.value.album.picUrl + sizeQuery || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
+})
+const baseOptions = {
+  currentPlayProgress: 20,  //播放进度
+  volume: 50,   //当前音量
+  lastVol: 0,    //静音前的音量
+  isShowPlayListBox: true,
+  inputVal: 0,   //输入的播放时间，用于更改播放进度，单位秒
+  currenPlayingTime: 0,//当前 歌曲播放时间
+}
+const initOptions: typeof baseOptions = window.JSON.parse(window.localStorage.getItem('playbar_options') || 'null') || baseOptions
+const options = reactive(initOptions)
+const { currenPlayingTime, inputVal,
   currentPlayProgress, volume, lastVol, isShowPlayListBox }
-  = toRefs(reactive({
-    playing: false,  //播放状态
-    currentPlayProgress: 20,  //播放进度
-    volume: 50,   //当前音量
-    lastVol: 0,    //静音前的音量
-    isShowPlayListBox: true,
-    inputVal: 0,   //输入的播放时间，用于更改播放进度，单位秒
-    currenPlayingTime: 0,//当前 歌曲播放时间
-  }))
+  = toRefs(options)
+
+const carousel = ref()   //左边的轮播组件
+const audio = ref() // audio-box 
+
+//==========================================================
+//==========================================================
+
+window.addEventListener('unload', () => {
+  window.localStorage.setItem('playbar_options', JSON.stringify(options))
+})
+
 /**************************************************
-*
-*
 *        业务
-*
-*
  **************************************************/
 // 
 function switchMute() {
@@ -47,9 +58,7 @@ function switchMute() {
 }
 /**************************************************
 *
-*
 *        计算属性
-*
 *
  **************************************************/
 
@@ -57,8 +66,8 @@ const isMuted = computed(() => volume.value == 0)
 
 /**将当前歌曲播放时间转换为百分比，供进度条使用 */
 const formatedCurTime = computed(() => {
-  if (!currenPlayingSong.value) return '0'
-  const time = $utils.transformSongTime({ dt: currenPlayingSong.value.dt, percent: currentPlayProgress.value })
+  if (!currentSong.value) return ''
+  const time = $utils.transformSongTime({ dt: currentSong.value.dt, percent: currentPlayProgress.value })
   return $utils.formatSongTime(time ?? 0)
 })
 /**************************************************
@@ -70,20 +79,21 @@ const formatedCurTime = computed(() => {
  **************************************************/
 
 watch(currenPlayingTime, (val) => {
-  let per = $utils.transformSongTime({ dt: currenPlayingSong.value.dt, time: val * 1000 })
+  let per = $utils.transformSongTime({ dt: currentSong.value.dt, time: val * 1000 })
   currentPlayProgress.value = per ?? 0
 
 })
-
 
 </script>
 
 <template>
   <ul class="container">
-    <!-- 左边显示当前歌曲信息部分 -->
+    <!-- 播放列表无歌曲时显示 该模态 -->
+    <li v-if="!currentSong" class="modal"></li>
 
+    <!-- 左边显示当前歌曲信息部分 -->
     <li>
-      <div v-if="currenPlayingSong" class="left">
+      <div v-if="currentSong" class="left">
         <el-carousel :initial-index="1" indicator-position="none" ref="carousel" height="46px" direction="vertical"
           :autoplay="false">
           <el-carousel-item>
@@ -98,11 +108,11 @@ watch(currenPlayingTime, (val) => {
           <el-carousel-item>
             <div class="left-bottom">
               <div @click="carousel.next">
-                <img :src="a">
+                <img :src="cover">
               </div>
               <div class="info">
-                <div v-title class="name">{{ currenPlayingSong.name }}</div>
-                <div v-title>{{ currenPlayingSong.artists[0].name }}</div>
+                <div v-title class="name">{{ currentSong.name }}</div>
+                <div v-title>{{ currentSong.artists[0].name }}</div>
               </div>
             </div>
           </el-carousel-item>
@@ -112,26 +122,30 @@ watch(currenPlayingTime, (val) => {
     </li>
     <!-- 中间播放 控制 部分 -->
 
-    <li v-if="currenPlayingSong" class="middle">
-      <div>
+    <li class="middle">
+      <div class="control">
         <div class="top">
-
-          <span class="loop"><i class="iconfont icon-loop"></i></span>
+          <span class="loop" @click="switchLoopOption" :title="currentLoopOption.title">
+            <el-popover trigger="click" effect="dark" :content="currentLoopOption.title" width="60px" :auto-close="1000">
+              <template #reference>
+                <i slot="reference" :class="currentLoopOption.icon"></i>
+              </template>
+            </el-popover></span>
           <i @click="prev" class="iconfont icon-audio-prev"></i>
-          <i v-if="isPaused" @click="playing = !playing" class="iconfont icon-pause"></i>
-          <i v-else @click="playing = !playing" class="iconfont icon-play"></i>
-
+          <i v-if="isPaused" @click="audio.play" class="iconfont icon-play"></i>
+          <i v-else @click="audio.pause" class="iconfont icon-pause"></i>
           <i @click="next" class="iconfont icon-audio-next"></i>
           <span class="lyric">词</span>
         </div>
         <div class="bottom">
           <span>{{ formatedCurTime }}</span>
           <div class="progress"><progress-bar
-              @change="val => inputVal = $utils.transformSongTime({ dt: currenPlayingSong.dt / 1000, percent: val })"
+              @change="val => inputVal = $utils.transformSongTime({ dt: currentSong.dt / 1000, percent: val })"
               v-model="currentPlayProgress"></progress-bar></div>
-          <span>{{ currenPlayingSong.duration }}</span>
+          <span>{{ currentSong?.duration }}</span>
         </div>
       </div>
+
     </li>
     <!-- 右边部分 -->
 
@@ -149,14 +163,14 @@ watch(currenPlayingTime, (val) => {
         </div>
         <div class="playlist">
           <div class="icon">
-            <i @click="isShowPlayListBox = true" title="当前播放列表" class="iconfont icon-playlist "></i>
+            <i @click="isShowPlayListBox = !isShowPlayListBox" title="当前播放列表" class="iconfont icon-playsong "></i>
           </div>
           <div class="box" @mouseleave="isShowPlayListBox = false" v-show="isShowPlayListBox">
             <h2>当前播放</h2>
             <div class="info"> <span>总{{ playList.length }}首</span> <a href="javascript:;"><i
                   class="iconfont icon-del"></i> 清空列表</a></div>
             <div class="list">
-              <song-table :list-id="stateId" :data-list="playList" :show-header="true"
+              <song-table size="small" :list-id="stateId" :data-list="playList" :show-header="true"
                 :need-show-items="['singer', 'duration', 'title']"></song-table>
             </div>
           </div>
@@ -166,8 +180,8 @@ watch(currenPlayingTime, (val) => {
     </li>
     <!-- audio元素 -->
     <li v-show="false">
-      <audio-box @update-song-time="val => currenPlayingTime = val" :inputVal="inputVal"
-        :play-progress="currentPlayProgress" :volume="volume" :cur-song-info="currenPlayingSong"></audio-box>
+      <audio-box ref="audio" @update-song-time="val => currenPlayingTime = val" :inputVal="inputVal"
+        :play-progress="currentPlayProgress" :volume="volume" :cur-song-info="currentSong"></audio-box>
     </li>
   </ul>
 </template>
@@ -185,6 +199,15 @@ watch(currenPlayingTime, (val) => {
   max-height: 60px;
   padding: 7px;
   border-top: 1px solid #dcdfe6;
+
+  .modal {
+    position: absolute;
+    left: 0;
+    top: 0px;
+    background-color: #ffffffba;
+    width: 100%;
+    height: 100%;
+  }
 
   .left-bottom {
     display: flex;
@@ -230,7 +253,7 @@ watch(currenPlayingTime, (val) => {
     display: flex;
     justify-content: center;
 
-    >div {
+    .control {
       width: 80%;
       display: flex;
       flex-direction: column;
@@ -243,7 +266,7 @@ watch(currenPlayingTime, (val) => {
         justify-content: space-evenly;
         align-items: center;
 
-        >.iconfont {
+        .iconfont {
           font-size: 24px;
           color: var(--color-text-main);
         }
@@ -270,7 +293,6 @@ watch(currenPlayingTime, (val) => {
         }
       }
     }
-
 
   }
 
@@ -324,6 +346,7 @@ watch(currenPlayingTime, (val) => {
         height: calc(100vh - 130px);
         width: 35%;
         background-color: #fbfbfb;
+        // font-size: x-small;
 
         .info {
           margin: 0.8rem;
