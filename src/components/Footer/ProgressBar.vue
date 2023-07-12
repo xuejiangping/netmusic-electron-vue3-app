@@ -19,8 +19,10 @@ const props = withDefaults(defineProps<{
   power: 2.5,
   thumb_color: 'red',
 })
-const { h, thumb_height, thumb_width, thumb_color } = {
-  h: props.height + 'px',
+const step = 1.5
+const { size_default, size_bigger, thumb_height, thumb_width, thumb_color } = {
+  size_default: props.height + 'px',
+  size_bigger: (props.height * step) + 'px',
   thumb_width: props.height * props.power + 'px',
   thumb_height: props.height * props.power + 'px',
   thumb_color: props.thumb_color
@@ -45,10 +47,10 @@ defineEmits(['change', 'update:modelValue'])
 input[type=range] {
   appearance: none;
   width: 100%;
-  height: v-bind(h);
+  height: v-bind(size_default);
   background-image: v-bind(gradient);
   border-radius: 10px;
-
+  // transition: height 0.1s;
 
   &::-webkit-slider-thumb {
     appearance: none;
@@ -61,6 +63,8 @@ input[type=range] {
 
 
   &:hover {
+    height: v-bind(size_bigger);
+
     &::-webkit-slider-thumb {
       display: block;
     }

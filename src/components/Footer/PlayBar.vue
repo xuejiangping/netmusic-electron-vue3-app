@@ -24,7 +24,7 @@ const baseOptions = {
   currentPlayProgress: 20,  //播放进度
   volume: 50,   //当前音量
   lastVol: 0,    //静音前的音量
-  isShowPlayListBox: true,
+  isShowPlayListBox: false,
   inputVal: 0,   //输入的播放时间，用于更改播放进度，单位秒
   currenPlayingTime: 0,//当前 歌曲播放时间
 }
@@ -72,9 +72,7 @@ const formatedCurTime = computed(() => {
 })
 /**************************************************
 *
-*
 *        watch
-*
 *
  **************************************************/
 
@@ -150,7 +148,7 @@ watch(currenPlayingTime, (val) => {
     <!-- 右边部分 -->
 
     <li>
-      <div v-if="playList.length > 0" class="right">
+      <div v-if="playList.length" class="right">
         <div class="volume">
           <div class="icon" @click="switchMute">
             <i v-if="isMuted" class="iconfont icon-volume-active"></i>
@@ -163,7 +161,7 @@ watch(currenPlayingTime, (val) => {
         </div>
         <div class="playlist">
           <div class="icon">
-            <i @click="isShowPlayListBox = !isShowPlayListBox" title="当前播放列表" class="iconfont icon-playsong "></i>
+            <i @click="isShowPlayListBox = !isShowPlayListBox" title="当前播放列表" class="iconfont icon-add "></i>
           </div>
           <div class="box" @mouseleave="isShowPlayListBox = false" v-show="isShowPlayListBox">
             <h2>当前播放</h2>
@@ -198,15 +196,16 @@ watch(currenPlayingTime, (val) => {
   font-size: .625rem;
   max-height: 60px;
   padding: 7px;
-  border-top: 1px solid #dcdfe6;
+  border-top: 1px solid var(--color-border);
 
   .modal {
     position: absolute;
     left: 0;
     top: 0px;
-    background-color: #ffffffba;
+    background-color: var(--color-modal-gray);
     width: 100%;
     height: 100%;
+    z-index: 1;
   }
 
   .left-bottom {

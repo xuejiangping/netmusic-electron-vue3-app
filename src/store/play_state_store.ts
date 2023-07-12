@@ -1,10 +1,10 @@
 /**************************************************
 *
-*
 *        管理播放状态
 *
-*
  **************************************************/
+import $utils from '../utils/util.ts'
+
 type SongId = SongItem['id']
 interface PlayState {
   stateId: string,    //当前列表的唯一id，用于区别新列表，一般用歌单id，或者专辑id等唯一值
@@ -13,18 +13,24 @@ interface PlayState {
   playIndex: number
   isPaused: boolean, // 当前播放状态
   isUpdateCurTime: boolean   //播放进度条是否按下，按下期间歌曲播放不更新进度条
-  loopIndex: number
+  loopIndex: number,
+  audioELcontrol: { play(): void, pause(): void } | null
 }
-
 
 
 /***********************循环的选项*************************/
 enum LoopEnum {
+  顺序播放,
   随机播放,
   单曲循环,
   列表循环,
 }
 const loopOptions = [
+  {
+    index: LoopEnum.顺序播放,
+    icon: 'iconfont icon-playsong',
+    title: LoopEnum[LoopEnum.顺序播放]
+  },
   {
     index: LoopEnum.列表循环,
     icon: 'iconfont icon-loop',
@@ -52,9 +58,16 @@ export default defineStore('play_state', () => {
     curSongId: '0',
     stateId: '0',
     isUpdateCurTime: false,
-    loopIndex: 0
+    loopIndex: LoopEnum.顺序播放,
+    audioELcontrol: null
   })
 
+  /***********************原列表打乱*************************/
+  const shufflePlayList = computed(() => $utils.shuffle(state.playList))
+
+
+  /***********************改变播放状态*************************/
+  function setIsPaused(val: boolean) { state.isPaused = val }
 
 
   //==========================================================
@@ -75,7 +88,16 @@ export default defineStore('play_state', () => {
   //        播放列表控制
   //
   //==========================================================
-  const currentSong = computed(() => state.playList[state.playIndex])
+
+  const currentSong = computed(() => {
+    if (currentLoopOption.value.index === LoopEnum.随机播放) {
+      return shufflePlayList.value[state.playIndex]
+    } else {
+      return state.playList[state.playIndex]
+    }
+  })
+  /***********************判断歌曲是否存在于列表*************************/
+  const isExist = (songId: SongId) => state.playList.some(item => item.id === songId)
 
   /**根据 songId 更新playindex */
   function updatePlayIndex() {
@@ -96,7 +118,6 @@ export default defineStore('play_state', () => {
     if (!isExist(song.id)) state.playList.splice(state.playIndex + 1, 0, song);
     if (playNow) play(song.id)
   }
-  const isExist = (songId: SongId) => state.playList.some(item => item.id === songId)
 
   /**更新当前播放列表 ，并播放歌曲 */
   function updatePlayList(list: SongItem[], songId: SongId, stateId: string) {
@@ -114,15 +135,47 @@ export default defineStore('play_state', () => {
   function setIsUpdateCurTime(val: boolean) {
     state.isUpdateCurTime = val
   }
+  /***********************播放完当前歌曲后,后续播放逻辑*************************/
+  function continuePlay() {
 
+    switch (state.loopIndex) {
+      case LoopEnum.顺序播放:
+        if (state.playIndex < state.playList.length - 1) next()
+        break;
+      case LoopEnum.单曲循环:
+        state.audioELcontrol?.play()
+        break;
+      default:
+        next();
+    }
+  }
   /**上一曲 */
-  function next() { state.playIndex++; updateCurrentPlayingSongId() }
+  function next() {
+    if (state.playIndex === state.playList.length - 1) {
+      state.playIndex = 0
+    } else {
+      state.playIndex++
+    }
+    updateCurrentPlayingSongId()
+  }
   /**下一曲 */
-  function prev() { state.playIndex--; updateCurrentPlayingSongId() }
+  function prev() {
+    if (state.playIndex === 0) {
+      state.playIndex = state.playList.length - 1
+    } else {
+      state.playIndex--
+    }
+    updateCurrentPlayingSongId()
+  }
+  //==========================================================
+  //
+  //       获取 音频元素的控制 
+  //
+  //==========================================================
+  function initAudioELcontrol(val: PlayState['audioELcontrol']) { state.audioELcontrol = val }
 
-  function setIsPaused(val: boolean) { state.isPaused = val }
 
   return {
-    ...toRefs(state), currentLoopOption, switchLoopOption, setIsPaused, next, prev, addSong, updatePlayList, addPlayList, currentSong, play, setIsUpdateCurTime
+    ...toRefs(state), continuePlay, currentLoopOption, initAudioELcontrol, switchLoopOption, setIsPaused, next, prev, addSong, updatePlayList, addPlayList, currentSong, play, setIsUpdateCurTime
   }
 })

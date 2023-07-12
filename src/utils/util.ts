@@ -193,6 +193,19 @@ export default {
       }
     }
   },
+  /***********************洗牌算法*************************/
+  shuffle(t: any[]) {
+    if (t.length < 2) return t
+    let val: any[] = []
+    const _a = (arr: any[]) => {
+      if (arr.length === 0) return
+      let i = Math.floor(arr.length * Math.random())
+      val.push(arr.splice(i, 1)[0])
+      _a(arr)
+    }
+    _a(t.slice())
+    return val
+  },
   transformSongTime
 
 }

@@ -7,6 +7,8 @@
   --color-theme: #e72929;
   --color-bg-light: #f2f2f3;
   --color-bg-main: #eaeaed;
+  --color-border: #dcdfe6;
+  --color-modal-gray: #ffffffba;
   --el-color-primary: var(--color-theme) !important;
 }
 li {

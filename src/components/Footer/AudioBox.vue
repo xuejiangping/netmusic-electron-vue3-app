@@ -3,7 +3,7 @@
 import usePlayStateStore from '../../store/play_state_store'
 const store = usePlayStateStore()
 const { isUpdateCurTime } = storeToRefs(store)
-const { setIsPaused, next } = store
+const { setIsPaused, next, continuePlay, initAudioELcontrol } = store
 const { $notify } = getCurrentInstance()?.appContext.config.globalProperties!
 /**
  * inputVal  输入值，用来更新播放器的curtime
@@ -17,6 +17,16 @@ const props = defineProps<{
 
 }>()
 const audioEL = ref<HTMLAudioElement>()
+const audioELcontrol = {
+  play() {
+    audioEL.value?.play().catch(err => {
+      $notify('播放出错: ' + err.message)
+    })
+  },
+  pause() { audioEL.value?.pause() }
+}
+initAudioELcontrol(audioELcontrol)
+defineExpose(audioELcontrol)
 
 //*************************************************
 watch(() => props.volume, (newVal) => {
@@ -24,7 +34,7 @@ watch(() => props.volume, (newVal) => {
 })
 
 watch(() => props.inputVal, (newVal) => {
-  console.log('newVal', newVal)
+  // console.log('newVal', newVal)
   if (newVal !== undefined) {
     setPlayProgress(newVal)
   }
@@ -59,8 +69,8 @@ function setPlayProgress(val: number) {
 *
  **************************************************/
 function errorSong() {
-  next()
-  $notify('播放出错 ,自送跳到下一首')
+  $notify('播放出错')
+  continuePlay()
 }
 function updateSongTime() {
   //isUpdateCurTime 进度条被按下期间 不更新歌曲时间
@@ -80,8 +90,8 @@ function playSong() {
 }
 
 function endedSong() {
-  console.log('endedSong')
-  next()
+  // console.log('endedSong')
+  continuePlay()
 }
 
 //==========================================================
@@ -97,10 +107,7 @@ const emit = defineEmits<{
   (event: 'updateSongTime', time: number): any
 }>()
 
-defineExpose({
-  play() { audioEL.value?.play() },
-  pause() { audioEL.value?.pause() }
-})
+
 
 </script>
 
