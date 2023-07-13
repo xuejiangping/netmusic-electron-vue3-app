@@ -2,74 +2,106 @@
 import { Search } from '@element-plus/icons-vue'
 const router = useRouter()
 // const $http = getCurrentInstance()?.appContext.config.globalProperties.$http
-const keyword = ref('')
-const { $message } = getCurrentInstance()!.appContext.config.globalProperties
+const { $message, $http, $utils } = getCurrentInstance()?.appContext.config.globalProperties!
 const isOpen = ref(false)
-const placeholder = ref('占位符')
+const placeholder = ref('笑傲江湖')
+const keywordsRaw = ref('')
 
-const inputContainer = ref(null)
-
+const { suggestData, hots } = toRefs(reactive({
+  suggestData: {},
+  hots: [] as any[]
+}))
+const keywords = computed(() => keywordsRaw.value.trim())
 // const searchHotList = ref(null)
-const handleEnterKeydown = () => {
-  const keywordStr = keyword.value.trim()
-  if (keywordStr === '') {
+
+function search(newKeywords: string) {
+  if (newKeywords === '') {
     const otpion = {
       message: '搜索内容不能为空',
       type: 'warning',
       duration: 1000,
       offset: 100
     }
-    return $message ? $message(otpion) : console.log('搜索内容不能为空')
-
+    return $message(otpion)
   }
-  isOpen.value = false
-  router.push({ name: 'search', query: { keyword: keywordStr } })
-
-
+  router.push({ name: 'search', query: { keywords: newKeywords } })
 }
 
-interface PanelDataRaw {
-  title: string,
-  items: string[]
+
+
+// console.group('searchHot')
+// $http.searchHot().then(console.log)
+// $http.searchHotDetail().then(console.log)
+// console.groupEnd()
+
+// console.group('serachSuggest')
+// $http.serachMatch({ keywords: 'lol' }).then(console.log)
+// $http.serachSuggest({ keywords: 'baby' }).then(console.log)
+// console.groupEnd()
+watch(isOpen, val => val && $http.searchHotDetail().then(({ data }) => hots.value = data))
+
+async function getSuggestData(keywords: string) {
+  if (keywords === '') return
+  suggestData.value = (await $http.serachSuggest({ keywords })).result
+
 }
-
-const panelData = ref<PanelDataRaw[]>([
-  {
-    title: '热搜',
-    items: ['agag', 'iigaig']
-  }
-])
-panelData.value?.push({
-  title: '热搜121',
-  items: ['agag', 'iigaig']
-})
-
-
-
-
+const debounced_getSuggestData = $utils.debounce(getSuggestData, 1000)
+watch(keywords, debounced_getSuggestData)
+// const delayClose = () => setTimeout(() => isOpen.value = false, 100)
+window.document.addEventListener('click', () => isOpen.value = false)
+function a(b) { console.log(b) }
 </script>
 
 <template>
   <div class="search">
-    <div ref="inputContainer">
-      <el-input @focus="() => isOpen = true" @blur="() => isOpen = false" size="small" class="input" :prefix-icon="Search"
-        @keydown.enter="handleEnterKeydown" v-model="keyword" :placeholder="placeholder" clearable />
+    <div>
+      <el-input :input-style="{ color: '#fff' }" @change="a" @focus=" isOpen = true" size="small" class="input"
+        @click.stop="" :prefix-icon="Search" @keydown.enter="search(keywords)" v-model="keywordsRaw"
+        :placeholder="placeholder" clearable />
 
     </div>
     <div class="panel" v-show="isOpen">
       <el-card>
-        <div v-for="(item, index) in panelData" :key="index">
-          <div class="header">{{ item.title }}</div>
-          <div v-for="(item2, index2) in item.items" :key="index2" class="text item">{{ item2 }}</div>
+        <div v-if="keywords" class="suggest">
+          建议
+        </div>
+        <div v-else class="hot">
+          <div class="history">
+            <h3 class="title">搜索历史</h3>
+            <el-tag size="small" type="info" round class="tag" v-for="() in 5">安静</el-tag>
+          </div>
+          <div class="hot-list">
+            <h3 class="title">热搜榜</h3>
+            <ul>
+              <li class="item" v-for="(item, i) in hots" @click="search(item.searchWord)">
+                <div style="grid-row: 1/3;margin-right: 5rem;" :class="{ red: i < 3 }">{{ i + 1 }}</div>
+                <div style="grid-row: 1/2;" class="name">
+                  <span>{{ item.searchWord }}</span>
+                  <span v-if="item.iconType" class="red"><i><b>hot</b></i></span>
+                  <span style="color: var(--color-text-light);">{{ item.score }}</span>
+                </div>
+                <div v-title class="desc" style="grid-row: 2/3;">{{ item.content }}</div>
+              </li>
+            </ul>
+          </div>
+
+
         </div>
 
       </el-card>
+
     </div>
     <slot></slot>
   </div>
 </template>
 
 <style scoped lang="less">
+@import '@/assets/css/global.less';
+
+.red {
+  color: var(--color-theme);
+}
+
 .search {
   position: relative;
 
@@ -80,43 +112,67 @@ panelData.value?.push({
 
     :deep(.el-input__wrapper) {
       border-radius: 20px;
-      background-color: #c64343;
+      background-color: #e03e3e;
       box-shadow: none;
-
+      color: #fff;
     }
   }
 
   .panel {
 
     position: absolute;
-    top: 130%;
-    width: 120%;
+    top: 40px;
+    max-width: 400%;
+    min-width: 150%;
     min-height: 100px;
     overflow: scroll;
-    max-height: 80vh;
-    z-index: 9;
+    max-height: 70vh;
+    z-index: 4;
+    font-size: 0.8rem;
 
 
+    .hot {
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.8rem;
-      padding: 0.6rem 0;
-      color: #999999;
-      margin-left: -5px;
-    }
+      >div {
+        margin-bottom: 1rem;
+      }
 
+      .history {
+        .tag {
+          margin: 2px;
+        }
+      }
 
-    .item {
-      line-height: 1.5rem;
+      .title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: var(--color-text);
+        margin-bottom: 5px;
+      }
 
-      &:hover {
-        background-color: #f2f2f2;
+      .item {
+        display: grid;
+        grid-template-rows: 2;
+        grid-template-columns: 20px 1fr;
+        column-gap: 0.5rem;
+        row-gap: 0.2rem;
+        align-items: center;
+        margin: 10px 0;
 
+        .name {
+          >* {
+            margin-right: 0.6rem;
+          }
+        }
+
+        // line-height: 1rem;
+        &:hover {
+          background-color: var(--color-bg-main);
+        }
       }
     }
+
 
 
   }

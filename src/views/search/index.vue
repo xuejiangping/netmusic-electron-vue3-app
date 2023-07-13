@@ -15,7 +15,7 @@ const PAGE_LIMIT = 5
 /** tags 和 搜索类型的枚举 */
 const tagInfoEnum = $COMMON.SEARCH_TYPE_ENUM
 const route = useRoute()
-const keyword = computed(() => route.query.keyword)
+const keywords = computed(() => route.query.keywords)
 
 const currentPage = ref(1)  //分页器当前页码
 const isloading = ref(false)
@@ -40,7 +40,7 @@ const TAB_OPTONS: Record<TagInfoEnumValue, [Component, string, string]> = {
 //路由跳转时储存keyword 和 tab标签的active状态
 onBeforeRouteLeave(() => {
   setLastActiveIndex(activeIndex.value)
-  setLastKeyword(String(keyword.value))
+  setLastKeyword(String(keywords.value))
 
 })
 
@@ -57,7 +57,7 @@ const updateDataList = async (isPagination = false) => {
   isloading.value = true
   const type = unref(activeIndex)
   const offset = (currentPage.value - 1) * PAGE_LIMIT  // 分页参数：（currentPage-1）*limit
-  const { result } = await $http.cloudsearch({ keywords: String(keyword.value), limit: PAGE_LIMIT, offset, type: String(type) })
+  const { result } = await $http.cloudsearch({ keywords: String(keywords.value), limit: PAGE_LIMIT, offset, type: String(type) })
   isloading.value = false
   const countKey = TAB_OPTONS[type][2]
   const dataKey = TAB_OPTONS[type][1]
@@ -80,7 +80,7 @@ const updateDataList = async (isPagination = false) => {
 // console.time('测试路由缓存')
 
 
-watch(keyword, (newVal) => {
+watch(keywords, (newVal) => {
   // 观察关键词，只有变化了请求数据
   if (newVal === lastKeyword) return
   resetDataListInfo()
@@ -119,7 +119,7 @@ const dataList = computed(() => {
 <template>
   <div class="search">
     <!-- HTML 中的 kebab-case -->
-    <h3 class="title">搜索 <span>{{ keyword }}</span></h3>
+    <h3 class="title">搜索 <span>{{ keywords }}</span></h3>
     <div class="search-count"><span>搜索结果{{ dataListInfo[activeIndex].count }}</span></div>
     <el-tabs class="tabs" v-model="activeIndex" @tab-change="handleTabsChange">
       <el-tab-pane v-for="(type, label) in tagInfoEnum" :key="type" :label="label" :name="type"></el-tab-pane>

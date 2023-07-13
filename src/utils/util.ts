@@ -194,9 +194,9 @@ export default {
     }
   },
   /***********************洗牌算法*************************/
-  shuffle(t: any[]) {
+  shuffle<T extends any[]>(t: T) {
     if (t.length < 2) return t
-    let val: any[] = []
+    const val: T = []
     const _a = (arr: any[]) => {
       if (arr.length === 0) return
       let i = Math.floor(arr.length * Math.random())
@@ -209,7 +209,8 @@ export default {
   transformSongTime
 
 }
-/** 歌曲当前时间 和 百分比 互相转换;;;
+/**
+ *  歌曲当前时间 和 百分比 互相转换;;;
  * dt 歌曲总时长，单位 秒 或者 毫秒;;;
  */
 function transformSongTime(option: { dt: number, time: number }): number

@@ -39,6 +39,14 @@ li {
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
 }
+.desc {
+  color: var(--color-text);
+  word-break: break-all;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
 .my-text-shadow {
   text-shadow: 0 0 0.6rem BLACK, 0 0 0.6rem red;
 }

@@ -3,7 +3,6 @@
 </script>
 
 <template>
-  <audio src="" controls></audio>
   <div>index</div>
 
   <div>icon-index : <i class='iconfont icon-index'></i></div>

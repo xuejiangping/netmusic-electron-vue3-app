@@ -1,9 +1,10 @@
 <script setup lang="ts">
 
+import { prev } from 'cheerio/lib/api/traversing';
 import usePlayStateStore from '../../store/play_state_store'
 const store = usePlayStateStore()
-const { isUpdateCurTime } = storeToRefs(store)
-const { setIsPaused, next, continuePlay, initAudioELcontrol } = store
+const { isUpdateCurTime, playActionType } = storeToRefs(store)
+const { setPauseState, next, prev, continuePlay, initAudioELcontrol } = store
 const { $notify } = getCurrentInstance()?.appContext.config.globalProperties!
 /**
  * inputVal  输入值，用来更新播放器的curtime
@@ -13,8 +14,7 @@ const props = defineProps<{
   curSongInfo: SongItem,
   volume: number,
   playProgress: number,
-  inputVal?: number
-
+  inputVal: number
 }>()
 const audioEL = ref<HTMLAudioElement>()
 const audioELcontrol = {
@@ -29,22 +29,15 @@ initAudioELcontrol(audioELcontrol)
 defineExpose(audioELcontrol)
 
 //*************************************************
-watch(() => props.volume, (newVal) => {
-  setVolume(newVal)
-})
+watch(() => props.volume, setVolume)
 
-watch(() => props.inputVal, (newVal) => {
-  // console.log('newVal', newVal)
-  if (newVal !== undefined) {
-    setPlayProgress(newVal)
-  }
-})
+watch(() => props.inputVal, setPlayProgress)
 
 
 
 //==========================================================
 //
-//        业务函数
+//        函数
 //
 //==========================================================
 
@@ -56,8 +49,10 @@ function setVolume(val: number) {
  * @param val 设定的播放时间，单位秒
  */
 function setPlayProgress(val: number) {
-  const el = unref(audioEL)
-  if (el) el.currentTime = val
+  if (typeof val === 'number') {
+    audioEL.value!.currentTime = val
+  }
+
 
 }
 
@@ -69,8 +64,9 @@ function setPlayProgress(val: number) {
 *
  **************************************************/
 function errorSong() {
-  $notify('播放出错')
-  continuePlay()
+  $notify(`歌曲 ${props.curSongInfo.name} 播放出错`)
+  if (playActionType.value === 'prev') prev();
+  else next()
 }
 function updateSongTime() {
   //isUpdateCurTime 进度条被按下期间 不更新歌曲时间
@@ -113,7 +109,7 @@ const emit = defineEmits<{
 
 <template>
   <audio v-if="curSongInfo" ref="audioEL" preload="auto" @canplay="canplaySong" @playing="playSong" @ended="endedSong"
-    @play="setIsPaused(false)" @pause="setIsPaused(true)" @error="errorSong" @timeupdate="updateSongTime"
+    @play="setPauseState(false)" @pause="setPauseState(true)" @error="errorSong" @timeupdate="updateSongTime"
     :src="curSongInfo.audioUrl"></audio>
 </template>
 

@@ -193,7 +193,7 @@ watch(currenPlayingTime, (val) => {
   position: relative;
   grid-template-columns: 1fr 2fr 1fr;
   align-items: center;
-  font-size: .625rem;
+  font-size: 12px;
   max-height: 60px;
   padding: 7px;
   border-top: 1px solid var(--color-border);

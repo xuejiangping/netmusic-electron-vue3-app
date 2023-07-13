@@ -9,12 +9,13 @@ type SongId = SongItem['id']
 interface PlayState {
   stateId: string,    //当前列表的唯一id，用于区别新列表，一般用歌单id，或者专辑id等唯一值
   playList: SongItem[],
-  curSongId: string,
   playIndex: number
   isPaused: boolean, // 当前播放状态
   isUpdateCurTime: boolean   //播放进度条是否按下，按下期间歌曲播放不更新进度条
   loopIndex: number,
-  audioELcontrol: { play(): void, pause(): void } | null
+  audioELcontrol: { play(): void, pause(): void } | null,
+  currentSong: SongItem | null,
+  playActionType: 'next' | 'prev'
 }
 
 
@@ -55,11 +56,12 @@ export default defineStore('play_state', () => {
     playList: [], // 播放列表
     playIndex: 0, // 当前播放歌曲在播放列表的所有位置
     // isShowPlayListTips: false, // 添加及播放成功后，播放列表按钮提示的文字
-    curSongId: '0',
     stateId: '0',
     isUpdateCurTime: false,
     loopIndex: LoopEnum.顺序播放,
-    audioELcontrol: null
+    audioELcontrol: null,
+    currentSong: null,
+    playActionType: 'next'
   })
 
   /***********************原列表打乱*************************/
@@ -67,7 +69,7 @@ export default defineStore('play_state', () => {
 
 
   /***********************改变播放状态*************************/
-  function setIsPaused(val: boolean) { state.isPaused = val }
+  function setPauseState(val: boolean) { state.isPaused = val }
 
 
   //==========================================================
@@ -83,32 +85,42 @@ export default defineStore('play_state', () => {
 
   }
 
+
   //==========================================================
   //
   //        播放列表控制
   //
   //==========================================================
 
-  const currentSong = computed(() => {
-    if (currentLoopOption.value.index === LoopEnum.随机播放) {
-      return shufflePlayList.value[state.playIndex]
-    } else {
-      return state.playList[state.playIndex]
-    }
-  })
+  const currentSong = computed(() => state.currentSong)
+
+  const curSongId = computed(() => currentSong.value?.id)
+
   /***********************判断歌曲是否存在于列表*************************/
   const isExist = (songId: SongId) => state.playList.some(item => item.id === songId)
 
+  /**根据 playIndex 更新播放的音乐 */
+  function updateCurSong() {
+    state.currentSong = currentLoopOption.value.index === LoopEnum.随机播放
+      ? shufflePlayList.value[state.playIndex]
+      : state.playList[state.playIndex]
+    // if (currentLoopOption.value.index === LoopEnum.随机播放) {
+    //   return shufflePlayList.value[state.playIndex]
+    // } else {
+    //   return state.playList[state.playIndex]
+    // }
+  }
+
   /**根据 songId 更新playindex */
-  function updatePlayIndex() {
-    state.playIndex = state.playList.findIndex(song => song.id === state.curSongId)
+  function updatePlayIndex(songId: SongId) {
+    state.playIndex = state.playList.findIndex(song => song.id === songId)
   }
-  function updateCurrentPlayingSongId() {
-    state.curSongId = currentSong.value.id
-  }
+
   // function play() {
 
   // }
+
+
   /**添加歌单到当前播放列表 */
   function addPlayList(list: SongItem[]) {
     state.playList.splice(state.playIndex + 1, 0, ...list)
@@ -127,9 +139,9 @@ export default defineStore('play_state', () => {
   }
 
   function play(songId: SongId) {
-    if (songId === state.curSongId) return console.log('正在播放该歌曲', songId)
-    state.curSongId = songId
-    updatePlayIndex()
+    if (songId === currentSong.value?.id) return console.log('正在播放该歌曲', songId)
+    updatePlayIndex(songId)
+    updateCurSong()
   }
   //更改 是否更新播放时间
   function setIsUpdateCurTime(val: boolean) {
@@ -151,21 +163,25 @@ export default defineStore('play_state', () => {
   }
   /**上一曲 */
   function next() {
+    state.playActionType = 'next'
     if (state.playIndex === state.playList.length - 1) {
       state.playIndex = 0
     } else {
       state.playIndex++
     }
-    updateCurrentPlayingSongId()
+    updateCurSong()
+
+    // state.audioELcontrol?.play()
   }
   /**下一曲 */
   function prev() {
+    state.playActionType = 'prev'
     if (state.playIndex === 0) {
       state.playIndex = state.playList.length - 1
     } else {
       state.playIndex--
     }
-    updateCurrentPlayingSongId()
+    updateCurSong()
   }
   //==========================================================
   //
@@ -176,6 +192,6 @@ export default defineStore('play_state', () => {
 
 
   return {
-    ...toRefs(state), continuePlay, currentLoopOption, initAudioELcontrol, switchLoopOption, setIsPaused, next, prev, addSong, updatePlayList, addPlayList, currentSong, play, setIsUpdateCurTime
+    ...toRefs(state), continuePlay, curSongId, currentLoopOption, initAudioELcontrol, switchLoopOption, setPauseState, next, prev, addSong, updatePlayList, addPlayList, currentSong, play, setIsUpdateCurTime
   }
 })
