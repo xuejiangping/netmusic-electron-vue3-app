@@ -93,7 +93,7 @@ const formatedData = computed(() => {
 .comment-item {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-rows: repeat(2);
   margin: 1.8rem 0;
   border-bottom: 1px dashed #e9e9e9;
   font-size: 0.7rem;

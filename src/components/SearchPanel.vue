@@ -3,14 +3,22 @@ import { Search } from '@element-plus/icons-vue'
 const router = useRouter()
 // const $http = getCurrentInstance()?.appContext.config.globalProperties.$http
 const { $message, $http, $utils } = getCurrentInstance()?.appContext.config.globalProperties!
-const isOpen = ref(false)
-const placeholder = ref('笑傲江湖')
-const keywordsRaw = ref('')
+window.document.addEventListener('click', () => isOpen.value = false)
+const SEARCH_HISTORY = 'searchHistory'
 
-const { suggestData, hots } = toRefs(reactive({
-  suggestData: {},
-  hots: [] as any[]
+// window.addEventListener('unload', () => window.localStorage.setItem(SEARCH_HISTORY, JSON.stringify([...history.value])))
+// const initedHistory = JSON.parse(window.localStorage.getItem(SEARCH_HISTORY) || 'null')
+
+const initedHistory: string[] = $utils.localstorage.save_and_load(SEARCH_HISTORY, () => [...history.value])
+const { isOpen, defaultKeywords, keywordsRaw, suggestData, hots, history } = toRefs(reactive({
+  suggestData: null as any,
+  keywordsRaw: '',
+  defaultKeywords: '笑傲江湖',
+  isOpen: false,
+  hots: [] as any[],
+  history: new Set<string>(initedHistory || ['浮生浪迹笑明月', '千愁散尽一剑轻'])
 }))
+
 const keywords = computed(() => keywordsRaw.value.trim())
 // const searchHotList = ref(null)
 
@@ -24,11 +32,14 @@ function search(newKeywords: string) {
     }
     return $message(otpion)
   }
+  isOpen.value = false
+  history.value.add(newKeywords)
+
   router.push({ name: 'search', query: { keywords: newKeywords } })
 }
 
-
-
+/** 关键词 */
+$http.searchDefaultKeywords().then(res => defaultKeywords.value = res.data.realkeyword)
 // console.group('searchHot')
 // $http.searchHot().then(console.log)
 // $http.searchHotDetail().then(console.log)
@@ -36,7 +47,6 @@ function search(newKeywords: string) {
 
 // console.group('serachSuggest')
 // $http.serachMatch({ keywords: 'lol' }).then(console.log)
-// $http.serachSuggest({ keywords: 'baby' }).then(console.log)
 // console.groupEnd()
 watch(isOpen, val => val && $http.searchHotDetail().then(({ data }) => hots.value = data))
 
@@ -48,33 +58,38 @@ async function getSuggestData(keywords: string) {
 const debounced_getSuggestData = $utils.debounce(getSuggestData, 1000)
 watch(keywords, debounced_getSuggestData)
 // const delayClose = () => setTimeout(() => isOpen.value = false, 100)
-window.document.addEventListener('click', () => isOpen.value = false)
-function a(b) { console.log(b) }
+
 </script>
 
 <template>
   <div class="search">
     <div>
-      <el-input :input-style="{ color: '#fff' }" @change="a" @focus=" isOpen = true" size="small" class="input"
+      <el-input :input-style="{ color: '#fff' }" @change="" @focus=" isOpen = true" size="small" class="input"
         @click.stop="" :prefix-icon="Search" @keydown.enter="search(keywords)" v-model="keywordsRaw"
-        :placeholder="placeholder" clearable />
+        :placeholder="defaultKeywords" clearable />
 
     </div>
-    <div class="panel" v-show="isOpen">
-      <el-card>
-        <div v-if="keywords" class="suggest">
-          建议
+    <div class="panel" v-show="isOpen" @click.stop>
+      <el-card shadow="always">
+        <!-- 搜索建议 -->
+        <div v-if="keywords && suggestData" class="suggest">
+          <search-suggest :data="suggestData"></search-suggest>
         </div>
+        <!-- 热搜榜 -->
         <div v-else class="hot">
           <div class="history">
-            <h3 class="title">搜索历史</h3>
-            <el-tag size="small" type="info" round class="tag" v-for="() in 5">安静</el-tag>
+            <h3 class="title"><span> 搜索历史 <i @click="history.clear(); $utils.localstorage.clear(SEARCH_HISTORY)"
+                  class="iconfont icon-del"></i></span>
+              <span>查看全部</span>
+            </h3>
+            <el-tag v-for="(item) in history" @click="search(item)" size="small" type="info" round class="tag">{{ item }}
+              <i class="iconfont icon-closed" @click.stop="history.delete(item)"></i></el-tag>
           </div>
           <div class="hot-list">
             <h3 class="title">热搜榜</h3>
             <ul>
               <li class="item" v-for="(item, i) in hots" @click="search(item.searchWord)">
-                <div style="grid-row: 1/3;margin-right: 5rem;" :class="{ red: i < 3 }">{{ i + 1 }}</div>
+                <div style="grid-row: 1/3;margin-right: 5rem;" :class="{ top3: i < 3 }">{{ i + 1 }}</div>
                 <div style="grid-row: 1/2;" class="name">
                   <span>{{ item.searchWord }}</span>
                   <span v-if="item.iconType" class="red"><i><b>hot</b></i></span>
@@ -98,12 +113,15 @@ function a(b) { console.log(b) }
 <style scoped lang="less">
 @import '@/assets/css/global.less';
 
-.red {
-  color: var(--color-theme);
-}
+
+
+
 
 .search {
   position: relative;
+  font-size: 0.8rem;
+
+
 
   .input {
     flex: 1;
@@ -122,33 +140,55 @@ function a(b) { console.log(b) }
 
     position: absolute;
     top: 40px;
-    max-width: 400%;
-    min-width: 150%;
-    min-height: 100px;
+    min-width: 280px;
+    width: 30vw;
     overflow: scroll;
     max-height: 70vh;
     z-index: 4;
-    font-size: 0.8rem;
+
+    .suggest {}
+
+
+
 
 
     .hot {
-
       >div {
         margin-bottom: 1rem;
       }
 
+      .top3 {
+        color: var(--color-theme);
+        font-weight: bold;
+        font-style: italic;
+      }
+
       .history {
         .tag {
-          margin: 2px;
+          position: relative;
+          margin: 3px 5px;
+          padding: 1px 13px 1px 11px;
+          cursor: pointer;
+
+          i {
+            position: absolute;
+            right: 1.5px;
+            top: 23%;
+            display: none;
+          }
+
+          &:hover i {
+            display: block;
+          }
         }
+
       }
 
       .title {
         display: flex;
         justify-content: space-between;
-        align-items: center;
         color: var(--color-text);
-        margin-bottom: 5px;
+        margin-bottom: 1rem;
       }
 
       .item {

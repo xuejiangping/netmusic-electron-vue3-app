@@ -1,6 +1,5 @@
 <script setup lang="ts">
 
-import { prev } from 'cheerio/lib/api/traversing';
 import usePlayStateStore from '../../store/play_state_store'
 const store = usePlayStateStore()
 const { isUpdateCurTime, playActionType } = storeToRefs(store)
@@ -13,7 +12,7 @@ const { $notify } = getCurrentInstance()?.appContext.config.globalProperties!
 const props = defineProps<{
   curSongInfo: SongItem,
   volume: number,
-  playProgress: number,
+  currenPlayTime: number,
   inputVal: number
 }>()
 const audioEL = ref<HTMLAudioElement>()
@@ -33,7 +32,13 @@ watch(() => props.volume, setVolume)
 
 watch(() => props.inputVal, setPlayProgress)
 
+onMounted(() => {
+  if (audioEL.value) {
+    setPlayProgress(props.currenPlayTime)
+    setVolume(props.volume)
+  }
 
+})
 
 //==========================================================
 //
@@ -42,18 +47,20 @@ watch(() => props.inputVal, setPlayProgress)
 //==========================================================
 
 function setVolume(val: number) {
-  audioEL.value!.volume = val / 100
+
+  if (typeof val === 'number' && audioEL.value) {
+    audioEL.value!.volume = val / 100
+
+  }
 }
 /**
  * 
  * @param val 设定的播放时间，单位秒
  */
 function setPlayProgress(val: number) {
-  if (typeof val === 'number') {
-    audioEL.value!.currentTime = val
+  if (typeof val === 'number' && audioEL.value) {
+    audioEL.value.currentTime = val
   }
-
-
 }
 
 

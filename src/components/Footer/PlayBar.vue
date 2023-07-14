@@ -7,42 +7,40 @@ import usePlayStateStore from '../../store/play_state_store'
 //==========================================================
 //
 //        数据
-//
+
 //==========================================================
+const PLAYBAR_OPTIONS = 'playbar_options'
 const store = usePlayStateStore()
 const { currentSong, playList, stateId, isPaused, currentLoopOption } = toRefs(store)
-const { next, prev, switchLoopOption } = store
+const { next, prev, switchLoopOption, clearPlayList } = store
 const { $utils, $COMMON } = getCurrentInstance()?.appContext.config.globalProperties!
-
 
 
 const cover = computed(() => {
   let sizeQuery = $COMMON.IMG_SIZE_SEARCH_PARAMS.squar.small
-  return currentSong.value.album.picUrl + sizeQuery || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
+  const picUrl = currentSong.value?.album.picUrl
+  return picUrl ? picUrl + sizeQuery : 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
 })
 const baseOptions = {
-  currentPlayProgress: 20,  //播放进度
+  currentPlayProgress: 0,  //播放进度
   volume: 50,   //当前音量
-  lastVol: 0,    //静音前的音量
+  lastVolume: 0,    //静音前的音量
   isShowPlayListBox: false,
   inputVal: 0,   //输入的播放时间，用于更改播放进度，单位秒
-  currenPlayingTime: 0,//当前 歌曲播放时间
+  currenPlayTime: 0,//当前 歌曲播放时间
 }
-const initOptions: typeof baseOptions = window.JSON.parse(window.localStorage.getItem('playbar_options') || 'null') || baseOptions
-const options = reactive(initOptions)
-const { currenPlayingTime, inputVal,
-  currentPlayProgress, volume, lastVol, isShowPlayListBox }
-  = toRefs(options)
+const initedOptions: typeof baseOptions = $utils.localstorage.save_and_load(PLAYBAR_OPTIONS, () => options) || baseOptions
+const options = reactive(initedOptions)
+const { currenPlayTime, inputVal,
+  currentPlayProgress, volume, lastVolume, isShowPlayListBox } = toRefs(options)
+// $utils.localstorage.save_when_unload(PLAYBAR_OPTIONS, )
 
+
+//==========================================================
 const carousel = ref()   //左边的轮播组件
 const audio = ref() // audio-box 
 
 //==========================================================
-//==========================================================
-
-window.addEventListener('unload', () => {
-  window.localStorage.setItem('playbar_options', JSON.stringify(options))
-})
 
 /**************************************************
 *        业务
@@ -50,9 +48,9 @@ window.addEventListener('unload', () => {
 // 
 function switchMute() {
   // console.log('121', 121)
-  if (isMuted.value) volume.value = lastVol.value;
+  if (isMuted.value) volume.value = lastVolume.value;
   else {
-    lastVol.value = volume.value
+    lastVolume.value = volume.value
     volume.value = 0
   }
 }
@@ -76,10 +74,8 @@ const formatedCurTime = computed(() => {
 *
  **************************************************/
 
-watch(currenPlayingTime, (val) => {
-  let per = $utils.transformSongTime({ dt: currentSong.value.dt, time: val * 1000 })
-  currentPlayProgress.value = per ?? 0
-
+watch(currenPlayTime, (val) => {
+  currentPlayProgress.value = currentSong.value ? $utils.transformSongTime({ dt: currentSong.value.dt, time: val * 1000 }) : 0
 })
 
 </script>
@@ -138,7 +134,7 @@ watch(currenPlayingTime, (val) => {
         <div class="bottom">
           <span>{{ formatedCurTime }}</span>
           <div class="progress"><progress-bar
-              @change="val => inputVal = $utils.transformSongTime({ dt: currentSong.dt / 1000, percent: val })"
+              @change="val => inputVal = $utils.transformSongTime({ dt: (currentSong?.dt || 0) / 1000, percent: val })"
               v-model="currentPlayProgress"></progress-bar></div>
           <span>{{ currentSong?.duration }}</span>
         </div>
@@ -165,7 +161,7 @@ watch(currenPlayingTime, (val) => {
           </div>
           <div class="box" @mouseleave="isShowPlayListBox = false" v-show="isShowPlayListBox">
             <h2>当前播放</h2>
-            <div class="info"> <span>总{{ playList.length }}首</span> <a href="javascript:;"><i
+            <div class="info"> <span>总{{ playList.length }}首</span> <a @click="clearPlayList" href="javascript:;"><i
                   class="iconfont icon-del"></i> 清空列表</a></div>
             <div class="list">
               <song-table size="small" :list-id="stateId" :data-list="playList" :show-header="true"
@@ -178,8 +174,8 @@ watch(currenPlayingTime, (val) => {
     </li>
     <!-- audio元素 -->
     <li v-show="false">
-      <audio-box ref="audio" @update-song-time="val => currenPlayingTime = val" :inputVal="inputVal"
-        :play-progress="currentPlayProgress" :volume="volume" :cur-song-info="currentSong"></audio-box>
+      <audio-box ref="audio" @update-song-time="val => currenPlayTime = val" :inputVal="inputVal"
+        :currenPlayTime="currenPlayTime" :volume="volume" :cur-song-info="currentSong"></audio-box>
     </li>
   </ul>
 </template>

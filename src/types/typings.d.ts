@@ -76,6 +76,7 @@ interface AllProps extends BaseProps {
 
 // 定义全局 和 window
 declare global {
+  interface BaseProps { name: string, id: string }
   type SomePartial<T, U extends keyof T> = Partial<Pick<T, U>> & Omit<T, U>
   type GetValue<T> = T[keyof T]
   type SongItem = Pick<AllProps, 'mv' | 'name' | 'id' | 'artists' | 'album' | 'duration' | 'dt' | 'audioUrl'>

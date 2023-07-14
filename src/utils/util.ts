@@ -111,14 +111,18 @@ export default {
       timer = setTimeout(fn, t, ...args)
     }
   },
-  // 处理歌曲
+  /**
+   * 处理歌曲
+   * @ pop 歌曲热度  0-100
+   * @ fee  歌曲付费情况 
+   * */
   formatSongs(list: any[]) {
     const val = list.map((item) => {
       // 是否有版权播放
       item.license = item.privilege?.cp
-      const { license, name, id, ar: artists, al: album, dt, mv } = item
+      const { license, name, id, ar: artists, al: album, dt, mv, fee, pop } = item
       return {
-        dt, license, name, id, artists, album, mv, duration: dt && this.formatSongTime(dt),
+        dt, license, name, id, artists, album, mv, duration: dt && this.formatSongTime(dt), fee, pop,
         audioUrl: `https://music.163.com/song/media/outer/url?id=${id}.mp3`
       }
     })
@@ -206,8 +210,23 @@ export default {
     _a(t.slice())
     return val
   },
-  transformSongTime
+  transformSongTime,
+  /*********************** 存取 localstorage*************************/
 
+  localstorage: {
+    /**
+  * @ 关闭页面时自动保存数据到 localstorage;
+  * @ 进入页面时读取数据
+  * @ 第三个参数save可 停止保存数据集
+  */
+    save_and_load<T>(key: string, dataGetter: () => T, save = true): T {
+      save && window.addEventListener('unload', () => window.localStorage.setItem(key, JSON.stringify(dataGetter())))
+      return JSON.parse(window.localStorage.getItem(key) || 'null')
+    },
+    clear(key: string) {
+      window.localStorage.removeItem(key)
+    }
+  }
 }
 /**
  *  歌曲当前时间 和 百分比 互相转换;;;

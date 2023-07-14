@@ -17,11 +17,14 @@ enum tableColums1 {
   artists = '歌手',
   album = '专辑',
   duration = '时长',
+  pop = '热度',
   '音乐标题' = 'name',
   '歌手' = 'artists',
   '专辑' = 'album',
-  '时长' = 'duration'
+  '时长' = 'duration',
+  '热度' = 'pop'
 }
+
 /**
  * listId 当前列表所属哪个类型，如歌单：1231313 ，专辑：2314144,默认为0
  * needShowItems  渲染哪些 tableColums1 ,如： 'index', 'title', 'singer', 'album', 'duration'
@@ -29,11 +32,11 @@ enum tableColums1 {
  */
 const props = withDefaults(defineProps<{
   dataList: SongItem[],
-  needShowItems?: ('index' | 'title' | 'singer' | 'album' | 'duration')[],
+  needShowItems?: ('index' | 'title' | 'singer' | 'album' | 'duration' | 'pop')[],
   listId?: string,
   size?: "" | "default" | "small" | "large"
 }>(), {
-  needShowItems: () => ['index', 'title', 'singer', 'album', 'duration'],
+  needShowItems: () => ['index', 'title', 'singer', 'album', 'duration', 'pop'],
 })
 
 // const curSongId = ref(0)
@@ -84,7 +87,7 @@ function row_dbclick(row: SongItem) {
       </template>
     </el-table-column>
 
-    <el-table-column min-width="100px" v-if="needShowItems.includes('title')" class-name="title" prop="name"
+    <el-table-column min-width="120px" v-if="needShowItems.includes('title')" class-name="title" prop="name"
       :label="tableColums1.name">
       <template #default="scope">
         <div :class="{ active: scope.row.id === curSongId }" class="title" v-title>
@@ -117,14 +120,16 @@ function row_dbclick(row: SongItem) {
       </template>
     </el-table-column>
 
-    <el-table-column width="100px" v-if="needShowItems.includes('duration')" prop="duration"
-      :label="tableColums1.duration">
-
+    <el-table-column v-if="needShowItems.includes('duration')" prop="duration" :label="tableColums1.duration">
       <template #default="scope">
         {{ scope.row.duration }}
       </template>
     </el-table-column>
-
+    <el-table-column min-width="100px" v-if="needShowItems.includes('pop')" prop="pop" :label="tableColums1.pop">
+      <template #default="scope">
+        <el-progress color="pink" :show-text="false" :percentage="scope.row.pop" />
+      </template>
+    </el-table-column>
 
 
   </el-table>
