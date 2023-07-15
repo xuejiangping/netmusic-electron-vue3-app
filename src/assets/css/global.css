@@ -1,3 +1,9 @@
+.no-drag {
+  -webkit-app-region: no-drag;
+}
+.drag {
+  -webkit-app-region: drag;
+}
 :root {
   --color-text-main: #2d2d2d;
   --color-text: #909090;
@@ -14,20 +20,41 @@
 li {
   list-style: none;
 }
-.iconfont {
+.iconfont,
+.interact {
   cursor: pointer;
 }
-@media screen and (min-height: 400px) and (min-width: 600px) {
+@media screen and (max-width: 600px) {
+  html {
+    font-size: 11.2px;
+  }
+}
+@media screen and (min-width: 600px) and (max-width: 800px) {
   html {
     font-size: 14px;
   }
 }
-@media screen and (min-height: 600px) and (min-width: 900px) {
+@media screen and (min-width: 800px) and (max-width: 1000px) {
   html {
-    font-size: 21px;
+    font-size: 16.8px;
   }
 }
-@media screen and (min-height: 800px) and (min-width: 1300px) {
+@media screen and (min-width: 1000px) and (max-width: 1200px) {
+  html {
+    font-size: 19.6px;
+  }
+}
+@media screen and (min-width: 1200px) and (max-width: 1400px) {
+  html {
+    font-size: 22.4px;
+  }
+}
+@media screen and (min-width: 1400px) and (max-width: 1600px) {
+  html {
+    font-size: 25.2px;
+  }
+}
+@media screen and (min-width: 1600px) and (max-width: 1800px) {
   html {
     font-size: 28px;
   }

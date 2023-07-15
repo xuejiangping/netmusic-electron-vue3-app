@@ -55,25 +55,24 @@ async function getSuggestData(keywords: string) {
   suggestData.value = (await $http.serachSuggest({ keywords })).result
 
 }
-const debounced_getSuggestData = $utils.debounce(getSuggestData, 1000)
+const debounced_getSuggestData = $utils.debounce(getSuggestData, 500)
 watch(keywords, debounced_getSuggestData)
-// const delayClose = () => setTimeout(() => isOpen.value = false, 100)
+// const delayClose = () => setTimeout(() => isOpen.value = false
 
 </script>
 
 <template>
   <div class="search">
     <div>
-      <el-input :input-style="{ color: '#fff' }" @change="" @focus=" isOpen = true" size="small" class="input"
-        @click.stop="" :prefix-icon="Search" @keydown.enter="search(keywords)" v-model="keywordsRaw"
-        :placeholder="defaultKeywords" clearable />
+      <el-input :input-style="{ color: '#fff' }" @change="" @focus=" isOpen = true" size="small" class="input" @click.stop
+        :prefix-icon="Search" @keydown.enter="search(keywords)" v-model="keywordsRaw" :placeholder="defaultKeywords" />
 
     </div>
     <div class="panel" v-show="isOpen" @click.stop>
       <el-card shadow="always">
         <!-- 搜索建议 -->
         <div v-if="keywords && suggestData" class="suggest">
-          <search-suggest :data="suggestData"></search-suggest>
+          <search-suggest :data="suggestData" @close="isOpen = false"></search-suggest>
         </div>
         <!-- 热搜榜 -->
         <div v-else class="hot">
@@ -92,7 +91,7 @@ watch(keywords, debounced_getSuggestData)
                 <div style="grid-row: 1/3;margin-right: 5rem;" :class="{ top3: i < 3 }">{{ i + 1 }}</div>
                 <div style="grid-row: 1/2;" class="name">
                   <span>{{ item.searchWord }}</span>
-                  <span v-if="item.iconType" class="red"><i><b>hot</b></i></span>
+                  <span v-if="item.iconType" style="color: red;"><i><b>hot</b></i></span>
                   <span style="color: var(--color-text-light);">{{ item.score }}</span>
                 </div>
                 <div v-title class="desc" style="grid-row: 2/3;">{{ item.content }}</div>
@@ -146,10 +145,6 @@ watch(keywords, debounced_getSuggestData)
     max-height: 70vh;
     z-index: 4;
 
-    .suggest {}
-
-
-
 
 
     .hot {
@@ -170,11 +165,13 @@ watch(keywords, debounced_getSuggestData)
           padding: 1px 13px 1px 11px;
           cursor: pointer;
 
-          i {
+          .iconfont {
             position: absolute;
-            right: 1.5px;
+            right: 1px;
             top: 23%;
             display: none;
+            font-size: small;
+
           }
 
           &:hover i {

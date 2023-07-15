@@ -1,6 +1,16 @@
 @bassFontSize: 14px;
 @linkTextcolor: #969696;
 
+// 定义应用 哪些部分可拖动窗口哪些不能
+.no-drag {
+  -webkit-app-region: no-drag
+}
+
+.drag {
+  -webkit-app-region: drag
+}
+
+
 :root {
   --color-text-main: #2d2d2d;
   --color-text: #909090;
@@ -20,29 +30,36 @@ li {
   // line-height: 1rem;
 }
 
-.iconfont {
+.iconfont,
+.interact {
   cursor: pointer;
 }
 
 // 响应式处理
 
-@media screen and (min-height: 400px) and(min-width:600px) {
+@base-width: 600px;
+
+// 宽度小于 @base-width: 600px; 时：
+@media screen and (max-width:@base-width) {
   html {
-    font-size: @bassFontSize;
+    font-size: @bassFontSize*0.8;
   }
 }
 
-@media screen and (min-height: 600px) and (min-width:900px) {
-  html {
-    font-size: @bassFontSize*1.5;
-  }
-}
+@step: 200;
 
-@media screen and (min-height: 800px)and (min-width:1300px) {
-  html {
-    font-size: @bassFontSize*2;
+each(0 1 2 3 4 5, {
+  @_min-width: @base-width+@value * @step;
+  @_max-width: @_min-width+@step;
+
+  @media screen and (min-width:@_min-width)and(max-width:@_max-width) {
+    html {
+      font-size: @bassFontSize*(@value*0.2+1);
+    }
   }
-}
+
+});
+
 
 // 文字单行省略
 .text-in-oneline {
@@ -106,7 +123,6 @@ li {
 html,
 body {
   height: 100%;
-  // font-size: 14px;
   font-family: PingFang SC, Arial, Microsoft YaHei, sans-serif;
   color: var(--color-text-main);
   background-color: #fafafa;

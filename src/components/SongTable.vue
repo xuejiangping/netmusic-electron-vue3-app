@@ -2,6 +2,7 @@
 
 import usePlayStateStore from '../store/play_state_store'
 
+const { $COMMON } = getCurrentInstance()?.proxy!
 const store = usePlayStateStore()
 const { updatePlayList, addSong, play } = store
 const { curSongId, stateId, } = storeToRefs(store)
@@ -96,6 +97,7 @@ function row_dbclick(row: SongItem) {
           <span>{{ scope.row.name }}</span>
           <router-link v-if="scope.row.mv" :to="{ name: 'mv-detail', query: { id: scope.row.mv, name: scope.row.name } }">
             <i class=" iconfont icon-mv"></i></router-link>
+          <i class="iconfont icon-vip" v-if="scope.row.fee === $COMMON.Fee.VIP歌曲"></i>
         </div>
       </template>
     </el-table-column>
@@ -160,9 +162,16 @@ function row_dbclick(row: SongItem) {
     .multi-line(1)
   }
 
+
+
   .title {
     >* {
       margin-right: 5px;
+    }
+
+    .icon-vip {
+      font-style: italic;
+      font-size: large;
     }
 
     i {

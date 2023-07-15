@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { emit } from 'process';
 import usePlayStateStore from '../store/play_state_store'
 
 const { addSong } = usePlayStateStore()
@@ -59,6 +60,7 @@ async function handleClick(key: Key, data: BaseProps) {
   }
   // console.log(key, data)
 }
+const emit = defineEmits(['close'])
 </script>
 
 <template>
@@ -66,8 +68,8 @@ async function handleClick(key: Key, data: BaseProps) {
     <div v-for="item1 in formatedData" class="item">
       <h5 class="title"> <span><i class="iconfont" :class="item1.icon"></i> {{ item1.title }}</span></h5>
       <ul>
-        <li v-title v-for="(item2) in item1.data" @click="handleClick(item1.key, item2)" class="text-in-oneline"><span
-            class="name">{{ item2.name }}</span>
+        <li v-title v-for="(item2) in item1.data" @click="handleClick(item1.key, item2); emit('close')"
+          class="text-in-oneline"><span class="name">{{ item2.name }}</span>
           <span v-if="item1.key === 'songs'" class="artist"> - {{ (<SongItem>item2).artists[0].name }}</span>
         </li>
       </ul>

@@ -58,7 +58,7 @@ export default defineStore('play_state', () => {
   const PLAY_STATE_STORE = 'play_state_store'
 
 
-  const state: PlayState = reactive($utils.localstorage.save_and_load(PLAY_STATE_STORE, () => ({ ...state, isPaused: true }), false) || {
+  const state: PlayState = reactive($utils.localstorage.save_and_load(PLAY_STATE_STORE, () => ({ ...state, isPaused: true })) || {
     isPaused: true, // 当前播放状态
     playList: [], // 播放列表
     playIndex: 0, // 当前播放歌曲在播放列表的所有位置

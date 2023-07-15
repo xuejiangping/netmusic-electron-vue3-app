@@ -1,15 +1,15 @@
-import { app, BrowserWindow, globalShortcut } from 'electron'
+import { app, BrowserWindow, Menu, globalShortcut } from 'electron'
 import path from 'path'
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
-
 const createWin = () => {
+  Menu.setApplicationMenu(null)
 
   const win = new BrowserWindow({
-    width: 800, height: 600,
+    width: 800, height: 560,
     minWidth: 650,
-    minHeight: 400,
-
+    minHeight: 450,
+    frame: false, //去掉 关闭按钮等
     // skipTaskbar: true,
     title: '网易云音乐',
     autoHideMenuBar: true,

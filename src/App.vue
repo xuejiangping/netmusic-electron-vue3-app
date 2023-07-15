@@ -9,7 +9,7 @@ const { aside, footer } = storeToRefs(usePageShowStore())
 
 <template>
   <el-container style="height: 100%">
-    <el-header class="header">
+    <el-header class="header  drag">
       <Header></Header>
     </el-header>
     <el-container style=" overflow: auto">

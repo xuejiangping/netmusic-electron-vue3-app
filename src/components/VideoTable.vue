@@ -8,9 +8,7 @@ const props = withDefaults(defineProps<{
   squar: false,
   routeName: 'index'
 })
-
-
-
+// wowo he agadadgj jj  
 
 
 </script>
@@ -21,9 +19,16 @@ const props = withDefaults(defineProps<{
 
     <router-link v-for="({ artistName, name, artists, cover, duration, playCount, id }, index) in dataList" :key="index"
       class="item" :to="{ name: routeName, query: { id, cover, name } }">
+
+
       <div class="block">
-        <el-image class="img" :style="props.squar ? '1/1' : 'unset'" :src="cover + IMG_SIZE_SEARCH_PARAMS.rect.middle"
-          lazy />
+
+        <el-image class="img" :style="{ 'aspect-ratio': props.squar ? '1/1' : '16/10' }"
+          :src="cover + IMG_SIZE_SEARCH_PARAMS.rect.middle" lazy>
+          <template #placeholder>
+            <img class="img" :style="{ 'aspect-ratio': props.squar ? '1/1' : '16/10' }" src="../assets/img/hello.webp" />
+          </template>
+        </el-image>
         <span class="paly-count">{{ playCount }}</span>
         <span class="duration">{{ duration }}</span>
         <span class="artist">{{ artistName }}</span>
@@ -37,6 +42,9 @@ const props = withDefaults(defineProps<{
             <span>{{ name }}</span>
           </router-link></span>
       </div>
+
+
+
     </router-link>
   </div>
 </template>
@@ -48,7 +56,6 @@ const props = withDefaults(defineProps<{
   width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-
   gap: 16px;
   margin: 2rem 0;
 

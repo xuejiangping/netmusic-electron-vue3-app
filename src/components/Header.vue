@@ -1,25 +1,25 @@
 <script setup>
-import { ref } from 'vue';
 import SearchPanel from '@components/SearchPanel.vue'
+import { ArrowLeft,ArrowRight } from '@element-plus/icons-vue'
 </script>
 
 <template>
   <div class="header">
     <div class="left">
-      <img class="logo" src="@/assets/img/wangyiyunlogo.png" alt="">
-      <span>网易云音乐</span>
+      <div class="no-drag interact" @click="$router.push('index')">
+        <img class="logo" src="@/assets/img/wangyiyunlogo.png" alt="">
+        <span>网易云音乐</span>
+      </div>
     </div>
     <div class="middle">
-      <span @click="$router.back">
-        <img src="@/assets/img/arrow-left.png">
-      </span>
-      <span @click="$router.forward">
-        <img src="@/assets/img/arrow-right.png">
-      </span>
+      <el-button class=" back" color="#d93c3c" @click="$router.back" size="small" type="danger" :icon="ArrowLeft"
+        circle />
+      <el-button class="forward " color="#d93c3c" @click="$router.forward" size="small" type="danger" :icon="ArrowRight"
+        circle />
       <SearchPanel></SearchPanel>
     </div>
     <div class="right">
-      <el-avatar class="avatar" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+      <el-avatar class="avatar" size="small" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
       <span> xue6474</span>
     </div>
     <span></span>
@@ -27,6 +27,8 @@ import SearchPanel from '@components/SearchPanel.vue'
 </template>
 
 <style scoped lang="less">
+@import '@/assets/css/global.less';
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -42,29 +44,36 @@ import SearchPanel from '@components/SearchPanel.vue'
     padding-right: 20px;
 
     .logo {
-      height: 36px;
+      height: 34px;
       vertical-align: middle;
-      padding-right: 10px;
+      padding-right: 6px;
     }
   }
 
   .middle {
+    >* {
+      .no-drag;
+    }
+
     flex: 1;
     display: flex;
-
     align-items: center;
     justify-content: center; // 水平对齐，不然会有竖直线。。。。。。。。
 
-    img {
-      height: 16px;
-      padding: 0 4px;
-      vertical-align: middle;
-
+    .back,
+    .forward {
+      margin: 0 3px;
+      width: 20px;
+      height: 20px;
     }
   }
 
   .right {
     flex: 1;
+
+    >* {
+      .no-drag
+    }
 
     .avatar {
       vertical-align: middle;

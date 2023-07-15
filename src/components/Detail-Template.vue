@@ -75,7 +75,7 @@ let a = console.log
     display: grid;
     grid-template-columns: minmax(140px, 1fr) 3fr;
     column-gap: 1.5625rem;
-    font-size: .75rem;
+    font-size: 1rem;
 
     .cover {
 
@@ -114,6 +114,7 @@ let a = console.log
           margin-right: 0.5rem;
           border-radius: 5px;
           vertical-align: middle;
+          font-weight: normal;
         }
       }
 
