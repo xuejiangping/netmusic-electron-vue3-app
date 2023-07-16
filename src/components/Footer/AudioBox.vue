@@ -71,9 +71,14 @@ function setPlayProgress(val: number) {
 *
  **************************************************/
 function errorSong() {
-  $notify(`歌曲 ${props.curSongInfo.name} 播放出错`)
-  if (playActionType.value === 'prev') prev();
-  else next()
+  if (navigator.onLine) {
+    $notify(`歌曲 ${props.curSongInfo.name} 播放出错`)
+    if (playActionType.value === 'prev') prev();
+    else next()
+  } else {
+    $notify(`网络异常,请检查网络`)
+  }
+
 }
 function updateSongTime() {
   //isUpdateCurTime 进度条被按下期间 不更新歌曲时间

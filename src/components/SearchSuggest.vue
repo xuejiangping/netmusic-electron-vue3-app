@@ -47,7 +47,7 @@ async function handleClick(key: Key, data: BaseProps) {
       router.push({ name: 'album', query: { ...data } })
       break;
     case cat.单曲:
-      const song = (await $http.songDetail({ ids: data.id }).then(res => $utils.formatSongs(res.songs)))[0]
+      const song = (await $http.songDetail({ ids: data.id }).then(res => $utils.formatList('songlist', res.songs)))[0]
       // debugger
       addSong(song, true)
       break;

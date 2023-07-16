@@ -27,7 +27,7 @@ const checkSong = ({ id = '' }) => { return api.get(`/check/music?id=${id}`, {})
 const hotList = () => { return api.get('/playlist/hot', {}) }
 /******** 歌单列表*******/
 const playList = ({ order = 'hot', cat = '', limit = 50, offset = 0 }) => { return api.get(`/top/playlist?limit=${limit}&order=${order}&cat=${cat}&offset=${offset}`, {}) }
-/******** 推荐歌单*******/
+/******** 个性推荐歌单*******/
 const personalized = (limit = 30) => { return api.get(`/personalized?limit=${limit}`, {}) }
 /******** 精品歌单*******/
 const highquality = (limit = 20, before = 0) => { return api.get(`/top/playlist/highquality?limit=${limit}&before=${before}`, {}) }
@@ -142,6 +142,9 @@ const topRankList = ({ id = '', s = 8 }) => { return api.get(`/playlist/detail?i
 const topListDetail = () => { return api.get('/toplist/detail', {}) }
 /******** 歌单详情*******/
 const listDetail = ({ id = '', s = 8 }) => { return api.get(`/playlist/detail?id=${id}&s=${s}`, {}) }
+/***********************获取歌单歌曲*************************/
+// /playlist/track/all?id=24381616&limit=10&offset=1
+const listTracks = ({ id = '', limit = 10, offset = 0 }) => { return api.get(`/playlist/track/all?id=${id}&limit=${limit}&offset=${offset}`, {}) }
 
 /* ********* video ********* */
 /******** 视频播放地址*******/
@@ -165,6 +168,7 @@ const getNewMv = ({ limit = 30, area = '' }) => { return api.get(`/mv/first?limi
 const getHotDj = ({ limit = 30, offset = 0 }) => { return api.get(`/dj/hot?limit=${limit}&offset=${offset}`, {}) }
 
 export default {
+    listTracks,
     getBanner,
     search,
     searchHot,

@@ -95,19 +95,19 @@ const dataList = computed(() => {
   let formatedDataList
   switch (activeIndex.value) {
     case tagInfoEnum.单曲:
-      formatedDataList = $utils.formatSongs(rawDataList)
+      formatedDataList = $utils.formatList('songlist', rawDataList)
       break;
     case tagInfoEnum.专辑:
-      formatedDataList = $utils.formatAlbumlist(rawDataList)
+      formatedDataList = $utils.formatList('albumlist', rawDataList)
       break;
     case tagInfoEnum.歌手:
-      formatedDataList = $utils.formatSingerlist(rawDataList)
+      formatedDataList = $utils.formatList('singerlist', rawDataList)
       break;
     case tagInfoEnum.歌单:
-      formatedDataList = $utils.formatPlaylist(rawDataList)
+      formatedDataList = $utils.formatList('playlist', rawDataList)
       break;
     case tagInfoEnum.视频:
-      formatedDataList = $utils.formatVideolist(rawDataList)
+      formatedDataList = $utils.formatList('videolist', rawDataList, 'middle')
       break;
   }
   return formatedDataList

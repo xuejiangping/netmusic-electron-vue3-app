@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { IMG_SIZE_SEARCH_PARAMS } = getCurrentInstance()!.appContext.config.globalProperties.$COMMON
+// const { IMG_SIZE_SEARCH_PARAMS } = getCurrentInstance()!.appContext.config.globalProperties.$COMMON
 const props = withDefaults(defineProps<{
   dataList: VideoItem[],
   squar?: boolean,
@@ -17,19 +17,13 @@ const props = withDefaults(defineProps<{
   <!-- <div>VideoTable</div> -->
   <div class="grid-container ">
 
-    <router-link v-for="({ artistName, name, artists, cover, duration, playCount, id }, index) in dataList" :key="index"
+    <router-link v-for="({ artistName, name, artists, cover, duration, playCount, id }, index) in  dataList " :key="index"
       class="item" :to="{ name: routeName, query: { id, cover, name } }">
 
-
       <div class="block">
-
-        <el-image class="img" :style="{ 'aspect-ratio': props.squar ? '1/1' : '16/10' }"
-          :src="cover + IMG_SIZE_SEARCH_PARAMS.rect.middle" lazy>
-          <template #placeholder>
-            <img class="img" :style="{ 'aspect-ratio': props.squar ? '1/1' : '16/10' }" src="../assets/img/hello.webp" />
-          </template>
-        </el-image>
-        <span class="paly-count">{{ playCount }}</span>
+        <MyImage :src="cover" :aspect-ratio="squar ? '1/1' : '16/10'">
+        </MyImage>
+        <span class=" paly-count">{{ playCount }}</span>
         <span class="duration">{{ duration }}</span>
         <span class="artist">{{ artistName }}</span>
 
@@ -37,13 +31,11 @@ const props = withDefaults(defineProps<{
       <div class="describe ">
         <span class="title  text-in-oneline">{{ name }}</span>
         <span class="artists text-in-oneline">
-          <router-link v-for=" ({ name, id }, i) in artists" v-split="[i, ' / ']"
+          <router-link v-for=" ( { name, id }, i ) in  artists " v-split="[i, ' / ']"
             :to="{ name: 'artistlist', query: { id, name } }">
             <span>{{ name }}</span>
           </router-link></span>
       </div>
-
-
 
     </router-link>
   </div>
@@ -55,7 +47,7 @@ const props = withDefaults(defineProps<{
 .grid-container {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 16px;
   margin: 2rem 0;
 
@@ -64,11 +56,11 @@ const props = withDefaults(defineProps<{
   }
 
   .item {
-    .hover-scale-mixin();
     font-size: 12px;
 
     .block {
       position: relative;
+      .hover-scale-mixin;
 
       .img {
         width: 100%;
@@ -84,7 +76,6 @@ const props = withDefaults(defineProps<{
         margin: 5px;
         // text-shadow: 0 0 0.6rem BLACK, 0 0 0.6rem red;
         .my-text-shadow();
-
       }
 
       .paly-count {

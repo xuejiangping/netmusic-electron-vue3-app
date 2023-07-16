@@ -64,7 +64,7 @@ watch(keywords, debounced_getSuggestData)
 <template>
   <div class="search">
     <div>
-      <el-input :input-style="{ color: '#fff' }" @change="" @focus=" isOpen = true" size="small" class="input" @click.stop
+      <el-input :input-style="{ color: '#fff' }" @focus=" isOpen = true" size="small" class="input" @click.stop
         :prefix-icon="Search" @keydown.enter="search(keywords)" v-model="keywordsRaw" :placeholder="defaultKeywords" />
 
     </div>

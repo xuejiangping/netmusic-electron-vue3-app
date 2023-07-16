@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import get_recom_playlist from '../../assets/js/index/hot_playlist'
-
+import { useGlobalPropsStore } from '../../store/global-props-store'
+const { set_main_page_loading } = useGlobalPropsStore()
 const { $utils } = getCurrentInstance()!.appContext.config.globalProperties
 const { playlist_info, getMore, choosePlayListType } = get_recom_playlist({ limit: 5, offset: 0, cat: '为您推荐' })
 
-const isloading = computed(() => playlist_info.playlist_loading)
 
 
-const formatedData = computed(() => $utils.formatPlaylist(playlist_info.playlist_list, 'middle'))
+const formatedData = computed(() => $utils.formatList('playlist', playlist_info.playlist_list, 'middle'))
 const load = $utils.debounce(getMore, 1000)
-
+watch(() => playlist_info.playlist_loading, val => set_main_page_loading(val))
 
 
 
@@ -23,7 +23,6 @@ watch(currentIndex, choosePlayListType)
   <div>
     <header>
       <div> <el-tag round>全部</el-tag></div>
-
       <el-scrollbar>
         <div class="hotTags">
           <el-check-tag v-for="(tag, i) in playlist_info.playlist_hot_tags" type="info" :checked="currentIndex === i"

@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<{
   power?: number,
   thumb_color?: string,
 }>(), {
-  height: 4,
+  height: 3,
   modelValue: 80,
   power: 2.5,
   thumb_color: 'red',

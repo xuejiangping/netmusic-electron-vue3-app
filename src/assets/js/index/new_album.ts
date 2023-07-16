@@ -1,6 +1,6 @@
 import { getCurrentInstance, reactive, onMounted } from 'vue';
 
-export default function hot_recom() {
+export default function () {
     const { globalProperties: proxy } = getCurrentInstance()!.appContext.config;
 
     // -------------- 新碟上架

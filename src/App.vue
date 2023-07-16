@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { usePageShowStore } from './store/page-show-state-store'
+import { useGlobalPropsStore } from './store/global-props-store'
 // import hot_recom from './assets/js/index/hot_recom'
 const color = ref('blue')
 
 
 const { aside, footer } = storeToRefs(usePageShowStore())
+const { main_page_loading } = storeToRefs(useGlobalPropsStore())
+
 </script>
 
 <template>
@@ -17,7 +20,8 @@ const { aside, footer } = storeToRefs(usePageShowStore())
         <AsideNav></AsideNav>
       </el-aside>
       <el-main id="main">
-        <router-view></router-view>
+        <Loading v-if="main_page_loading"></Loading>
+        <div v-show="!main_page_loading"><router-view></router-view></div>
       </el-main>
     </el-container>
     <el-footer class="footer" v-show="footer">

@@ -52,6 +52,7 @@ app.directive('my-infinite-scroll', (el: HTMLElement, { value }) => {
   const debouncedHandler = $utils.debounce(handler, 500)
   pEl.addEventListener('scroll', debouncedHandler)
 })
+app.directive('topN', (el: HTMLElement, { value }) => value[0] < value[1] && (el.style.color = 'red'))
 /************************************************/
 const pinia = createPinia()
 //*********************************************************** */

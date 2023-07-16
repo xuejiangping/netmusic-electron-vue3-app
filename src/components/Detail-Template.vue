@@ -24,8 +24,8 @@ let a = console.log
   <div class="container">
     <div class="top">
       <div>
-        <div class="cover" :class="{ heijiao: type === '专辑' }">
-          <img :src="cover">
+        <div class="cover">
+          <my-image :src="cover" :is-album="type === '专辑'"></my-image>
         </div>
       </div>
       <div class="info">
@@ -74,31 +74,8 @@ let a = console.log
   .top {
     display: grid;
     grid-template-columns: minmax(140px, 1fr) 3fr;
-    column-gap: 1.5625rem;
+    column-gap: 1.8rem;
     font-size: 1rem;
-
-    .cover {
-
-      img {
-        width: 100%;
-        border-radius: 8px;
-        aspect-ratio: 1/1;
-
-      }
-
-    }
-
-    .heijiao {
-      background-image: url('@/assets/img/vinyl.png');
-      background-repeat: no-repeat;
-      background-size: contain;
-      background-position: right -5px;
-
-      img {
-        width: 88%;
-        box-shadow: 5px 0px 3px 3px #ffffff1f;
-      }
-    }
 
 
     .info {

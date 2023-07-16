@@ -5,7 +5,7 @@ import usePlayStateStore from '../store/play_state_store'
 const { $COMMON } = getCurrentInstance()?.proxy!
 const store = usePlayStateStore()
 const { updatePlayList, addSong, play } = store
-const { curSongId, stateId, } = storeToRefs(store)
+const { curSongId, playlistId, } = storeToRefs(store)
 /**序号前补足两位 01 02   */
 const vPad2 = (el: HTMLElement, binding: { value: string }) => {
   const val = binding.value
@@ -35,9 +35,11 @@ const props = withDefaults(defineProps<{
   dataList: SongItem[],
   needShowItems?: ('index' | 'title' | 'singer' | 'album' | 'duration' | 'pop')[],
   listId?: string,
-  size?: "" | "default" | "small" | "large"
+  size?: "" | "default" | "small" | "large",
+  showHeader?: boolean,
 }>(), {
   needShowItems: () => ['index', 'title', 'singer', 'album', 'duration', 'pop'],
+  showHeader: true
 })
 
 // const curSongId = ref(0)
@@ -61,7 +63,7 @@ function row_dbclick(row: SongItem) {
   // 判断双击 是否更新播放列表，若不是则只添加歌曲到列表
 
   if (needUpdatePlayList && props.listId) { //listId 存在，比较 当前的stateId
-    if (props.listId === stateId.value) {  // 当前歌单已添加到 播放列表，播放点击歌曲即可
+    if (props.listId === playlistId.value) {  // 当前歌单已添加到 播放列表，播放点击歌曲即可
       play(songId)
     } else {  // 歌单未添加到播放列表，更新歌单
       updatePlayList(props.dataList, songId, props.listId)
@@ -76,8 +78,8 @@ function row_dbclick(row: SongItem) {
 </script>
 
 <template>
-  <el-table :size="size" v-if="Boolean(dataList)" @row-dblclick="row_dbclick" class="table" :data="dataList" stripe
-    highlight-current-row>
+  <el-table :show-header="showHeader" :size="size" v-if="Boolean(dataList)" @row-dblclick="row_dbclick" class="table"
+    :data="dataList" stripe highlight-current-row>
 
     <el-table-column v-if="needShowItems.includes('index')" width="60px">
       <template #default="scope">
@@ -90,10 +92,12 @@ function row_dbclick(row: SongItem) {
 
     <el-table-column min-width="120px" v-if="needShowItems.includes('title')" class-name="title" prop="name"
       :label="tableColums1.name">
+
       <template #default="scope">
         <div :class="{ active: scope.row.id === curSongId }" class="title" v-title>
-          <span v-if="!needShowItems.includes('index') && scope.row.id === curSongId"><i
-              class="iconfont icon-volume"></i></span>
+          <span>
+            <slot name="title-prefix" :song="(scope.row as SongItem)"></slot>
+          </span>
           <span>{{ scope.row.name }}</span>
           <router-link v-if="scope.row.mv" :to="{ name: 'mv-detail', query: { id: scope.row.mv, name: scope.row.name } }">
             <i class=" iconfont icon-mv"></i></router-link>

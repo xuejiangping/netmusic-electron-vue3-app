@@ -9,7 +9,7 @@ import $utils from '../utils/util.ts'
 
 type SongId = SongItem['id']
 interface PlayState {
-  stateId: string,    //当前列表的唯一id，用于区别新列表，一般用歌单id，或者专辑id等唯一值
+  playlistId: string,    //当前列表的唯一id，用于区别新列表，一般用歌单id，或者专辑id等唯一值
   playList: SongItem[],
   playIndex: number
   isPaused: boolean, // 当前播放状态
@@ -58,12 +58,12 @@ export default defineStore('play_state', () => {
   const PLAY_STATE_STORE = 'play_state_store'
 
 
-  const state: PlayState = reactive($utils.localstorage.save_and_load(PLAY_STATE_STORE, () => ({ ...state, isPaused: true })) || {
+  const state: PlayState = reactive($utils.localstorage.save_and_load(PLAY_STATE_STORE, () => ({ ...state, isPaused: true }), true) || {
     isPaused: true, // 当前播放状态
     playList: [], // 播放列表
     playIndex: 0, // 当前播放歌曲在播放列表的所有位置
     // isShowPlayListTips: false, // 添加及播放成功后，播放列表按钮提示的文字
-    stateId: '0',
+    playlistId: '0',
     isUpdateCurTime: false,
     loopIndex: LoopEnum.顺序播放,
     audioELcontrol: null,
@@ -139,9 +139,9 @@ export default defineStore('play_state', () => {
   }
 
   /**更新当前播放列表 ，并播放歌曲 */
-  function updatePlayList(list: SongItem[], songId: SongId, stateId: string) {
+  function updatePlayList(list: SongItem[], songId: SongId, playlistId: string) {
     state.playList = list
-    state.stateId = stateId
+    state.playlistId = playlistId
     play(songId)
   }
   /***********************播放歌曲 songId*********************/

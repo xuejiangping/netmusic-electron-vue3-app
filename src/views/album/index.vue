@@ -4,17 +4,16 @@ import Comment from '../../components/Comment.vue'
 const { id, name } = useRoute().query as any
 const { $http, $utils } = getCurrentInstance()?.appContext.config.globalProperties!
 interface AlbumInfo {
-  album: null | ReturnType<typeof $utils.formatAlbumlist>[0],
-  songs: null | ReturnType<typeof $utils.formatSongs>
+  album: null | AlbumItem,
+  songs: null | SongItem[]
 }
 const state = reactive<AlbumInfo>({
   album: null, songs: null
 })
 const { album, songs } = toRefs(state)
 $http.album({ id }).then(({ songs, album }) => {
-  state.album = $utils.formatAlbumlist([album], 'middle')[0]
-  state.songs = $utils.formatSongs(songs)
-  // console.log('$utils.formatAlbumlist([album])', $utils.formatAlbumlist([album]))
+  state.album = $utils.formatList('albumlist', [album], 'middle')[0]
+  state.songs = $utils.formatList('songlist', songs)
 })
 
 
@@ -61,8 +60,6 @@ const handleTabsChange = (index: number) => {
     <template #info-line-5>
       <span v-if="album?.description">简介：{{ album?.description }}</span>
     </template>
-
-
     <!-- <SongTable v-if="songs" :data-list="songs"></SongTable> -->
     <KeepAlive>
       <component :listId="id" :commentData="commentData" :is="currentComponent" :data-list="(songs as any[])">

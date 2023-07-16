@@ -23,7 +23,7 @@ const change = ({ label, index }: Parameter) => {
   else if (label === '类型') mv_info.mv_type_index = index
   else if (label === '排序') mv_info.mv_order_index = index
 }
-const dataList = computed(() => $utils.formatVideolist(mv_info.mv_list))
+const dataList = computed(() => $utils.formatList('videolist', mv_info.mv_list, 'middle'))
 // console.log('mv_info', mv_info)
 
 </script>

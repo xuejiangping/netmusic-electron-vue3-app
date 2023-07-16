@@ -29,7 +29,7 @@ const baseOptions = {
   inputVal: 0,   //输入的播放时间，用于更改播放进度，单位秒
   currenPlayTime: 0,//当前 歌曲播放时间
 }
-const initedOptions: typeof baseOptions = $utils.localstorage.save_and_load(PLAYBAR_OPTIONS, () => options) || baseOptions
+const initedOptions: typeof baseOptions = $utils.localstorage.save_and_load(PLAYBAR_OPTIONS, () => options, true) || baseOptions
 const options = reactive(initedOptions)
 const { currenPlayTime, inputVal,
   currentPlayProgress, volume, lastVolume, isShowPlayListBox } = toRefs(options)
@@ -164,8 +164,12 @@ watch(currenPlayTime, (val) => {
             <div class="info"> <span>总{{ playList.length }}首</span> <a @click="clearPlayList" href="javascript:;"><i
                   class="iconfont icon-del"></i> 清空列表</a></div>
             <div class="list">
-              <song-table size="small" :list-id="stateId" :data-list="playList" :show-header="true"
-                :need-show-items="['singer', 'duration', 'title']"></song-table>
+              <song-table size="small" :list-id="stateId" :data-list="playList" :show-header="false"
+                :need-show-items="['singer', 'duration', 'title']">
+                <template #title-prefix="{ song }">
+                  <i v-if="song.id === currentSong?.id" class="iconfont icon-volume"></i>
+                </template>
+              </song-table>
             </div>
           </div>
         </div>

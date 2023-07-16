@@ -69,7 +69,8 @@ interface AllProps extends BaseProps {
   trackCount: number,
   bookCount: number,
   playCount: number,
-  creator: BaseProps
+  creator: BaseProps,
+  ratio?: string
 }
 
 
@@ -79,7 +80,7 @@ declare global {
   interface BaseProps { name: string, id: string }
   type SomePartial<T, U extends keyof T> = Partial<Pick<T, U>> & Omit<T, U>
   type GetValue<T> = T[keyof T]
-  type SongItem = Pick<AllProps, 'mv' | 'name' | 'id' | 'artists' | 'album' | 'duration' | 'dt' | 'audioUrl'>
+  type SongItem = Pick<AllProps, 'mv' | 'ratio' | 'name' | 'id' | 'artists' | 'album' | 'duration' | 'dt' | 'audioUrl'>
   type AlbumItem = Pick<AllProps, 'name' | 'img1v1Url' | 'alias' | 'id' | 'artists'>
   type PlaylistItem = Pick<AllProps, 'name' | 'trackCount' | 'artistName' | 'artistId' | 'id' | 'playCount' | 'cover'>
   type VideoItem = Pick<AllProps, 'artistName' | 'name' | 'artists' | 'cover' | 'duration' | 'playCount' | 'id' | 'artistId'>

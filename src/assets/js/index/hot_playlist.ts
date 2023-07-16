@@ -40,17 +40,18 @@ export default function hot_recom(playlist_params = { limit: 6, offset: 0, cat: 
     // 分类歌单列表
 
     const getPlayList = async (params: Parameters<typeof proxy.$http.playList>['0']) => {
-        playlist_info['playlist_loading'] = true;
         const { playlists, total } = await proxy.$http.playList(params)
         playlist_info['playlist_list'].push(...playlists)
         playlist_info['playlist_count'] = total
-        playlist_info['playlist_loading'] = false;
 
     }
 
-    onMounted(() => {
-        getHotTags();
-        getPlayList(playlist_info['playlist_params']);
+    onMounted(async () => {
+        playlist_info['playlist_loading'] = true;
+        await getHotTags();
+        await getPlayList(playlist_info['playlist_params']);
+        playlist_info['playlist_loading'] = false;
+
     });
 
     const getMore = () => {

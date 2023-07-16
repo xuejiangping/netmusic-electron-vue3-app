@@ -10,7 +10,10 @@ defineProps<{
 
 <template>
   <div class="item">
-    <img class="img" :src="img1v1Url">
+    <!-- <img class="img" :src="img1v1Url"> -->
+    <div class="cover">
+      <MyImage aspect-ratio="1/1" :src="img1v1Url"></MyImage>
+    </div>
     <div class="left">
       <slot></slot>
     </div>
@@ -29,9 +32,10 @@ defineProps<{
   padding: 0.4rem;
   font-size: 0.8rem;
 
-  .img {
-    width: 3rem;
+  .cover {
+    width: 4rem;
     aspect-ratio: 1/1;
+    margin-right: 1rem
   }
 
   .hover-scale-mixin();

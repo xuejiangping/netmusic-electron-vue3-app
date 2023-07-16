@@ -14,7 +14,7 @@ const tagInfoEnum = {
 
 const commentData = ref()
 
-const dataList = computed(() => $utils.formatSongs(playListDetail.value.tracks))
+const dataList = computed(() => $utils.formatList('songlist', playListDetail.value.tracks))
 
 onMounted(() => {
   $http.playlistdetail({ id }).then(res => {
