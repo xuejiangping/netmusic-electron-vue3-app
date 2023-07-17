@@ -118,8 +118,17 @@ export default {
    * @ fee  歌曲付费情况 
    * */
   // 处理各种列表数据
-  formatList(listType: ListType, list: any[], coverSize: CoverSize = 'small') {
-    let val: any[]
+  formatList<T extends ListType>(listType: T, list: any[], coverSize: CoverSize = 'small') {
+    interface Result {
+      albumlist: AlbumItem[],
+      playlist: PlaylistItem[],
+      ranklist: [],
+      singerlist: SingerItem[],
+      songlist: SongItem[],
+      videolist: VideoItem[]
+    }
+
+    let val: Result[T]
     const sizeParam = [$common.IMG_SIZE_SEARCH_PARAMS.squar[coverSize], $common.IMG_SIZE_SEARCH_PARAMS.rect[coverSize]]
     switch (listType) {
       case 'albumlist':
@@ -127,18 +136,20 @@ export default {
           const { name, id, artists, picUrl, alias, description, publishTime } = item
           return {
             name, id, artists, alias,
-            img1v1Url: picUrl + sizeParam[0], publishTime: this.formartDate(publishTime), description
+            cover: picUrl + sizeParam[0], publishTime: this.formartDate(publishTime),
+            description
           }
         })
         break;
       case 'playlist':
         val = list.map((item) => {
 
-          const { trackCount, playCount, name, id, creator: { nickname, userId }, coverImgUrl } = item
+          const { trackCount, playCount, name, id, creator: { nickname, userId, avatarUrl }, coverImgUrl, createTime, description } = item
           return {
-            trackCount, playCount: this.formartNum(playCount), name, id, artistName: nickname,
+            trackCount, playCount: this.formartNum(playCount), name, id, artistName: nickname, avatar: avatarUrl,
             artistId: userId,
-            cover: coverImgUrl + sizeParam[0]
+            cover: coverImgUrl + sizeParam[0],
+            createTime, description
           }
         })
         break;
@@ -154,17 +165,16 @@ export default {
         break;
       case 'singerlist':
         val = list.map((item) => {
-          // 是否有版权播放
-          const { accountId, id, img1v1Url, trans, name, alias } = item
+          const { accountId, id, img1v1Url, trans, name, albumSize, alias, musicSize, songs } = item
           return {
-            accountId, id, img1v1Url: img1v1Url + sizeParam[0],
+            accountId, id, cover: img1v1Url + sizeParam[0], albumSize, musicSize,
+            tracks: songs,
             trans, name, alias
           }
         })
         break;
       case 'songlist':
         val = list.map((item) => {
-          // 是否有版权播放
           item.license = item.privilege?.cp
           const { license, name, id, ar: artists, al: album, dt, mv, fee, pop, ratio } = item
           return {
@@ -175,9 +185,7 @@ export default {
         break;
       case 'videolist':
         val = list.map((item) => {
-          // 是否有版权播放
           const { artistName, name, id, artists, duration, playCount, cover } = item
-          // console.log('item', item)
           return {
             artistName, name, id, artists, duration: duration && this.formatSongTime(duration),
             playCount: this.formartNum(playCount),
@@ -238,7 +246,8 @@ export default {
     clear(key: string) {
       window.localStorage.removeItem(key)
     }
-  }
+  },
+
 }
 /**
  *@  歌曲当前时间 和 百分比 互相转换;;;

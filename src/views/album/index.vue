@@ -2,32 +2,36 @@
 import SongTable from '../../components/SongTable.vue'
 import Comment from '../../components/Comment.vue'
 const { id, name } = useRoute().query as any
-const { $http, $utils } = getCurrentInstance()?.appContext.config.globalProperties!
+const { $http, $utils, $utils2 } = getCurrentInstance()?.proxy!
 interface AlbumInfo {
   album: null | AlbumItem,
-  songs: null | SongItem[]
+  songs: null | SongItem[],
+  commentData: any
 }
+const songTableneedShowItmes = ['index', 'title', 'singer', 'duration']
+
 const state = reactive<AlbumInfo>({
-  album: null, songs: null
+  album: null, songs: null, commentData: null
 })
-const { album, songs } = toRefs(state)
-$http.album({ id }).then(({ songs, album }) => {
+const { album, songs, commentData } = toRefs(state)
+
+const tastA = $http.album({ id }).then(({ songs, album }) => {
   state.album = $utils.formatList('albumlist', [album], 'middle')[0]
   state.songs = $utils.formatList('songlist', songs)
 })
 
-
-$http.albumComment({ id: String(id) }).then(({
+const tastB = $http.albumComment({ id: String(id) }).then(({
   comments, total, hotComments
 }) => {
   commentData.value = { comments, total, hotComments }
   tagInfoEnum.评论.suffix = `(${total})`
 })
+$utils2.loading([tastA, tastB])
+
 const tagInfoEnum = {
   歌曲列表: { index: 0, suffix: '' },
   评论: { index: 1, suffix: '' }
 }
-const commentData = ref()
 const currentComponent = shallowRef<any>(SongTable)
 
 const handleTabsChange = (index: number) => {
@@ -43,7 +47,7 @@ const handleTabsChange = (index: number) => {
 
 <template>
   <DetailTemplate v-if="album" type="专辑" @handle-tabs-change="handleTabsChange" :tag-info-enum="tagInfoEnum"
-    :cover="album?.img1v1Url">
+    :cover="album.cover">
     <template #info-line-1>
       <span>{{ name }}</span>
     </template>
@@ -58,11 +62,11 @@ const handleTabsChange = (index: number) => {
     </template>
 
     <template #info-line-5>
-      <span v-if="album?.description">简介：{{ album?.description }}</span>
+      <span v-if="album.description">简介：{{ album.description }}</span>
     </template>
-    <!-- <SongTable v-if="songs" :data-list="songs"></SongTable> -->
     <KeepAlive>
-      <component :listId="id" :commentData="commentData" :is="currentComponent" :data-list="(songs as any[])">
+      <component :listId="id" :need-show-items="songTableneedShowItmes" :commentData="commentData" :is="currentComponent"
+        :data-list="(songs as any[])">
       </component>
     </KeepAlive>
   </DetailTemplate>

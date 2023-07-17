@@ -52,11 +52,7 @@ defineProps<{
     align-self: center;
   }
 
-  img {
-    border-radius: 15%;
-    margin-right: 0.8rem;
 
-  }
 
 }
 </style>

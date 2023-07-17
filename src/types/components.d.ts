@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    '混合展示': typeof import('./../components/混合展示.vue')['default']
     AAA: typeof import('./../components/AAA.vue')['default']
     AlbumTable: typeof import('./../components/AlbumTable.vue')['default']
     AsideNav: typeof import('./../components/AsideNav.vue')['default']
@@ -46,8 +47,11 @@ declare module 'vue' {
     Header: typeof import('./../components/Header.vue')['default']
     Image: typeof import('./../components/Image.vue')['default']
     ListItem: typeof import('./../components/ListItem.vue')['default']
+    ListItem2: typeof import('./../components/List-Item2.vue')['default']
     Loading: typeof import('./../components/Loading.vue')['default']
+    MixedTable: typeof import('./../components/MixedTable.vue')['default']
     MyImage: typeof import('./../components/My-Image.vue')['default']
+    PictureListTable: typeof import('./../components/PictureListTable.vue')['default']
     PlayBar: typeof import('./../components/Footer/PlayBar.vue')['default']
     PlaylistTable: typeof import('./../components/PlaylistTable.vue')['default']
     ProgressBar: typeof import('./../components/Footer/ProgressBar.vue')['default']

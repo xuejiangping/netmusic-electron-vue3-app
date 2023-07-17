@@ -12,7 +12,7 @@ import usePlayStateStore from '../../store/play_state_store'
 const PLAYBAR_OPTIONS = 'playbar_options'
 const store = usePlayStateStore()
 const { currentSong, playList, stateId, isPaused, currentLoopOption } = toRefs(store)
-const { next, prev, switchLoopOption, clearPlayList } = store
+const { next, prev, switchLoopOption, clearPlayList, changeUserClickPlayActionType } = store
 const { $utils, $COMMON } = getCurrentInstance()?.appContext.config.globalProperties!
 
 

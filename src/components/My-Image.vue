@@ -36,6 +36,7 @@ defineOptions({ inheritAttrs: false })
     z-index: 1;
     box-shadow: .4rem 0px .1875rem .1875rem #ffffff33;
     border-radius: 0.5rem;
+
   }
 
   .heijiao {

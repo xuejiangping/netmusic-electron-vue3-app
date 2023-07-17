@@ -7,9 +7,9 @@ defineProps<{
 
 <template>
     <div>
-        <router-link v-for="({ img1v1Url, artists, name, id, alias }, index) in dataList" :key="index"
+        <router-link v-for="({ cover, artists, name, id, alias }, index) in dataList" :key="index"
             :to="{ name: 'album', query: { name, id } }">
-            <ListItem :img1v1-url="img1v1Url">
+            <ListItem :img1v1-url="cover">
                 <div>
                     <span>{{ name }}</span>
                     <span v-if="alias.length > 0">

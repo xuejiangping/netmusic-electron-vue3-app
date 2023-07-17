@@ -2,8 +2,8 @@
 
 import usePlayStateStore from '../../store/play_state_store'
 const store = usePlayStateStore()
-const { isUpdateCurTime, playActionType } = storeToRefs(store)
-const { setPauseState, next, prev, continuePlay, initAudioELcontrol } = store
+const { isUpdateCurTime, userClickPlayActionType } = storeToRefs(store)
+const { setPauseState, prev, continuePlay, initAudioELcontrol } = store
 const { $notify } = getCurrentInstance()?.appContext.config.globalProperties!
 /**
  * inputVal  输入值，用来更新播放器的curtime
@@ -73,8 +73,8 @@ function setPlayProgress(val: number) {
 function errorSong() {
   if (navigator.onLine) {
     $notify(`歌曲 ${props.curSongInfo.name} 播放出错`)
-    if (playActionType.value === 'prev') prev();
-    else next()
+    if (userClickPlayActionType.value === 'prev') prev();
+    else continuePlay()
   } else {
     $notify(`网络异常,请检查网络`)
   }

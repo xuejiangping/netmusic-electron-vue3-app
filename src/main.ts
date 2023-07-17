@@ -10,6 +10,7 @@ import $common from './assets/js/common';
 import $utils from './utils/util.js'
 
 
+
 /************************************************/
 import './assets/css/global.less'
 import 'element-plus/dist/index.css'
@@ -21,6 +22,9 @@ import 'vue3-video-play/dist/style.css' // 引入css
 /************************************************/
 app.config.globalProperties.$http = $http
 app.config.globalProperties.$utils = $utils
+
+
+
 
 // window.$http = $http
 /***********************全局指令*************************/
@@ -54,6 +58,7 @@ app.directive('my-infinite-scroll', (el: HTMLElement, { value }) => {
 })
 app.directive('topN', (el: HTMLElement, { value }) => value[0] < value[1] && (el.style.color = 'red'))
 /************************************************/
+
 const pinia = createPinia()
 //*********************************************************** */
 app.config.globalProperties['$COMMON'] = $common;
@@ -62,6 +67,11 @@ app.use(vue3videoPlay)
 app.use(router)
 app.use(pinia)
 app.use(ElementPlus)
-
 app.mount('#app')
 window.$http = $http
+/*********************** 工具2*************************/
+import('./utils/util2.js').then($utils2 => {
+  // console.log('res', res)
+  app.config.globalProperties.$utils2 = $utils2
+})
+

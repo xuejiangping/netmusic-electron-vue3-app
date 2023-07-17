@@ -3,7 +3,8 @@
 const props = withDefaults(defineProps<{
   dataList: VideoItem[],
   squar?: boolean,
-  routeName?: string
+  routeName?: string,
+  isAlbum?: boolean
 }>(), {
   squar: false,
   routeName: 'index'
@@ -21,7 +22,7 @@ const props = withDefaults(defineProps<{
       class="item" :to="{ name: routeName, query: { id, cover, name } }">
 
       <div class="block">
-        <MyImage :src="cover" :aspect-ratio="squar ? '1/1' : '16/10'">
+        <MyImage :is-album="isAlbum" :src="cover" :aspect-ratio="squar ? '1/1' : '16/10'">
         </MyImage>
         <span class=" paly-count">{{ playCount }}</span>
         <span class="duration">{{ duration }}</span>
@@ -32,7 +33,7 @@ const props = withDefaults(defineProps<{
         <span class="title  text-in-oneline">{{ name }}</span>
         <span class="artists text-in-oneline">
           <router-link v-for=" ( { name, id }, i ) in  artists " v-split="[i, ' / ']"
-            :to="{ name: 'artistlist', query: { id, name } }">
+            :to="{ name: 'singer', query: { id, name, cover } }">
             <span>{{ name }}</span>
           </router-link></span>
       </div>
@@ -47,9 +48,9 @@ const props = withDefaults(defineProps<{
 .grid-container {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 16px;
-  margin: 2rem 0;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 1.5rem;
+
 
   &:deep(.el-image__inner) {
     border-radius: 5%;

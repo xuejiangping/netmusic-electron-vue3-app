@@ -3,6 +3,8 @@ import { RouteMeta, RouteRaw } from 'vue-router'
 import $http from '../apis/http.ts'
 import $common from '../assets/js/common.js';
 import $utils from '../utils/util.js'
+import * as $utils2 from '../utils/util2.js'
+
 
 export { }  //
 declare module 'vue' {
@@ -16,6 +18,7 @@ declare module 'vue' {
     $msgbox: Function
     $confirm: Function
     $utils: typeof $utils
+    $utils2: typeof $utils2
   }
 }
 
@@ -70,7 +73,15 @@ interface AllProps extends BaseProps {
   bookCount: number,
   playCount: number,
   creator: BaseProps,
-  ratio?: string
+  ratio?: string,
+  hotAlbums: AlbumItem[],
+  albumSize: number,
+  musicSize: number,
+  songs: SongItem[],
+  avatar: string
+  createTime: string,
+  description: string,
+  publishTime: string
 }
 
 
@@ -81,10 +92,10 @@ declare global {
   type SomePartial<T, U extends keyof T> = Partial<Pick<T, U>> & Omit<T, U>
   type GetValue<T> = T[keyof T]
   type SongItem = Pick<AllProps, 'mv' | 'ratio' | 'name' | 'id' | 'artists' | 'album' | 'duration' | 'dt' | 'audioUrl'>
-  type AlbumItem = Pick<AllProps, 'name' | 'img1v1Url' | 'alias' | 'id' | 'artists'>
-  type PlaylistItem = Pick<AllProps, 'name' | 'trackCount' | 'artistName' | 'artistId' | 'id' | 'playCount' | 'cover'>
+  type AlbumItem = Pick<AllProps, 'songs' | 'name' | 'cover' | 'alias' | 'id' | 'artists' | 'publishTime' | 'description'>
+  type PlaylistItem = Pick<AllProps, 'description' | 'createTime' | 'avatar' | 'name' | 'trackCount' | 'artistName' | 'artistId' | 'id' | 'playCount' | 'cover'>
   type VideoItem = Pick<AllProps, 'artistName' | 'name' | 'artists' | 'cover' | 'duration' | 'playCount' | 'id' | 'artistId'>
-  type SingerItem = Pick<AllProps, 'alias' | 'accountId' | 'id' | 'img1v1Url' | 'name' | 'trans'>
+  type SingerItem = Pick<AllProps, 'hotAlbums' | 'musicSize' | 'albumSize' | 'alias' | 'accountId' | 'id' | 'cover' | 'name' | 'trans'>
 
 
 }

@@ -8,6 +8,7 @@ import $utils from '../utils/util.ts'
 
 
 type SongId = SongItem['id']
+type PlayAciton = 'next' | 'prev'
 interface PlayState {
   playlistId: string,    //当前列表的唯一id，用于区别新列表，一般用歌单id，或者专辑id等唯一值
   playList: SongItem[],
@@ -17,7 +18,7 @@ interface PlayState {
   loopIndex: number,
   audioELcontrol: { play(): void, pause(): void } | null,
   currentSong: SongItem | null,
-  playActionType: 'next' | 'prev'
+  userClickPlayActionType: PlayAciton
 }
 
 
@@ -68,8 +69,10 @@ export default defineStore('play_state', () => {
     loopIndex: LoopEnum.顺序播放,
     audioELcontrol: null,
     currentSong: null,
-    playActionType: 'next'
+    playActionType: 'next'  //用户手动点击的 类型,上一曲或下一曲
   })
+
+
   watch(() => state.loopIndex, (_, lastIndex) => {
     if (lastIndex === LoopEnum.随机播放) {
       if (currentSong.value) updatePlayIndex(currentSong.value.id)
@@ -154,7 +157,7 @@ export default defineStore('play_state', () => {
   function setIsUpdateCurTime(val: boolean) {
     state.isUpdateCurTime = val
   }
-  /***********************播放完当前歌曲后,后续播放逻辑*************************/
+  /***********************播放完当前歌曲后,后续逻辑*************************/
   function continuePlay() {
     switch (state.loopIndex) {
       case LoopEnum.顺序播放:
@@ -167,21 +170,22 @@ export default defineStore('play_state', () => {
         next();
     }
   }
+  function changeUserClickPlayActionType(val: PlayAciton) {
+    state.userClickPlayActionType = val
+  }
   /**下一曲 */
   function next() {
-    state.playActionType = 'next'
+
     if (state.playIndex === state.playList.length - 1) {
       state.playIndex = 0
     } else {
       state.playIndex++
     }
     updateCurSong()
-
     // state.audioELcontrol?.play()
   }
   /**上一曲 */
   function prev() {
-    state.playActionType = 'prev'
     if (state.playIndex === 0) {
       state.playIndex = state.playList.length - 1
     } else {
@@ -198,6 +202,6 @@ export default defineStore('play_state', () => {
 
 
   return {
-    ...toRefs(state), continuePlay, clearPlayList, curSongId, currentLoopOption, initAudioELcontrol, switchLoopOption, setPauseState, next, prev, addSong, updatePlayList, addPlayList, currentSong, play, setIsUpdateCurTime
+    ...toRefs(state), changeUserClickPlayActionType, continuePlay, clearPlayList, curSongId, currentLoopOption, initAudioELcontrol, switchLoopOption, setPauseState, next, prev, addSong, updatePlayList, addPlayList, currentSong, play, setIsUpdateCurTime
   }
 })
