@@ -125,10 +125,10 @@ watch(currenPlayTime, (val) => {
                 <i slot="reference" :class="currentLoopOption.icon"></i>
               </template>
             </el-popover></span>
-          <i @click="prev" class="iconfont icon-audio-prev"></i>
+          <i @click=" changeUserClickPlayActionType('prev'); prev()" class="iconfont icon-audio-prev"></i>
           <i v-if="isPaused" @click="audio.play" class="iconfont icon-play"></i>
           <i v-else @click="audio.pause" class="iconfont icon-pause"></i>
-          <i @click="next" class="iconfont icon-audio-next"></i>
+          <i @click=" changeUserClickPlayActionType('next'); next()" class="iconfont icon-audio-next"></i>
           <span class="lyric">词</span>
         </div>
         <div class="bottom">
