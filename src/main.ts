@@ -5,6 +5,10 @@ import { createPinia } from 'pinia'
 import vue3videoPlay from 'vue3-video-play' // 引入组件
 
 /************************************************/
+
+const pinia = createPinia()
+
+/************************************************/
 import $http from './apis/http'
 import $common from './assets/js/common';
 import $utils from './utils/util.js'
@@ -20,11 +24,24 @@ import 'vue3-video-play/dist/style.css' // 引入css
 
 
 /************************************************/
+window.NetMusic = {
+  $http,
+  init: true
+}
+window.document.body.oncontextmenu = () => false
+
+//==========================================================
+//        util2 需要用到 store,所以必须，放到createPinia() 调用后异步绑定
+//==========================================================
+import('./utils/util2.js').then($utils2 => {
+  app.config.globalProperties.$utils2 = $utils2
+})
+
 app.config.globalProperties.$http = $http
 app.config.globalProperties.$utils = $utils
 
 
-
+app.config.errorHandler = function (err) { console.log('err', err) }
 
 // window.$http = $http
 /***********************全局指令*************************/
@@ -41,25 +58,28 @@ app.directive('split', (el: HTMLElement, { value }) => {
 })
 // 给元素自动添加title
 app.directive('title', (el: HTMLElement) => el.title = el.textContent!)
+/**  利用 IntersectionObserver 实现无限滚动 */
+app.directive('my-infinite-scroll', {
+  mounted(el: HTMLElement & { ob: IntersectionObserver }, binding) {
+    const footerEl = document.createElement('div')
+    // footerEl.style.height = '10rem'
+    const getmoreFN = binding.value
+    el.parentElement?.appendChild(footerEl)
+    const ob = el.ob = new IntersectionObserver((entries) => {
+      if (entries[0].intersectionRatio > 0 && entries[0].isIntersecting) {
+        getmoreFN()()
+      }
+    })
+    ob.observe(footerEl)
 
-app.directive('my-infinite-scroll', (el: HTMLElement, { value }) => {
-  const pEl = el.parentElement
-  if (!pEl) return false
-  const cb: CallableFunction = value
-  const range = 1   //判断的误差
-  /**节流处理过的 滚动事件函数 */
-  const handler = () => {
-    //是否到底
-    let is_bottom: boolean = Math.abs(pEl.scrollHeight - pEl.clientHeight - pEl.scrollTop) < range
-    if (is_bottom) cb()
+  },
+  unmounted(el) {
+    const ob = el.ob as IntersectionObserver
+    ob.disconnect()
   }
-  const debouncedHandler = $utils.debounce(handler, 500)
-  pEl.addEventListener('scroll', debouncedHandler)
 })
 app.directive('topN', (el: HTMLElement, { value }) => value[0] < value[1] && (el.style.color = 'red'))
-/************************************************/
 
-const pinia = createPinia()
 //*********************************************************** */
 app.config.globalProperties['$COMMON'] = $common;
 /************************************************/
@@ -68,10 +88,5 @@ app.use(router)
 app.use(pinia)
 app.use(ElementPlus)
 app.mount('#app')
-window.$http = $http
 /*********************** 工具2*************************/
-import('./utils/util2.js').then($utils2 => {
-  // console.log('res', res)
-  app.config.globalProperties.$utils2 = $utils2
-})
 

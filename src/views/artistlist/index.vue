@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { $http, $COMMON, $utils } = getCurrentInstance()?.proxy!
+const { $http, $COMMON, $utils, $utils2 } = getCurrentInstance()?.proxy!
 const A_Z = Array(26).fill('A'.charCodeAt(0)).map((v, i) => {
   let val = String.fromCharCode(v + i)
   return { label: val, val }
@@ -11,32 +11,28 @@ const cats = {
   筛选: [{ label: '热门', val: '-1' }, { label: '#', val: '0' }].concat(A_Z)
 }
 
-const { type, area, initial, data, currentPage } = toRefs(reactive({
+const { type, area, initial, data } = toRefs(reactive({
   type: -1, area: -1, initial: '-1',
-  data: [] as any[], currentPage: 1
+  data: [] as any[]
 }))
-watchEffect(getData)
 
-function getData() {
-  $http.artistList({ type: type.value, area: area.value, initial: initial.value })
-    .then(res => $utils.formatList('singerlist', res.artists, 'middle')).then(val => data.value = val)
-}
-
-function getMore() {
-  let offset = (++currentPage.value - 1) * LIMIT
-  $http.artistList({
-    type: type.value, area: area.value, initial: initial.value, offset, limit: LIMIT
-  })
+function getData(...args: [any]) {
+  $http.artistList(...args)
     .then(res => $utils.formatList('singerlist', res.artists, 'middle'))
     .then(val => data.value.push(...val))
 }
-const debouncedGetMore = $utils.debounce(getMore, 1000)
+const _getMore = $utils2.getMoreHandler(getData, 500, 1)
+const more = () => _getMore({ type: type.value, area: area.value, initial: initial.value, limit: LIMIT })
+
+watchEffect(() => {
+  data.value = []
+  getData({ type: type.value, area: area.value, initial: initial.value, limit: LIMIT })
+})
 
 function choose(cat: keyof typeof cats, val: any) {
   if (cat === '语种') type.value = val
   else if (cat === '分类') area.value = val
   else initial.value = val
-  console.log(cat, val)
 }
 
 function isSelected(cat: keyof typeof cats, val: any) {
@@ -64,7 +60,7 @@ function isSelected(cat: keyof typeof cats, val: any) {
 
     </div>
 
-    <div class="container" v-if="data.length" v-infinite-scroll="debouncedGetMore">
+    <div class="container" v-if="data.length" v-my-infinite-scroll="() => more">
       <VideoTable route-name="singer" squar :data-list="data"></VideoTable>
     </div>
   </div>
@@ -74,6 +70,7 @@ function isSelected(cat: keyof typeof cats, val: any) {
 .box {
   display: flex;
   font-size: 0.8rem;
+  margin: 1rem 0;
 
   ul {
     flex: 1;
@@ -86,7 +83,7 @@ function isSelected(cat: keyof typeof cats, val: any) {
 
     li {
       padding: 0 1rem;
-      margin-bottom: 0.8rem;
+      margin-bottom: 1rem;
 
       // border: 1px solid;0.8rem
       .item {

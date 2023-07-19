@@ -11,10 +11,10 @@ import usePlayStateStore from '../../store/play_state_store'
 //==========================================================
 const PLAYBAR_OPTIONS = 'playbar_options'
 const store = usePlayStateStore()
-const { currentSong, playList, stateId, isPaused, currentLoopOption } = toRefs(store)
+const { currentSong, playList, playlistId, isPaused, currentLoopOption } = toRefs(store)
 const { next, prev, switchLoopOption, clearPlayList, changeUserClickPlayActionType } = store
-const { $utils, $COMMON } = getCurrentInstance()?.appContext.config.globalProperties!
-
+const { $utils, $COMMON, $confirm } = getCurrentInstance()?.appContext.config.globalProperties!
+// $confirm('双击播放单曲时，用当前歌曲所在的歌曲列表替换播放列？')
 
 const cover = computed(() => {
   let sizeQuery = $COMMON.IMG_SIZE_SEARCH_PARAMS.squar.small
@@ -29,12 +29,12 @@ const baseOptions = {
   inputVal: 0,   //输入的播放时间，用于更改播放进度，单位秒
   currenPlayTime: 0,//当前 歌曲播放时间
 }
-const initedOptions: typeof baseOptions = $utils.localstorage.save_and_load(PLAYBAR_OPTIONS, () => options, true) || baseOptions
+const initedOptions: typeof baseOptions = $utils.localstorage.save_and_load(PLAYBAR_OPTIONS, () => options, window.NetMusic.init) || baseOptions
 const options = reactive(initedOptions)
 const { currenPlayTime, inputVal,
   currentPlayProgress, volume, lastVolume, isShowPlayListBox } = toRefs(options)
 // $utils.localstorage.save_when_unload(PLAYBAR_OPTIONS, )
-
+window.document.addEventListener('click', () => isShowPlayListBox.value = false)
 
 //==========================================================
 const carousel = ref()   //左边的轮播组件
@@ -62,7 +62,7 @@ function switchMute() {
 
 const isMuted = computed(() => volume.value == 0)
 
-/**将当前歌曲播放时间转换为百分比，供进度条使用 */
+/**将当前歌曲播播放百分比 转换为 分秒格式时间*/
 const formatedCurTime = computed(() => {
   if (!currentSong.value) return ''
   const time = $utils.transformSongTime({ dt: currentSong.value.dt, percent: currentPlayProgress.value })
@@ -155,16 +155,16 @@ watch(currenPlayTime, (val) => {
           </div>
 
         </div>
-        <div class="playlist">
+        <div class="playlist" @click.stop>
           <div class="icon">
             <i @click="isShowPlayListBox = !isShowPlayListBox" title="当前播放列表" class="iconfont icon-add "></i>
           </div>
-          <div class="box" @mouseleave="isShowPlayListBox = false" v-show="isShowPlayListBox">
+          <div class="box" v-show="isShowPlayListBox">
             <h2>当前播放</h2>
             <div class="info"> <span>总{{ playList.length }}首</span> <a @click="clearPlayList" href="javascript:;"><i
                   class="iconfont icon-del"></i> 清空列表</a></div>
             <div class="list">
-              <song-table size="small" :list-id="stateId" :data-list="playList" :show-header="false"
+              <song-table size="small" :list-id="String(playlistId)" :data-list="playList" :show-header="false"
                 :need-show-items="['singer', 'duration', 'title']">
                 <template #title-prefix="{ song }">
                   <i v-if="song.id === currentSong?.id" class="iconfont icon-volume"></i>

@@ -1,5 +1,6 @@
 import { ComponentCustomProperties } from "vue";
 import { RouteMeta, RouteRaw } from 'vue-router'
+
 import $http from '../apis/http.ts'
 import $common from '../assets/js/common.js';
 import $utils from '../utils/util.js'
@@ -7,6 +8,8 @@ import * as $utils2 from '../utils/util2.js'
 
 
 export { }  //
+
+
 declare module 'vue' {
   interface ComponentCustomProperties {
     $http: typeof $http; // 这里填类型
@@ -96,6 +99,7 @@ declare global {
   type PlaylistItem = Pick<AllProps, 'description' | 'createTime' | 'avatar' | 'name' | 'trackCount' | 'artistName' | 'artistId' | 'id' | 'playCount' | 'cover'>
   type VideoItem = Pick<AllProps, 'artistName' | 'name' | 'artists' | 'cover' | 'duration' | 'playCount' | 'id' | 'artistId'>
   type SingerItem = Pick<AllProps, 'hotAlbums' | 'musicSize' | 'albumSize' | 'alias' | 'accountId' | 'id' | 'cover' | 'name' | 'trans'>
+  type MvItem = Pick<AllProps, 'artistName' | 'duration' | 'playCount' | 'cover' | 'publishTime' | 'name' | 'id'>
 
 
 }

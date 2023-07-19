@@ -1,10 +1,9 @@
 import { getCurrentInstance, reactive, onMounted } from 'vue';
 
-export default function hot_recom(playlist_params = { limit: 6, offset: 0, cat: '' }) {
-    const { globalProperties: proxy } = getCurrentInstance()!.appContext.config
+export default function hot_recom(playlist_params = { limit: 5, offset: 0, cat: '' }) {
+    const proxy = getCurrentInstance()?.proxy!
 
 
-    // type a = Omit<Parameters<typeof proxy.$http.playList>['0'],'limit'|'offset'|'cat'>
 
     // -------------- 推荐歌单
     // 热门推荐歌单
@@ -15,12 +14,9 @@ export default function hot_recom(playlist_params = { limit: 6, offset: 0, cat: 
         playlist_params,
         playlist_count: 6,
         playlist_loading: false,
-        playlist_currentPage: 1
     });
 
     const resetInfo = () => {
-        // playlist_info.playlist_count=0
-        playlist_info.playlist_currentPage = 1
         playlist_info.playlist_list = []
     }
     // 获取热门推荐歌单标签
@@ -33,7 +29,7 @@ export default function hot_recom(playlist_params = { limit: 6, offset: 0, cat: 
         playlist_info['playlist_index'] = index;
         playlist_info['playlist_params']['cat'] = playlist_info['playlist_hot_tags'][index].name
         resetInfo()
-        getPlayList(playlist_info['playlist_params'])
+        more()
 
     }
 
@@ -43,26 +39,19 @@ export default function hot_recom(playlist_params = { limit: 6, offset: 0, cat: 
         const { playlists, total } = await proxy.$http.playList(params)
         playlist_info['playlist_list'].push(...playlists)
         playlist_info['playlist_count'] = total
-
     }
 
-    onMounted(async () => {
-        playlist_info['playlist_loading'] = true;
-        await getHotTags();
-        await getPlayList(playlist_info['playlist_params']);
-        playlist_info['playlist_loading'] = false;
-
+    onMounted(() => {
+        proxy.$utils2.loading([getHotTags(), more()])
     });
 
-    const getMore = () => {
-        playlist_info.playlist_params['offset'] = (++playlist_info.playlist_currentPage - 1) * playlist_params.limit
-        return getPlayList(playlist_info['playlist_params'])
-    }
+    const _getMore = proxy.$utils2.getMoreHandler(getPlayList, 500)
+    const more = () => _getMore(playlist_info['playlist_params'])
 
     return {
         playlist_info,
         getHotTags,
         choosePlayListType,
-        getMore
+        more
     }
 }

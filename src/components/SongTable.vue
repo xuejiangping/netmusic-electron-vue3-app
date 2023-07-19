@@ -79,19 +79,18 @@ function row_dbclick(row: SongItem) {
 
 <template>
   <el-table :flexible="true" :show-header="showHeader" :size="size" v-if="Boolean(dataList)" @row-dblclick="row_dbclick"
-    class="table" :data="dataList" stripe highlight-current-row>
+    @row-contextmenu="" class="table" :data="dataList" stripe highlight-current-row>
 
-    <el-table-column width="80px" v-if="needShowItems.includes('index')">
+    <el-table-column v-if="needShowItems.includes('index')">
       <template #default="scope">
         <div class="col-1">
-          <span v-if="curSongId === scope.row.id"><i class="active iconfont icon-audio-play"></i></span>
+          <span v-if="curSongId === scope.row.id"><i class="active iconfont icon-playnum  "></i></span>
           <span v-else v-pad2="scope.$index"></span>
         </div>
       </template>
     </el-table-column>
 
-    <el-table-column min-width="120px" v-if="needShowItems.includes('title')" class-name="title" prop="name"
-      :label="tableColums1.name">
+    <el-table-column v-if="needShowItems.includes('title')" class-name="title" prop="name" :label="tableColums1.name">
 
       <template #default="scope">
         <div :class="{ active: scope.row.id === curSongId }" class="title" v-title>
@@ -106,8 +105,7 @@ function row_dbclick(row: SongItem) {
       </template>
     </el-table-column>
 
-    <el-table-column min-width="100px" v-if="needShowItems.includes('singer')" prop="singer"
-      :label="tableColums1.artists">
+    <el-table-column v-if="needShowItems.includes('singer')" prop="singer" :label="tableColums1.artists">
       <template #default="scope">
         <div class="singer" v-title>
           <router-link v-for="(item, i) in scope.row.artists" v-split="[i]" :to="{ name: 'singer', query: item }">
@@ -127,13 +125,12 @@ function row_dbclick(row: SongItem) {
       </template>
     </el-table-column>
 
-    <el-table-column width="100px" v-if="needShowItems.includes('duration')" prop="duration"
-      :label="tableColums1.duration">
+    <el-table-column v-if="needShowItems.includes('duration')" prop="duration" :label="tableColums1.duration">
       <template #default="scope">
         {{ scope.row.duration }}
       </template>
     </el-table-column>
-    <el-table-column width="100px" v-if="needShowItems.includes('pop')" prop="pop" :label="tableColums1.pop">
+    <el-table-column v-if="needShowItems.includes('pop')" prop="pop" :label="tableColums1.pop">
       <template #default="scope">
         <el-progress color="pink" :show-text="false" :percentage="scope.row.pop" />
       </template>

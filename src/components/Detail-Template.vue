@@ -17,7 +17,6 @@ withDefaults(defineProps<{
 const emit = defineEmits<{
   (event: 'handleTabsChange', i: any): void
 }>()
-let a = console.log
 </script>
 
 <template>
@@ -51,7 +50,7 @@ let a = console.log
     </div>
     <div class="middle">
       <slot name="middle">
-        <el-tabs class="tabs" @tab-click="a" v-model="activeIndex" @tab-change="(i) => emit('handleTabsChange', i)">
+        <el-tabs class="tabs" v-model="activeIndex" @tab-change="(i) => emit('handleTabsChange', i)">
           <el-tab-pane v-for="({ index, suffix }, label ) in tagInfoEnum" :key="index" :label="label + (suffix || '')"
             :name="index"></el-tab-pane>
         </el-tabs>

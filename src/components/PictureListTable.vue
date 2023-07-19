@@ -1,7 +1,7 @@
 <!--  -->
 <script setup lang="ts">
-// import usePlayStateStore from '../store/play_state_store'
-// const { updatePlayList } = usePlayStateStore()
+import usePlayStateStore from '../store/play_state_store'
+const { updatePlayList } = usePlayStateStore()
 const { $http, $utils } = getCurrentInstance()?.proxy!
 const props = defineProps<{
   dataList: any[],
@@ -9,13 +9,12 @@ const props = defineProps<{
 }>()
 watchEffect(() => {
   props.dataList.forEach(list => {
-    $http.listTracks({ id: list.id, limit: 10 }).then(res => {
+    $http.album({ id: list.id }).then(res => {
       list.tracks = $utils.formatList('songlist', res.songs)
     })
   })
+
 })
-
-
 </script>
 
 <template>
@@ -27,9 +26,17 @@ watchEffect(() => {
     </div>
     <div class="r">
       <h3 class="title">
-        <slot name="title"><span>{{ name }}</span> <span>播放</span></slot>
+        <slot name="title">
+          <div>
+            <span>{{ name }}</span>
+            <span class="action">
+              <i title="播放列表" @click="updatePlayList(tracks, tracks[0].id, id)" class="iconfont icon-play"></i>
+
+            </span>
+          </div>
+        </slot>
       </h3>
-      <SongTable v-if="tracks" :list-id="id" size="small" :show-header="false"
+      <SongTable v-if="tracks" :list-id="String(id)" size="small" :show-header="false"
         :need-show-items="['index', 'title', 'duration', 'pop']" :data-list="tracks">
       </SongTable>
     </div>
@@ -43,7 +50,7 @@ watchEffect(() => {
   column-gap: 3rem;
 
   .l {
-    width: 20%;
+    width: 25%;
   }
 
   .r {
@@ -51,6 +58,14 @@ watchEffect(() => {
 
     .title {
       margin: 1rem 0;
+
+      .action {
+        margin: 0 1rem;
+
+        >* {
+          padding: 0 1rem;
+        }
+      }
     }
   }
 }

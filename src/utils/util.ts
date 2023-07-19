@@ -4,7 +4,7 @@
 import $common from '../assets/js/common.ts'
 // export { formatSongInfo }
 type CoverSize = keyof typeof $common.IMG_SIZE_SEARCH_PARAMS.rect
-type ListType = 'albumlist' | 'playlist' | 'songlist' | 'ranklist' | 'singerlist' | 'videolist'
+type ListType = 'albumlist' | 'playlist' | 'songlist' | 'ranklist' | 'singerlist' | 'videolist' | 'mvlist'
 export default {
   // 数字过万的处理
   formartNum(val) {
@@ -105,11 +105,17 @@ export default {
       if (now - last >= t) { last = now; fn(...args) }
     }
   },
-  debounce(fn, t = 1000) {
+  /**
+   * promise 防抖
+   * @param fn 
+   * @param t 延迟时间默认1000
+   * @returns Promise<fn()>
+   */
+  debounce<T extends (...args) => any>(fn: T, t = 1000) {
     let timer = null
-    return function (...args) {
+    return function (...args: Parameters<T>): Promise<any> {
       if (timer) clearTimeout(timer)
-      timer = setTimeout(fn, t, ...args)
+      return new Promise(res => timer = setTimeout(() => res(fn(...args)), t))
     }
   },
   /**
@@ -125,7 +131,8 @@ export default {
       ranklist: [],
       singerlist: SingerItem[],
       songlist: SongItem[],
-      videolist: VideoItem[]
+      videolist: VideoItem[],
+      mvlist: mvItem[]
     }
 
     let val: Result[T]
@@ -193,6 +200,17 @@ export default {
           }
         })
         break;
+      case 'mvlist':
+        val = list.map((item) => {
+          const { artistName, name, id, duration, playCount, publishTime, imgurl16v9 } = item
+          return {
+            artistName, name, id, duration: duration && this.formatSongTime(duration),
+            playCount: this.formartNum(playCount),
+            cover: imgurl16v9 + sizeParam[1], publishTime
+
+          }
+        })
+        break;
 
       default:
         val = []
@@ -257,6 +275,6 @@ function transformSongTime(option: { dt: number, time: number }): number
 function transformSongTime(option: { dt: number, percent: number }): number
 function transformSongTime(option: { dt: number, time?: number, percent?: number }) {
   const { time, percent, dt } = option
-  if (time) return time / dt * 100
-  if (percent) return percent / 100 * dt
+  if (time !== undefined) return time / dt * 100
+  else if (percent !== undefined) return percent / 100 * dt
 }

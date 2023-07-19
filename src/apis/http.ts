@@ -120,7 +120,8 @@ const artistMv = ({ id = '', limit = 50, offset = 0 }) => { return api.get(`/art
 const artistList = ({ type = -1, area = -1, initial = '', limit = 10, offset = 0 }) => { return api.get(`/artist/list?type=${type}&area=${area}&initial=${initial}&limit=${limit}&offset=${offset}`, {}) }
 /******** 收藏的歌手列表*******/
 const subArtist = () => { return api.get('/artist/sublist', {}) }
-
+/***********************相似歌手, 需要登录*************************/
+const simiAtrist = ({ id = '' }) => api.get(`/simi/artist?id=${id}`)
 /* ********* MV ********* */
 /******** 获取 mv*******/
 const mv = ({ area = '', type = '', order = '', limit = 50, offset = 0 }) => { return api.get(`/mv/all?area=${area}&type=${type}&order=${order}&limit=${limit}&offset=${offset}`, {}) }
@@ -168,6 +169,7 @@ const getNewMv = ({ limit = 30, area = '' }) => { return api.get(`/mv/first?limi
 const getHotDj = ({ limit = 30, offset = 0 }) => { return api.get(`/dj/hot?limit=${limit}&offset=${offset}`, {}) }
 
 export default {
+    simiAtrist,
     listTracks,
     getBanner,
     search,

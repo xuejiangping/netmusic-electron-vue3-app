@@ -68,43 +68,40 @@ watch(keywords, debounced_getSuggestData)
         :prefix-icon="Search" @keydown.enter="search(keywords)" v-model="keywordsRaw" :placeholder="defaultKeywords" />
 
     </div>
-    <div class="panel" v-show="isOpen" @click.stop>
-      <el-card shadow="always">
-        <!-- 搜索建议 -->
-        <div v-if="keywords && suggestData" class="suggest">
-          <search-suggest :data="suggestData" @close="isOpen = false"></search-suggest>
+    <el-card shadow="always" class="panel" v-show="isOpen" @click.stop>
+      <!-- 搜索建议 -->
+      <div v-if="keywords && suggestData" class="suggest">
+        <search-suggest :data="suggestData" @close="isOpen = false"></search-suggest>
+      </div>
+      <!-- 热搜榜 -->
+      <div v-else class="hot">
+        <div class="history">
+          <h3 class="title"><span> 搜索历史 <i @click="history.clear(); $utils.localstorage.clear(SEARCH_HISTORY)"
+                class="iconfont icon-del"></i></span>
+            <span>查看全部</span>
+          </h3>
+          <el-tag v-for="(item) in history" @click="search(item)" size="small" type="info" round class="tag">{{ item }}
+            <i class="iconfont icon-closed" @click.stop="history.delete(item)"></i></el-tag>
         </div>
-        <!-- 热搜榜 -->
-        <div v-else class="hot">
-          <div class="history">
-            <h3 class="title"><span> 搜索历史 <i @click="history.clear(); $utils.localstorage.clear(SEARCH_HISTORY)"
-                  class="iconfont icon-del"></i></span>
-              <span>查看全部</span>
-            </h3>
-            <el-tag v-for="(item) in history" @click="search(item)" size="small" type="info" round class="tag">{{ item }}
-              <i class="iconfont icon-closed" @click.stop="history.delete(item)"></i></el-tag>
-          </div>
-          <div class="hot-list">
-            <h3 class="title">热搜榜</h3>
-            <ul>
-              <li class="item" v-for="(item, i) in hots" @click="search(item.searchWord)">
-                <div style="grid-row: 1/3;margin-right: 5rem;" :class="{ top3: i < 3 }">{{ i + 1 }}</div>
-                <div style="grid-row: 1/2;" class="name">
-                  <span>{{ item.searchWord }}</span>
-                  <span v-if="item.iconType" style="color: red;"><i><b>hot</b></i></span>
-                  <span style="color: var(--color-text-light);">{{ item.score }}</span>
-                </div>
-                <div v-title class="desc" style="grid-row: 2/3;">{{ item.content }}</div>
-              </li>
-            </ul>
-          </div>
-
-
+        <div class="hot-list">
+          <h3 class="title">热搜榜</h3>
+          <ul>
+            <li class="item" v-for="(item, i) in hots" @click="search(item.searchWord)">
+              <div style="grid-row: 1/3;margin-right: 5rem;" :class="{ top3: i < 3 }">{{ i + 1 }}</div>
+              <div style="grid-row: 1/2;" class="name">
+                <span>{{ item.searchWord }}</span>
+                <span v-if="item.iconType" style="color: red;"><i><b>hot</b></i></span>
+                <span style="color: var(--color-text-light);">{{ item.score }}</span>
+              </div>
+              <div v-title class="desc" style="grid-row: 2/3;">{{ item.content }}</div>
+            </li>
+          </ul>
         </div>
 
-      </el-card>
 
-    </div>
+      </div>
+
+    </el-card>
     <slot></slot>
   </div>
 </template>
@@ -144,8 +141,6 @@ watch(keywords, debounced_getSuggestData)
     overflow: scroll;
     max-height: 70vh;
     z-index: 4;
-
-
 
     .hot {
       >div {

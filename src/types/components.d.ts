@@ -13,6 +13,7 @@ declare module 'vue' {
     AsideNav: typeof import('./../components/AsideNav.vue')['default']
     AudioBox: typeof import('./../components/Footer/AudioBox.vue')['default']
     Comment: typeof import('./../components/Comment.vue')['default']
+    ContextMenu: typeof import('./../components/ContextMenu.vue')['default']
     Detail: typeof import('./../components/Detail.vue')['default']
     DetailTemplate: typeof import('./../components/Detail-Template.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']

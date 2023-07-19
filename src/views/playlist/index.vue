@@ -1,18 +1,8 @@
 <script setup lang="ts">
 import get_recom_playlist from '../../assets/js/index/hot_playlist'
-import { useGlobalPropsStore } from '../../store/global-props-store'
-const { set_main_page_loading } = useGlobalPropsStore()
 const { $utils } = getCurrentInstance()!.appContext.config.globalProperties
-const { playlist_info, getMore, choosePlayListType } = get_recom_playlist({ limit: 5, offset: 0, cat: '为您推荐' })
-
-
-
-const formatedData = computed(() => $utils.formatList('playlist', playlist_info.playlist_list, 'middle'))
-const load = $utils.debounce(getMore, 1000)
-watch(() => playlist_info.playlist_loading, val => set_main_page_loading(val))
-
-
-
+const { playlist_info, more, choosePlayListType } = get_recom_playlist({ limit: 5, offset: 0, cat: '为您推荐' })
+const formatedData = computed(() => $utils.formatList('playlist', playlist_info.playlist_list, 'large'))
 const currentIndex = ref(-1) //标签：为您推荐
 watch(currentIndex, choosePlayListType)
 
@@ -31,9 +21,8 @@ watch(currentIndex, choosePlayListType)
           </el-check-tag>
         </div>
       </el-scrollbar>
-
     </header>
-    <div class="container" v-infinite-scroll="load">
+    <div class="container" v-my-infinite-scroll="() => more">
       <VideoTable route-name="playlist-detail" squar :data-list="formatedData"></VideoTable>
     </div>
   </div>

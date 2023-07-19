@@ -43,7 +43,7 @@ instance.interceptors.response.use(function (response) {
 
 }, function (error) {
   // 对响应错误做点什么
-  appProxy.$alert('响应数据出错！' + error)
+  appProxy.$alert(`响应数据出错！ ${error}}`)
 
   return Promise.reject(error);
 });

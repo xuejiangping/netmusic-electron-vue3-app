@@ -6,16 +6,17 @@ import AlbumTable from './AlbumTable.vue'
 import PictureListTable from './PictureListTable.vue'
 
 // const { $http } = getCurrentInstance()?.proxy!
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   isAlbum?: boolean,
-  dataList: any[]
-}>()
+  dataList: any[],
+}>(), {
+})
 const routeName = computed(() => props.isAlbum ? 'album' : 'playlist-detail')
 </script>
 
 <template>
   <div v-if="dataList">
-    <el-tabs type="card" tabPosition="right">
+    <el-tabs class="tabs" type="card" tabPosition="right">
       <el-tab-pane>
         <template #label>
           <span title="图列模式">
@@ -47,4 +48,10 @@ const routeName = computed(() => props.isAlbum ? 'album' : 'playlist-detail')
   </div>
 </template>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.tabs {
+  &:deep(.el-tabs__item) {
+    padding: 0;
+  }
+}
+</style>

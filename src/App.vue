@@ -12,6 +12,7 @@ const { main_page_loading } = storeToRefs(useGlobalPropsStore())
 
 <template>
   <el-container style="height: 100%">
+
     <el-header class="header  drag">
       <Header></Header>
     </el-header>

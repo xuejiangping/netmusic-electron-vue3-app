@@ -1,23 +1,20 @@
 <script setup lang="ts">
 // const { IMG_SIZE_SEARCH_PARAMS } = getCurrentInstance()!.appContext.config.globalProperties.$COMMON
-const props = withDefaults(defineProps<{
-  dataList: VideoItem[],
+let props = withDefaults(defineProps<{
+  dataList: any[],
   squar?: boolean,
   routeName?: string,
-  isAlbum?: boolean
+  isAlbum?: boolean,
 }>(), {
   squar: false,
-  routeName: 'index'
+  routeName: 'index',
 })
-// wowo he agadadgj jj  
-
 
 </script>
 
 <template>
   <!-- <div>VideoTable</div> -->
-  <div class="grid-container ">
-
+  <div class="grid-container">
     <router-link v-for="({ artistName, name, artists, cover, duration, playCount, id }, index) in  dataList " :key="index"
       class="item" :to="{ name: routeName, query: { id, cover, name } }">
 
@@ -27,11 +24,10 @@ const props = withDefaults(defineProps<{
         <span class=" paly-count">{{ playCount }}</span>
         <span class="duration">{{ duration }}</span>
         <span class="artist">{{ artistName }}</span>
-
       </div>
       <div class="describe ">
         <span class="title  text-in-oneline">{{ name }}</span>
-        <span class="artists text-in-oneline">
+        <span v-if="artists" class="artists text-in-oneline">
           <router-link v-for=" ( { name, id }, i ) in  artists " v-split="[i, ' / ']"
             :to="{ name: 'singer', query: { id, name, cover } }">
             <span>{{ name }}</span>
