@@ -57,12 +57,11 @@ function row_dbclick(row: SongItem) {
    * 
    */
 
-  const needUpdatePlayList = true
+  const updatePlayListWhenDbClick = true
   const songId = row.id
 
   // 判断双击 是否更新播放列表，若不是则只添加歌曲到列表
-
-  if (needUpdatePlayList && props.listId) { //listId 存在，比较 当前的stateId
+  if (updatePlayListWhenDbClick && props.listId) { //listId 存在，比较 当前的stateId
     if (props.listId === playlistId.value) {  // 当前歌单已添加到 播放列表，播放点击歌曲即可
       play(songId)
     } else {  // 歌单未添加到播放列表，更新歌单

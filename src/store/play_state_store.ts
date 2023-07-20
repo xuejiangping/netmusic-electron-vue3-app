@@ -70,7 +70,7 @@ export default defineStore('play_state', () => {
     loopIndex: LoopEnum.顺序播放,
     audioELcontrol: null,
     currentSong: null,
-    playActionType: 'next'  //用户手动点击的 类型,上一曲或下一曲
+    userClickPlayActionType: 'next'  //用户手动点击的 类型,上一曲或下一曲
   })
 
 
@@ -109,7 +109,7 @@ export default defineStore('play_state', () => {
 
   const { currentSong } = toRefs(state)
 
-  const curSongId = computed(() => currentSong.value?.id)
+  const curSongId = computed(() => currentSong && currentSong.value?.id || '-1')
   const curPlayingList = computed(() => currentLoopOption.value.index === LoopEnum.随机播放 ? shufflePlayList.value : state.playList)
   /***********************判断歌曲是否存在于列表*************************/
   const isExist = (songId: SongId) => state.playList.some(item => item.id === songId)
@@ -120,6 +120,7 @@ export default defineStore('play_state', () => {
   }
 
   /**根据 songId 更新playindex */
+
   function updatePlayIndex(songId: SongId) {
     const index = curPlayingList.value.findIndex(song => song.id === songId)
     if (index < 0) console.error('请先添加歌曲到播放列表')
@@ -127,15 +128,24 @@ export default defineStore('play_state', () => {
   }
 
 
-
+  function _add(item: SongItem | SongItem[]) {
+    const curList = state.playList.slice()
+    if (Array.isArray(item)) {
+      curList.splice(state.playIndex + 1, 0, ...item)
+    } else {
+      curList.splice(state.playIndex + 1, 0, item)
+    }
+    state.playList = [...new Set(curList)]
+  }
   /**添加歌单到当前播放列表 */
   function addPlayList(list: SongItem[]) {
-    state.playList.splice(state.playIndex + 1, 0, ...list)
+    _add(list)
   }
   /**添加歌曲到播放列表，可选择立即播放 */
   function addSong(song: SongItem, playNow = false) {
-    if (!isExist(song.id)) state.playList.splice(state.playIndex + 1, 0, song);
+    _add(song)
     if (playNow) play(song.id)
+
   }
   function clearPlayList() {
     state.playList = []
@@ -144,13 +154,14 @@ export default defineStore('play_state', () => {
 
   /**更新当前播放列表 ，并播放歌曲 */
   function updatePlayList(list: SongItem[], songId: SongId, playlistId: string) {
+    // if(playlistId===state.playlistId){}
     state.playList = list
     state.playlistId = playlistId
     play(songId)
   }
   /***********************播放歌曲 songId*********************/
   function play(songId: SongId) {
-    if (songId === currentSong.value?.id) return console.log('正在播放该歌曲', songId)
+    if (currentSong && songId === currentSong.value?.id) return console.log('正在播放该歌曲', songId)
     updatePlayIndex(songId)
     updateCurSong()
   }

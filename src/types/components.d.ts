@@ -53,6 +53,8 @@ declare module 'vue' {
     MixedTable: typeof import('./../components/MixedTable.vue')['default']
     MyImage: typeof import('./../components/My-Image.vue')['default']
     PictureListTable: typeof import('./../components/PictureListTable.vue')['default']
+    PlayAll: typeof import('./../components/Button/PlayAll.vue')['default']
+    PlayAllBtn: typeof import('./../components/Button/PlayAllBtn.vue')['default']
     PlayBar: typeof import('./../components/Footer/PlayBar.vue')['default']
     PlaylistTable: typeof import('./../components/PlaylistTable.vue')['default']
     ProgressBar: typeof import('./../components/Footer/ProgressBar.vue')['default']

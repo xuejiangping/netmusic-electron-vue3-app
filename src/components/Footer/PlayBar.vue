@@ -83,7 +83,7 @@ watch(currenPlayTime, (val) => {
 <template>
   <ul class="container">
     <!-- 播放列表无歌曲时显示 该模态 -->
-    <li v-if="!currentSong" class="modal"></li>
+    <li v-if="!playList.length" class="modal"></li>
 
     <!-- 左边显示当前歌曲信息部分 -->
     <li>

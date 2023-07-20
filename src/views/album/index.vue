@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import SongTable from '../../components/SongTable.vue'
 import Comment from '../../components/Comment.vue'
+
+
 const { id, name } = useRoute().query as any
 const { $http, $utils, $utils2 } = getCurrentInstance()?.proxy!
 interface AlbumInfo {
   album: null | AlbumItem,
-  songs: null | SongItem[],
+  songs: SongItem[],
   commentData: any
 }
 const songTableneedShowItmes = ['index', 'title', 'singer', 'duration']
 
 const state = reactive<AlbumInfo>({
-  album: null, songs: null, commentData: null
+  album: null, songs: []
+  , commentData: null
 })
 const { album, songs, commentData } = toRefs(state)
 
@@ -48,8 +51,9 @@ const handleTabsChange = (index: number) => {
 <template>
   <DetailTemplate v-if="album" type="专辑" @handle-tabs-change="handleTabsChange" :tag-info-enum="tagInfoEnum"
     :cover="album.cover">
-    <template #info-line-1>
-      <span>{{ name }}</span>
+    <template #info-line-1> <span>{{ name }}</span> </template>
+    <template #info-line-2>
+      <PlayAllBtn :songs="songs" :listId="String(album.id)"></PlayAllBtn>
     </template>
     <template #info-line-3>
       <span>歌手：<RouterLink v-for="({ name, id }, i) in album?.artists" :to="{ name: 'index', query: { name, id } }"

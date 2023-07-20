@@ -17,7 +17,7 @@ const instance = axios.create({
   },
   baseURL // 服务端域名
 });
-
+// window.open('https://www.douyin.com')
 // 添加请求拦截器
 instance.interceptors.request.use(function (config) {
   // 在发送请求之前做些什么

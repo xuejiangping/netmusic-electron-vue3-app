@@ -42,8 +42,7 @@ const handleTabsChange = (index: number) => {
   }
 }
 
-let a = () => console.log('a')
-let b = () => console.log('b')
+
 
 
 </script>

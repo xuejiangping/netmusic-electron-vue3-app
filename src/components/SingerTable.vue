@@ -11,7 +11,7 @@ defineProps<{
 <template>
 	<div v-if="dataList">
 		<router-link v-for="({ name, alias, cover, trans, id, accountId }, index) in dataList" :key="index"
-			:to="{ name: 'artistlist', query: { id, accountId, name } }">
+			:to="{ name: 'singer', query: { id, accountId, name } }">
 			<ListItem :img1v1-url="cover || ''">
 				<router-link :to="{ name: 'artistlist', query: { id, accountId, name } }">
 					<span>{{ name }}</span>

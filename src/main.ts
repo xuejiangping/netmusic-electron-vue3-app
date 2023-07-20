@@ -26,7 +26,7 @@ import 'vue3-video-play/dist/style.css' // 引入css
 /************************************************/
 window.NetMusic = {
   $http,
-  init: true
+  init: false
 }
 window.document.body.oncontextmenu = () => false
 
@@ -39,7 +39,7 @@ import('./utils/util2.js').then($utils2 => {
 
 app.config.globalProperties.$http = $http
 app.config.globalProperties.$utils = $utils
-
+app.config.globalProperties['$COMMON'] = $common;
 
 app.config.errorHandler = function (err) { console.log('err', err) }
 
@@ -81,7 +81,6 @@ app.directive('my-infinite-scroll', {
 app.directive('topN', (el: HTMLElement, { value }) => value[0] < value[1] && (el.style.color = 'red'))
 
 //*********************************************************** */
-app.config.globalProperties['$COMMON'] = $common;
 /************************************************/
 app.use(vue3videoPlay)
 app.use(router)
