@@ -1,50 +1,99 @@
 <script setup lang="ts">
+import usePlayStateStore from '../../store/play_state_store'
+const { addSong } = usePlayStateStore()
+const { $http, $router, $utils } = getCurrentInstance()?.proxy!
+
+const { banners, carousel_height, carousel } = toRefs(reactive({
+  banners: [{
+    imageUrl: '',
+    targetType: 10,
+    titleColor: "red",
+    targetId: '',
+    typeTitle: "新碟首发" as '新碟首发' | '歌单' | '新歌首发' | '歌单推荐'
+  }],
+  carousel: {} as HTMLElement,
+  carousel_height: 200
+}))
+$http.getBanner().then(res => banners.value = res.banners)
+
+const aspect_ratio = 16 / 6
+function setCarouselHeigh() {
+  carousel_height.value = carousel.value.clientWidth / aspect_ratio + 30
+}
+onMounted(() => {
+  setCarouselHeigh()
+  window.addEventListener('resize', setCarouselHeigh)
+})
+onUnmounted(() => window.removeEventListener('resize', setCarouselHeigh))
+function bannerClick(banner: typeof banners.value['0']) {
+
+  switch (banner.typeTitle) {
+    case '新歌首发':
+      $http.songDetail({ ids: banner.targetId })
+        .then(res => $utils.formatList('songlist', res.songs))
+        .then(songs => addSong(songs[0], true))
+      break;
+    case '新碟首发':
+      $http.album({ id: banner.targetId }).then(console.log)
+      $router.push({ name: 'album', query: { name: '', id: banner.targetId } })
+      break;
+    case '歌单':
+    case '歌单推荐':
+      $router.push({ name: 'playlist-detail', query: { name: '', id: banner.targetId } })
+      break;
+  }
+
+}
+// const carousel_height=
+
+
+
 
 </script>
 
 <template>
-  <div>index</div>
-
-  <div>icon-index : <i class='iconfont icon-index'></i></div>
-  <div>icon-rank : <i class='iconfont icon-rank'></i></div>
-  <div>icon-playlist : <i class='iconfont icon-playlist'></i></div>
-  <div>icon-mvlist : <i class='iconfont icon-mvlist'></i></div>
-  <div>icon-artist : <i class='iconfont icon-artist'></i></div>
-  <div>icon-my : <i class='iconfont icon-my'></i></div>
-  <div>icon-search : <i class='iconfont icon-search'></i></div>
-  <div>icon-set : <i class='iconfont icon-set'></i></div>
-  <div>icon-quit : <i class='iconfont icon-quit'></i></div>
-  <div>icon-playnum : <i class='iconfont icon-playnum'></i></div>
-  <div>icon-play : <i class='iconfont icon-play'></i></div>
-  <div>icon-video-play : <i class='iconfont icon-video-play'></i></div>
-  <div>icon-pause : <i class='iconfont icon-pause'></i></div>
-  <div>icon-add : <i class='iconfont icon-add'></i></div>
-  <div>icon-fav : <i class='iconfont icon-fav'></i></div>
-  <div>icon-dj : <i class='iconfont icon-dj'></i></div>
-  <div>icon-placeholder : <i class='iconfont icon-placeholder'></i></div>
-  <div>icon-arrow : <i class='iconfont icon-arrow'></i></div>
-  <div>icon-closed : <i class='iconfont icon-closed'></i></div>
-  <div>icon-comment : <i class='iconfont icon-comment'></i></div>
-  <div>icon-collect : <i class='iconfont icon-collect'></i></div>
-  <div>icon-collect-active : <i class='iconfont icon-collect-active'></i></div>
-  <div>icon-audio-prev : <i class='iconfont icon-audio-prev'></i></div>
-  <div>icon-audio-next : <i class='iconfont icon-audio-next'></i></div>
-  <div>icon-audio-pause : <i class='iconfont icon-audio-pause'></i></div>
-  <div>icon-audio-play : <i class='iconfont icon-audio-play'></i></div>
-  <div>icon-playsong : <i class='iconfont icon-playsong'></i></div>
-  <div>icon-volume : <i class='iconfont icon-volume'></i></div>
-  <div>icon-volume-active : <i class='iconfont icon-volume-active'></i></div>
-  <div>icon-lock : <i class='iconfont icon-lock'></i></div>
-  <div>icon-shuffle : <i class='iconfont icon-shuffle'></i></div>
-  <div>icon-loop : <i class='iconfont icon-loop'></i></div>
-  <div>icon-single-cycle : <i class='iconfont icon-single-cycle'></i></div>
-  <div>icon-del : <i class='iconfont icon-del'></i></div>
-  <div>icon-del : <i class='iconfont icon-del'></i></div>
-  <div>icon-vip : <i class='iconfont icon-vip'></i></div>
-  <div>icon-pip : <i class='iconfont icon-pip'></i></div>
-  <div>icon-m : <i class='iconfont icon-m'></i></div>
-  <div>icon-mv : <i class='iconfont icon-mv'></i></div>
-  <div>icon-empty : <i class='iconfont icon-empty'></i></div>
+  <div ref="carousel">
+    <el-carousel class="carousel" :interval="4000" :height="carousel_height + 'px'">
+      <el-carousel-item label="🔴" v-for="banner in banners">
+        <div class="carousel-item" @click="bannerClick(banner)">
+          <MyImage aspect-ratio="16/6" :lazy="false" :src="banner.imageUrl"></MyImage>
+          <span class="lable" :style="{ backgroundColor: banner.titleColor }">{{ banner.typeTitle }}</span>
+        </div>
+      </el-carousel-item>
+    </el-carousel>
+  </div>
 </template>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.carousel {
+  &:deep(.el-carousel__indicators--labels .el-carousel__button) {
+    padding: 0;
+  }
+}
+
+.carousel-item {
+  // height: 400px;
+  border-radius: 8px;
+  position: relative;
+
+  img {
+    width: 100%;
+    aspect-ratio: 16/6;
+    border-radius: 10px;
+  }
+
+
+  .lable {
+    position: absolute;
+    right: 0;
+    bottom: 2px;
+    padding: 0.2rem 0.3rem;
+    border-bottom-right-radius: 10px;
+    border-top-left-radius: 10px;
+    color: #fff;
+    z-index: 1;
+
+
+  }
+}
+</style>

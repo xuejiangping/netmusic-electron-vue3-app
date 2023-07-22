@@ -52,7 +52,7 @@ const handleTabsChange = (index: number) => {
   <div v-if="playlist.cover">
     <detail-template :tag-info-enum="tagInfoEnum" type="歌单" :cover="playlist.cover"
       @handle-tabs-change="handleTabsChange">
-      <template #info-line-1> {{ name }}</template>
+      <template #info-line-1> {{ playlist.name }}</template>
       <template #info-line-2>
         <el-button @click="updatePlayList(tracks, tracks[0].id, String(playlist.id))" style="padding: 0.6rem" size="small"
           color="var(--color-theme)" round>

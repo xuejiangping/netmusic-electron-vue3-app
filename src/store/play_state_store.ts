@@ -143,7 +143,7 @@ export default defineStore('play_state', () => {
   }
   /**添加歌曲到播放列表，可选择立即播放 */
   function addSong(song: SongItem, playNow = false) {
-    _add(song)
+    if (!isExist(song.id)) _add(song)
     if (playNow) play(song.id)
 
   }

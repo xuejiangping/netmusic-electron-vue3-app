@@ -51,7 +51,7 @@ const handleTabsChange = (index: number) => {
 <template>
   <DetailTemplate v-if="album" type="专辑" @handle-tabs-change="handleTabsChange" :tag-info-enum="tagInfoEnum"
     :cover="album.cover">
-    <template #info-line-1> <span>{{ name }}</span> </template>
+    <template #info-line-1> <span>{{ album.name }}</span> </template>
     <template #info-line-2>
       <PlayAllBtn :songs="songs" :listId="String(album.id)"></PlayAllBtn>
     </template>
