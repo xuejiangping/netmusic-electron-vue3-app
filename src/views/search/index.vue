@@ -127,7 +127,7 @@ const dataList = computed(() => {
 
     <loading v-show="isloading" />
     <keep-alive v-show="!isloading">
-      <component :is="TAB_OPTONS[activeIndex][0]" routeName="mv-detail" :dataList="dataList">
+      <component :is="TAB_OPTONS[activeIndex][0]" type='video' :dataList="dataList">
       </component>
     </keep-alive>
     <!-- <SongTable v-if="songSDataList" :songDataList="songSDataList" @play="test" /> -->

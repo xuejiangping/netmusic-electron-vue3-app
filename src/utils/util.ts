@@ -128,7 +128,7 @@ export default {
     interface Result {
       albumlist: AlbumItem[],
       playlist: PlaylistItem[],
-      ranklist: [],
+      ranklist: any[],
       singerlist: SingerItem[],
       songlist: SongItem[],
       videolist: VideoItem[],
@@ -151,11 +151,12 @@ export default {
       case 'playlist':
         val = list.map((item) => {
 
-          const { trackCount, playCount, name, id, creator: { nickname, userId, avatarUrl }, coverImgUrl, createTime, description } = item
+          const { trackCount, playCount, name, id, creator, coverImgUrl, picUrl, createTime, description } = item
+          const { nickname, userId, avatarUrl } = creator || {}
           return {
             trackCount, playCount: this.formartNum(playCount), name, id, artistName: nickname, avatar: avatarUrl,
             artistId: userId,
-            cover: coverImgUrl + sizeParam[0],
+            cover: coverImgUrl || picUrl + sizeParam[0],
             createTime, description
           }
         })
@@ -192,11 +193,11 @@ export default {
         break;
       case 'videolist':
         val = list.map((item) => {
-          const { artistName, name, id, artists, duration, playCount, cover } = item
+          const { artistName, name, id, artists, duration, playCount, cover, sPicUrl } = item
           return {
             artistName, name, id, artists, duration: duration && this.formatSongTime(duration),
             playCount: this.formartNum(playCount),
-            cover: cover + sizeParam[1]
+            cover: cover || sPicUrl + sizeParam[1]
           }
         })
         break;

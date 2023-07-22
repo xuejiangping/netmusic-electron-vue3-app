@@ -5,7 +5,7 @@ const { updatePlayList } = usePlayStateStore()
 const { $http, $utils } = getCurrentInstance()?.proxy!
 const props = defineProps<{
   dataList: any[],
-  isAlbum?: boolean
+  type: VideoTabelType
 }>()
 watchEffect(() => {
   props.dataList.forEach(list => {
@@ -22,7 +22,7 @@ watchEffect(() => {
     <div class="l">
       <MyImage @click="$router.push({
         name: 'album', query: { name, id }
-      })" aspect-ratio="1/1" :src="cover" :is-album="isAlbum"></MyImage>
+      })" aspect-ratio="1/1" :src="cover" :is-album="type === 'album'"></MyImage>
     </div>
     <div class="r">
       <h3 class="title">

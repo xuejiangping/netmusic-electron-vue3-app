@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import usePlayStateStore from '../../store/play_state_store'
 const { addSong } = usePlayStateStore()
-const { $http, $router, $utils } = getCurrentInstance()?.proxy!
+const { $http, $router, $utils, $utils2 } = getCurrentInstance()?.proxy!
 
-const { banners, carousel_height, carousel } = toRefs(reactive({
+const { banners, dujiafangsong, personalizedPlaylist, carousel_height, carousel } = toRefs(reactive({
   banners: [{
     imageUrl: '',
     targetType: 10,
@@ -12,18 +12,21 @@ const { banners, carousel_height, carousel } = toRefs(reactive({
     typeTitle: "新碟首发" as '新碟首发' | '歌单' | '新歌首发' | '歌单推荐'
   }],
   carousel: {} as HTMLElement,
-  carousel_height: 200
+  carousel_height: 200,
+  personalizedPlaylist: [] as PlaylistItem[],
+  dujiafangsong: [] as any[]
 }))
-$http.getBanner().then(res => banners.value = res.banners)
+/***********************请求*************************/
+const taskA = $http.getBanner().then(res => banners.value = res.banners)
+const taskB = $http.personalized(10).then(res => personalizedPlaylist.value = $utils.formatList('playlist', res.result, 'middle'))
 
-const aspect_ratio = 16 / 6
+$http.dujiafangsong().then(res => dujiafangsong.value = $utils.formatList('videolist', res.result, 'middle'))
+$utils2.loading([taskA, taskB])
+const ASPECT_RATIO = 16 / 7
 function setCarouselHeigh() {
-  carousel_height.value = carousel.value.clientWidth / aspect_ratio + 30
+  carousel_height.value = carousel.value.clientWidth / 2 / ASPECT_RATIO + 30
 }
-onMounted(() => {
-  setCarouselHeigh()
-  window.addEventListener('resize', setCarouselHeigh)
-})
+
 onUnmounted(() => window.removeEventListener('resize', setCarouselHeigh))
 function bannerClick(banner: typeof banners.value['0']) {
 
@@ -46,21 +49,43 @@ function bannerClick(banner: typeof banners.value['0']) {
 }
 // const carousel_height=
 
+onMounted(() => {
+  setCarouselHeigh()
+  window.addEventListener('resize', setCarouselHeigh)
 
 
+})
 
 </script>
 
 <template>
-  <div ref="carousel">
-    <el-carousel class="carousel" :interval="4000" :height="carousel_height + 'px'">
-      <el-carousel-item label="🔴" v-for="banner in banners">
-        <div class="carousel-item" @click="bannerClick(banner)">
-          <MyImage aspect-ratio="16/6" :lazy="false" :src="banner.imageUrl"></MyImage>
-          <span class="lable" :style="{ backgroundColor: banner.titleColor }">{{ banner.typeTitle }}</span>
-        </div>
-      </el-carousel-item>
-    </el-carousel>
+  <div>
+    <!-- <Icons></Icons> -->
+    <section ref="carousel">
+      <el-carousel class="carousel" type="card" :interval="4000" :height="carousel_height + 'px'">
+        <el-carousel-item label="⭕" v-for="banner in banners">
+          <div class="carousel-item" @click="bannerClick(banner)">
+            <MyImage :aspect-ratio="String(ASPECT_RATIO)" :lazy="false" :src="banner.imageUrl"></MyImage>
+            <span class="lable" :style="{ backgroundColor: banner.titleColor }">{{ banner.typeTitle }}</span>
+          </div>
+        </el-carousel-item>
+      </el-carousel>
+    </section>
+    <section>
+      <h3>推荐歌单 <i class="iconfont icon-arrow"> </i> </h3>
+
+      <VideoTable type='playlist' :data-list="personalizedPlaylist"></VideoTable>
+    </section>
+    <section>
+      <h3>独家放送 <i class="iconfont icon-arrow"> </i> </h3>
+      <VideoTable aspect_ratio="16/8" type='video' :data-list="dujiafangsong"></VideoTable>
+    </section>
+    <section>
+      <h3>最新音乐 <i class="iconfont icon-arrow"> </i> </h3>
+    </section>
+    <section>
+      <h3>推荐MV <i class="iconfont icon-arrow"> </i> </h3>
+    </section>
   </div>
 </template>
 
@@ -68,6 +93,7 @@ function bannerClick(banner: typeof banners.value['0']) {
 .carousel {
   &:deep(.el-carousel__indicators--labels .el-carousel__button) {
     padding: 0;
+    font-size: 0.5rem;
   }
 }
 
@@ -75,13 +101,6 @@ function bannerClick(banner: typeof banners.value['0']) {
   // height: 400px;
   border-radius: 8px;
   position: relative;
-
-  img {
-    width: 100%;
-    aspect-ratio: 16/6;
-    border-radius: 10px;
-  }
-
 
   .lable {
     position: absolute;
@@ -94,6 +113,15 @@ function bannerClick(banner: typeof banners.value['0']) {
     z-index: 1;
 
 
+  }
+}
+
+section h3 {
+  margin: 1rem 0;
+
+  .iconfont {
+    display: inline-block;
+    transform: rotate(-90deg)
   }
 }
 </style>

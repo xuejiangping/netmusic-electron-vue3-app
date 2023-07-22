@@ -19,10 +19,10 @@ defineOptions({ inheritAttrs: false })
   <div class="box">
     <el-image v-bind="$attrs" class="img" :style="{ 'aspect-ratio': aspectRatio }" :src="src" :lazy="lazy">
       <template #placeholder>
-        <img class="img" :style="{ 'aspect-ratio': aspectRatio }" :src="placeholderSrc" />
+        <img class="img" :src="placeholderSrc" />
       </template>
     </el-image>
-    <img v-if="isAlbum" class="heijiao" src="../assets/img/vinyl.png" alt="">
+    <img v-if="isAlbum" class="heijiao" src="../assets/img/vinyl.png">
   </div>
 </template>
 
@@ -31,12 +31,16 @@ defineOptions({ inheritAttrs: false })
   position: relative;
 
 
+
   .img {
     width: 100%;
     z-index: 1;
     box-shadow: .4rem 0px .1875rem .1875rem #ffffff33;
-    border-radius: 0.5rem;
+    // border-radius: 0.3rem;
 
+    &:deep(.el-image__inner) {
+      border-radius: 5%;
+    }
   }
 
   .heijiao {

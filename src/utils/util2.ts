@@ -3,12 +3,13 @@ import $utils from './util.ts'
 const { set_main_page_loading } = useGlobalPropsStore()
 
 /*********************** 
- * 将全局loading设为true ，等所有异步任务完成，将loading关闭
+ * 将全局loading设为true ，等所有异步任务完成，将loading关闭,并返回异步任务结果
  * *************************/
-export async function loading(tasklist: Promise<any>[]) {
+export async function loading<T>(tasklist: Promise<T>[]) {
   set_main_page_loading(true)
-  await Promise.all(tasklist)
+  const result = await Promise.all(tasklist)
   set_main_page_loading(false)
+  return result
 }
 /**
  * 包装请求函数，使其每次请求自动加载新分页，并带有防抖功能

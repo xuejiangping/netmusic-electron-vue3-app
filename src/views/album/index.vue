@@ -3,7 +3,7 @@ import SongTable from '../../components/SongTable.vue'
 import Comment from '../../components/Comment.vue'
 
 
-const { id, name } = useRoute().query as any
+const { id } = useRoute().query as any
 const { $http, $utils, $utils2 } = getCurrentInstance()?.proxy!
 interface AlbumInfo {
   album: null | AlbumItem,

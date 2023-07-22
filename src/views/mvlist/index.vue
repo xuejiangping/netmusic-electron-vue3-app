@@ -38,7 +38,7 @@ const dataList = computed(() => $utils.formatList('videolist', mv_info.mv_list, 
           @click="() => change({ label, index })" :checked="checked({ label, index })">{{ item }}</el-check-tag>
       </li>
     </ul>
-    <VideoTable route-name="mv-detail" :data-list="dataList"></VideoTable>
+    <VideoTable type='video' :data-list="dataList"></VideoTable>
     <div class="pagination">
       <el-pagination small v-model:current-page="mv_info.currentPage" background layout="prev, pager, next"
         :total="mv_info.mv_count" />

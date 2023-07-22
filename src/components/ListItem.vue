@@ -3,7 +3,8 @@
 /**  listitem  用于列表组件的列 如歌手 专辑 歌单*/
 
 defineProps<{
-  img1v1Url: string
+  img1v1Url: string,
+  type?: VideoTabelType
 }>()
 
 </script>
@@ -12,10 +13,13 @@ defineProps<{
   <div class="item">
     <!-- <img class="img" :src="img1v1Url"> -->
     <div class="cover">
-      <MyImage aspect-ratio="1/1" :src="img1v1Url"></MyImage>
+      <MyImage :is-album="type === 'album'" :src="img1v1Url"></MyImage>
     </div>
     <div class="left">
       <slot></slot>
+    </div>
+    <div class="middle">
+      <slot name="middle"></slot>
     </div>
     <div class="right">
       <slot name="right"></slot>

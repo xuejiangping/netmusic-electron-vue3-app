@@ -22,7 +22,9 @@ const { main_page_loading } = storeToRefs(useGlobalPropsStore())
       </el-aside>
       <el-main id="main">
         <Loading v-if="main_page_loading"></Loading>
-        <div v-show="!main_page_loading"><router-view></router-view></div>
+        <div class="main-container" v-show="!main_page_loading">
+          <router-view></router-view>
+        </div>
       </el-main>
     </el-container>
     <el-footer class="footer" v-show="footer">
@@ -38,8 +40,13 @@ const { main_page_loading } = storeToRefs(useGlobalPropsStore())
 
 #main {
   animation: collapse 0.3s ease-in;
-  padding: 1rem;
+  padding: 14px;
   overflow-x: hidden;
+
+  .main-container {
+    margin: 0 auto;
+    max-width: 1000px;
+  }
 }
 
 .header {

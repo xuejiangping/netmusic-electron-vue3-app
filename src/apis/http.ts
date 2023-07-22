@@ -29,6 +29,10 @@ const hotList = () => { return api.get('/playlist/hot', {}) }
 const playList = ({ order = 'hot', cat = '', limit = 50, offset = 0 }) => { return api.get(`/top/playlist?limit=${limit}&order=${order}&cat=${cat}&offset=${offset}`, {}) }
 /******** 个性推荐歌单*******/
 const personalized = (limit = 30) => { return api.get(`/personalized?limit=${limit}`, {}) }
+
+/******** 独家放送*******/
+const dujiafangsong = () => { return api.get('/personalized/privatecontent', {}) }
+
 /******** 精品歌单*******/
 const highquality = (limit = 20, before = 0) => { return api.get(`/top/playlist/highquality?limit=${limit}&before=${before}`, {}) }
 /******** 精品歌单标签*******/
@@ -170,6 +174,7 @@ const getHotDj = ({ limit = 30, offset = 0 }) => { return api.get(`/dj/hot?limit
 
 export default {
     simiAtrist,
+    dujiafangsong,
     listTracks,
     getBanner,
     search,

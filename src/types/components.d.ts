@@ -46,6 +46,7 @@ declare module 'vue' {
     ElTabs: typeof import('element-plus/es')['ElTabs']
     ElTag: typeof import('element-plus/es')['ElTag']
     Header: typeof import('./../components/Header.vue')['default']
+    Icons: typeof import('./../components/Button/Icons.vue')['default']
     Image: typeof import('./../components/Image.vue')['default']
     ListItem: typeof import('./../components/ListItem.vue')['default']
     ListItem2: typeof import('./../components/List-Item2.vue')['default']

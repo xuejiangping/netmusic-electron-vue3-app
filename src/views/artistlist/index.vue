@@ -61,7 +61,7 @@ function isSelected(cat: keyof typeof cats, val: any) {
     </div>
 
     <div class="container" v-if="data.length" v-my-infinite-scroll="() => more">
-      <VideoTable route-name="singer" squar :data-list="data"></VideoTable>
+      <VideoTable type='singer' :data-list="data"></VideoTable>
     </div>
   </div>
 </template>

@@ -5,7 +5,7 @@
 *
 *
  **************************************************/
-export default defineStore('play_state', () => {
+export const userLoginStore = defineStore('play_state', () => {
   const state = reactive<{
     loginDialogVisible: boolean,
     userInfo: null

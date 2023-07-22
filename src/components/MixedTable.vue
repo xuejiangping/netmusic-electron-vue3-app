@@ -6,12 +6,10 @@ import AlbumTable from './AlbumTable.vue'
 import PictureListTable from './PictureListTable.vue'
 
 // const { $http } = getCurrentInstance()?.proxy!
-const props = withDefaults(defineProps<{
-  isAlbum?: boolean,
-  dataList: any[],
-}>(), {
-})
-const routeName = computed(() => props.isAlbum ? 'album' : 'playlist-detail')
+defineProps<{
+  type: VideoTabelType,
+  dataList: any[]
+}>()
 </script>
 
 <template>
@@ -23,7 +21,7 @@ const routeName = computed(() => props.isAlbum ? 'album' : 'playlist-detail')
             <Cherry style="width: 2rem;height: 2rem;" />
           </span>
         </template>
-        <PictureListTable :is-album="isAlbum" :data-list="dataList"></PictureListTable>
+        <PictureListTable :type="type" :data-list="dataList"></PictureListTable>
 
       </el-tab-pane>
       <el-tab-pane>
@@ -32,7 +30,7 @@ const routeName = computed(() => props.isAlbum ? 'album' : 'playlist-detail')
             <Pear style="width: 2rem;height: 2rem;" />
           </span>
         </template>
-        <AlbumTable :is-album="isAlbum" :data-list="dataList"></AlbumTable>
+        <AlbumTable :type="type" :data-list="dataList"></AlbumTable>
 
       </el-tab-pane>
 
@@ -42,7 +40,7 @@ const routeName = computed(() => props.isAlbum ? 'album' : 'playlist-detail')
             <Apple title="" style="width: 2rem;height: 2rem;" />
           </span>
         </template>
-        <VideoTable :is-album="isAlbum" :route-name="routeName" squar :data-list="dataList"></VideoTable>
+        <VideoTable :type="type" :data-list="dataList"></VideoTable>
       </el-tab-pane>
     </el-tabs>
   </div>

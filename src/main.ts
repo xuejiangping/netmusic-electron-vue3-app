@@ -33,6 +33,9 @@ window.document.body.oncontextmenu = () => false
 //==========================================================
 //        util2 需要用到 store,所以必须，放到createPinia() 调用后异步绑定
 //==========================================================
+
+app.config.globalProperties.$store = Object.values(import.meta.glob('./store/*.ts', { eager: true })).reduce((t: object, v) => Object.assign(t, v), {},)
+
 import('./utils/util2.js').then($utils2 => {
   app.config.globalProperties.$utils2 = $utils2
 })

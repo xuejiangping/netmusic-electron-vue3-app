@@ -3,7 +3,10 @@ import MixedTable from '../../components/MixedTable.vue'
 import VideoTable from '../../components/VideoTable.vue'
 type SingerDetai = { briefDesc: string, introduction: { ti: string, txt: string }[] }
 
-const { id, name } = useRoute().query as { id: string, cover: string, name: string }
+const query = useRoute().query as { id: string, cover: string, name: string }
+const { id, name } = query
+watchEffect(() => query.id)
+
 const { $http, $utils, $utils2 } = getCurrentInstance()?.proxy!
 const LIMIT = 3
 const tabs = { 专辑: { index: 0 }, MV: { index: 1 }, 歌手详情: { index: 2 }, 相似歌手: { index: 3 } }
@@ -48,9 +51,9 @@ const more = () => {
       <template #info-line-5><span>{{ singerDetai.briefDesc }}</span></template>
       <KeepAlive>
         <div v-my-infinite-scroll="more">
-          <MixedTable v-if="tabIndex === tabs.专辑.index" is-album :data-list="hotAlbums">
+          <MixedTable v-if="tabIndex === tabs.专辑.index" type='album' :data-list="hotAlbums">
           </MixedTable>
-          <VideoTable v-else-if="tabIndex === tabs.MV.index" route-name="mv-detail" :data-list="mvs">
+          <VideoTable v-else-if="tabIndex === tabs.MV.index" type='video' :data-list="mvs">
           </VideoTable>
           <div v-show="tabIndex === tabs.歌手详情.index" class="detail">
             <h3 class="">{{ aritst.name }}的简介</h3>
@@ -60,7 +63,7 @@ const more = () => {
               <p v-for="(item) in txt.split(/(?=●)/)">{{ item }}</p>
             </div>
           </div>
-          <VideoTable v-show="tabIndex === tabs.相似歌手.index" :data-list="[]"></VideoTable>
+          <VideoTable v-show="tabIndex === tabs.相似歌手.index" type='singer' :data-list="[]"></VideoTable>
 
         </div>
       </KeepAlive>

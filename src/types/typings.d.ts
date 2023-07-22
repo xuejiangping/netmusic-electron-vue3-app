@@ -91,6 +91,8 @@ interface AllProps extends BaseProps {
 
 // 定义全局 和 window
 declare global {
+  type VideoTabelType = 'singer' | 'playlist' | 'video' | 'album'
+
   interface BaseProps { name: string, id: string }
   type SomePartial<T, U extends keyof T> = Partial<Pick<T, U>> & Omit<T, U>
   type GetValue<T> = T[keyof T]

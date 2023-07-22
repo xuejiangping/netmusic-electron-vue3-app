@@ -23,7 +23,7 @@ watch(currentIndex, choosePlayListType)
       </el-scrollbar>
     </header>
     <div class="container" v-my-infinite-scroll="() => more">
-      <VideoTable route-name="playlist-detail" squar :data-list="formatedData"></VideoTable>
+      <VideoTable type='playlist' :data-list="formatedData"></VideoTable>
     </div>
   </div>
 </template>
