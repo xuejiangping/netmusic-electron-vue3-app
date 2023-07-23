@@ -51,6 +51,7 @@ declare module 'vue' {
     ListItem: typeof import('./../components/ListItem.vue')['default']
     ListItem2: typeof import('./../components/List-Item2.vue')['default']
     Loading: typeof import('./../components/Loading.vue')['default']
+    LoginCard: typeof import('./../components/Login/LoginCard.vue')['default']
     MixedTable: typeof import('./../components/MixedTable.vue')['default']
     MyImage: typeof import('./../components/My-Image.vue')['default']
     PictureListTable: typeof import('./../components/PictureListTable.vue')['default']
