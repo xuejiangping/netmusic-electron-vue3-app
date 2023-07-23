@@ -1,11 +1,10 @@
 <script setup lang="ts">
 
-import usePlayStateStore from '../store/play_state_store'
 
-const { $COMMON } = getCurrentInstance()?.proxy!
-const store = usePlayStateStore()
+const { $COMMON, $store } = getCurrentInstance()?.proxy!
+const store = $store.usePlayStateStore()
 const { updatePlayList, addSong, play } = store
-const { curSongId, playlistId, } = storeToRefs(store)
+const { curSongId, includedListIds } = storeToRefs(store)
 /**序号前补足两位 01 02   */
 const vPad2 = (el: HTMLElement, binding: { value: string }) => {
   const val = binding.value
@@ -61,8 +60,8 @@ function row_dbclick(row: SongItem) {
   const songId = row.id
 
   // 判断双击 是否更新播放列表，若不是则只添加歌曲到列表
-  if (updatePlayListWhenDbClick && props.listId) { //listId 存在，比较 当前的stateId
-    if (props.listId === playlistId.value) {  // 当前歌单已添加到 播放列表，播放点击歌曲即可
+  if (updatePlayListWhenDbClick && props.listId) { //listId 存在
+    if (includedListIds.value.includes(props.listId)) {  // 当前歌单已添加到 播放列表，播放点击歌曲即可
       play(songId)
     } else {  // 歌单未添加到播放列表，更新歌单
       updatePlayList(props.dataList, songId, props.listId)

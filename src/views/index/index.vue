@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import usePlayStateStore from '../../store/play_state_store'
-const { addSong } = usePlayStateStore()
-const { $http, $router, $utils, $utils2 } = getCurrentInstance()?.proxy!
+const { $http, $router, $utils, $utils2, $store } = getCurrentInstance()?.proxy!
+const { addSong } = $store.usePlayStateStore()
 
-const { banners, dujiafangsong, personalizedPlaylist, carousel_height, carousel } = toRefs(reactive({
+const { recoMV, banners, topSong, dujiafangsong, personalizedPlaylist, carousel_height, carousel } = toRefs(reactive({
   banners: [{
     imageUrl: '',
     targetType: 10,
@@ -14,13 +13,18 @@ const { banners, dujiafangsong, personalizedPlaylist, carousel_height, carousel 
   carousel: {} as HTMLElement,
   carousel_height: 200,
   personalizedPlaylist: [] as PlaylistItem[],
-  dujiafangsong: [] as any[]
+  dujiafangsong: [] as any[],
+  topSong: [] as SongItem[],
+  recoMV: [] as MvItem[]
 }))
 /***********************请求*************************/
 const taskA = $http.getBanner().then(res => banners.value = res.banners)
 const taskB = $http.personalized(10).then(res => personalizedPlaylist.value = $utils.formatList('playlist', res.result, 'middle'))
 
 $http.dujiafangsong().then(res => dujiafangsong.value = $utils.formatList('videolist', res.result, 'middle'))
+
+$http.topSong().then(res => topSong.value = $utils.formatList('songlist', res.data.slice(0, 12)))
+$http.recoMV().then(res => recoMV.value = $utils.formatList('mvlist', res.result, 'middle'))
 $utils2.loading([taskA, taskB])
 const ASPECT_RATIO = 16 / 7
 function setCarouselHeigh() {
@@ -52,8 +56,6 @@ function bannerClick(banner: typeof banners.value['0']) {
 onMounted(() => {
   setCarouselHeigh()
   window.addEventListener('resize', setCarouselHeigh)
-
-
 })
 
 </script>
@@ -72,19 +74,35 @@ onMounted(() => {
       </el-carousel>
     </section>
     <section>
-      <h3>推荐歌单 <i class="iconfont icon-arrow"> </i> </h3>
+      <h3><span @click="$router.push('playlist')">推荐歌单 <i class="iconfont icon-arrow"> </i></span> </h3>
 
       <VideoTable type='playlist' :data-list="personalizedPlaylist"></VideoTable>
     </section>
     <section>
-      <h3>独家放送 <i class="iconfont icon-arrow"> </i> </h3>
+      <h3><span>独家放送 <i class="iconfont icon-arrow"> </i></span> </h3>
       <VideoTable aspect_ratio="16/8" type='video' :data-list="dujiafangsong"></VideoTable>
     </section>
     <section>
-      <h3>最新音乐 <i class="iconfont icon-arrow"> </i> </h3>
+      <h3><span>最新音乐 <i class="iconfont icon-arrow"> </i></span> </h3>
+      <ul class="musiclist">
+        <ListItem type="song" v-for="(song) in topSong" :img1v1-url="song.album.cover"
+          @icon_play_click_handler="addSong(song, true)" @dbclick_handler="addSong(song, true)">
+          <div class="musiclist-info">
+            <div v-title>{{ song.name }}</div>
+            <div v-title>
+              <RouterLink v-for="(artist, i) in song.artists" v-split="[i]"
+                :to="{ name: 'singer', query: { name: artist.name, id: artist.id } }">
+                {{ artist.name }}
+              </RouterLink>
+            </div>
+          </div>
+        </ListItem>
+
+      </ul>
     </section>
     <section>
-      <h3>推荐MV <i class="iconfont icon-arrow"> </i> </h3>
+      <h3><span>推荐MV <i class="iconfont icon-arrow"> </i> </span></h3>
+      <VideoTable aspect_ratio="16/8" type='video' :data-list="recoMV"></VideoTable>
     </section>
   </div>
 </template>
@@ -122,6 +140,19 @@ section h3 {
   .iconfont {
     display: inline-block;
     transform: rotate(-90deg)
+  }
+}
+
+.musiclist {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  .musiclist-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    row-gap: 0.8rem;
+    flex: 1;
   }
 }
 </style>

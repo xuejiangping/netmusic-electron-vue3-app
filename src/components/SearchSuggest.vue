@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { emit } from 'process';
-import usePlayStateStore from '../store/play_state_store'
 
-const { addSong } = usePlayStateStore()
-const { $utils, $http } = getCurrentInstance()?.proxy!
+const { $utils, $http, $store } = getCurrentInstance()?.proxy!
+const { addSong } = $store.usePlayStateStore()
+
 type Key = Exclude<keyof SuggestData, 'order'>
 type SuggestData = {
   albums?: AlbumItem[],

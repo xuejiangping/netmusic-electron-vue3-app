@@ -1,11 +1,11 @@
 <!--  -->
 <script setup lang="ts">
-import usePlayStateStore from '../store/play_state_store'
-const { updatePlayList } = usePlayStateStore()
-const { $http, $utils } = getCurrentInstance()?.proxy!
+const { $http, $utils, $store } = getCurrentInstance()?.proxy!
+
+const { updatePlayList } = $store.usePlayStateStore()
 const props = defineProps<{
   dataList: any[],
-  type: VideoTabelType
+  type: ListType
 }>()
 watchEffect(() => {
   props.dataList.forEach(list => {

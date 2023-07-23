@@ -56,7 +56,7 @@ const handleTabsChange = (index: number) => {
       <PlayAllBtn :songs="songs" :listId="String(album.id)"></PlayAllBtn>
     </template>
     <template #info-line-3>
-      <span>歌手：<RouterLink v-for="({ name, id }, i) in album?.artists" :to="{ name: 'index', query: { name, id } }"
+      <span>歌手：<RouterLink v-for="({ name, id }, i) in album?.artists" :to="{ name: 'singer', query: { name, id } }"
           v-split="[i]">
           {{ name }}
         </RouterLink></span>

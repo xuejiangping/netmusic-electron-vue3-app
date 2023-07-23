@@ -37,9 +37,14 @@ defineOptions({ inheritAttrs: false })
     z-index: 1;
     box-shadow: .4rem 0px .1875rem .1875rem #ffffff33;
     // border-radius: 0.3rem;
+    border-radius: 8px;
 
     &:deep(.el-image__inner) {
-      border-radius: 5%;
+      &:hover {
+        transform: scale(1.2);
+      }
+
+      transition: all 1s;
     }
   }
 

@@ -152,12 +152,13 @@ export default {
         val = list.map((item) => {
 
           const { trackCount, playCount, name, id, creator, coverImgUrl, picUrl, createTime, description } = item
-          const { nickname, userId, avatarUrl } = creator || {}
+          const { nickname, userId, avatarUrl, userType } = creator || {}
           return {
             trackCount, playCount: this.formartNum(playCount), name, id, artistName: nickname, avatar: avatarUrl,
             artistId: userId,
-            cover: coverImgUrl || picUrl + sizeParam[0],
-            createTime, description
+            cover: (coverImgUrl || picUrl) + sizeParam[0],
+            createTime, description,
+            isOfficial: userType === 10
           }
         })
         break;
@@ -184,9 +185,12 @@ export default {
       case 'songlist':
         val = list.map((item) => {
           item.license = item.privilege?.cp
-          const { license, name, id, ar: artists, al: album, dt, mv, fee, pop, ratio } = item
+          const { license, name, id, ar, artists, al, album, dt, duration, mv, mvid, fee, pop, popularity, ratio } = item
           return {
-            dt, license, name, id, artists, album, mv, duration: dt && this.formatSongTime(dt), fee, pop, ratio,
+            dt: dt || duration, license, name, id, artists: ar || artists,
+            album: this.formatList('albumlist', [al || album], 'small')[0],
+            mv: mv || mvid,
+            duration: this.formatSongTime(dt || duration), fee, pop: pop || popularity, ratio,
             audioUrl: `https://music.163.com/song/media/outer/url?id=${id}.mp3`
           }
         })
@@ -197,17 +201,17 @@ export default {
           return {
             artistName, name, id, artists, duration: duration && this.formatSongTime(duration),
             playCount: this.formartNum(playCount),
-            cover: cover || sPicUrl + sizeParam[1]
+            cover: (cover || sPicUrl) + sizeParam[1]
           }
         })
         break;
       case 'mvlist':
         val = list.map((item) => {
-          const { artistName, name, id, duration, playCount, publishTime, imgurl16v9 } = item
+          const { artistName, name, id, duration, playCount, publishTime, picUrl, imgurl16v9 } = item
           return {
             artistName, name, id, duration: duration && this.formatSongTime(duration),
             playCount: this.formartNum(playCount),
-            cover: imgurl16v9 + sizeParam[1], publishTime
+            cover: (imgurl16v9 || picUrl) + sizeParam[1], publishTime
 
           }
         })

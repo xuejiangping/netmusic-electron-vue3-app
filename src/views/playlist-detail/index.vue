@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import SongTable from '../../components/SongTable.vue'
 import Comment from '../../components/Comment.vue'
-import { Plus } from '@element-plus/icons-vue'
-import usePlayStateStore from '../../store/play_state_store'
 const { $http, $utils, $utils2 } = getCurrentInstance()?.proxy!
-const { id, name } = useRoute().query as any
-const { addPlayList, updatePlayList } = usePlayStateStore()
+const { id } = useRoute().query as any
+
 const songTabeNeedShowItems = ['index', 'title', 'singer', 'album', 'duration']
 const tagInfoEnum = {
   歌曲列表: { index: 0, suffix: '' },
@@ -54,19 +52,11 @@ const handleTabsChange = (index: number) => {
       @handle-tabs-change="handleTabsChange">
       <template #info-line-1> {{ playlist.name }}</template>
       <template #info-line-2>
-        <el-button @click="updatePlayList(tracks, tracks[0].id, String(playlist.id))" style="padding: 0.6rem" size="small"
-          color="var(--color-theme)" round>
-          <i style="color: #fff;" class="iconfont icon-audio-play"></i>
-          <span style="padding: 0 0.3rem;">播放全部</span>
-          <el-icon title="仅添加到歌单" @click.stop="addPlayList(tracks)"
-            style="padding-left: 0.3rem;border-left: 1px solid #f67171;">
-            <Plus />
-          </el-icon>
-        </el-button>
+        <PlayAllBtn :songs="tracks" :list-id="String(playlist.id)"></PlayAllBtn>
       </template>
 
       <template #info-line-3>
-        <RouterLink :to="{ name: 'singer', query: { name: playlist.artistName, id: playlist.artistId } }">
+        <RouterLink :to="{ name: 'index', query: { name: playlist.artistName, id: playlist.artistId } }">
           <el-avatar size="small" style="vertical-align: middle" :src="playlist.avatar"></el-avatar>
           &nbsp;<span>{{ playlist.artistName }}</span>
         </RouterLink>

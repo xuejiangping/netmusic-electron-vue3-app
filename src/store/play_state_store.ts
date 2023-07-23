@@ -10,7 +10,6 @@ import $utils from '../utils/util.ts'
 type SongId = SongItem['id']
 type PlayAciton = 'next' | 'prev'
 interface PlayState {
-  playlistId: string,    //当前列表的唯一id，用于区别新列表，一般用歌单id，或者专辑id等唯一值
   playList: SongItem[],
   playIndex: number
   isPaused: boolean, // 当前播放状态
@@ -19,6 +18,8 @@ interface PlayState {
   audioELcontrol: { play(): void, pause(): void } | null,
   currentSong: SongItem | null,
   userClickPlayActionType: PlayAciton
+  includedListIds: string[] // 播放列表包含的歌单的id
+
 }
 
 
@@ -54,7 +55,7 @@ const loopOptions = [
 
 
 
-export default defineStore('play_state', () => {
+export const usePlayStateStore = defineStore('play_state', () => {
   // play_state_store
   const PLAY_STATE_STORE = 'play_state_store'
 
@@ -65,7 +66,7 @@ export default defineStore('play_state', () => {
     playList: [], // 播放列表
     playIndex: 0, // 当前播放歌曲在播放列表的所有位置
     // isShowPlayListTips: false, // 添加及播放成功后，播放列表按钮提示的文字
-    playlistId: '0',
+    includedListIds: [],
     isUpdateCurTime: false,
     loopIndex: LoopEnum.顺序播放,
     audioELcontrol: null,
@@ -138,7 +139,8 @@ export default defineStore('play_state', () => {
     state.playList = [...new Set(curList)]
   }
   /**添加歌单到当前播放列表 */
-  function addPlayList(list: SongItem[]) {
+  function addPlayList(list: SongItem[], listId: string) {
+    if (state.includedListIds.includes(listId)) return console.log(123)
     _add(list)
   }
   /**添加歌曲到播放列表，可选择立即播放 */
@@ -149,14 +151,14 @@ export default defineStore('play_state', () => {
   }
   function clearPlayList() {
     state.playList = []
+    state.includedListIds = []
     updateCurSong()
   }
 
   /**更新当前播放列表 ，并播放歌曲 */
   function updatePlayList(list: SongItem[], songId: SongId, playlistId: string) {
-    // if(playlistId===state.playlistId){}
     state.playList = list
-    state.playlistId = playlistId
+    state.includedListIds = [playlistId]
     play(songId)
   }
   /***********************播放歌曲 songId*********************/

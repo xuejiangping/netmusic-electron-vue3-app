@@ -7,7 +7,7 @@ import PictureListTable from './PictureListTable.vue'
 
 // const { $http } = getCurrentInstance()?.proxy!
 defineProps<{
-  type: VideoTabelType,
+  type: ListType,
   dataList: any[]
 }>()
 </script>

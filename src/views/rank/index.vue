@@ -1,7 +1,6 @@
 <script setup lang="ts">
-const { $http, $utils, $utils2 } = getCurrentInstance()?.proxy!
-import usePlayStateStore from '../../store/play_state_store'
-const { updatePlayList } = usePlayStateStore()
+const { $http, $utils, $utils2, $store } = getCurrentInstance()?.proxy!
+const { updatePlayList } = $store.usePlayStateStore()
 type RankItem = { tracks: SongItem[], trackIds: { ratio: string }[], coverImgUrl: string } & BaseProps
 
 // $http.toplist().then(console.log)
@@ -32,10 +31,7 @@ function asyncComputed<T>(asyncGetter: () => Promise<T>) {
   return _data
 }
 
-function a<T>(b: () => Promise<T>) {
 
-  return b()
-}
 
 
 // let src = 'https://i0.hdslb.com/bfs/face/f67a868b305e46b4af9326e5bce522426af36fa1.jpg@100w_100h.webp'

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Share, StarFilled, Download } from '@element-plus/icons-vue'
 
-import usePlayStateStore from '../../store/play_state_store'
 
 
 //==========================================================
@@ -9,17 +8,17 @@ import usePlayStateStore from '../../store/play_state_store'
 //        数据
 
 //==========================================================
+const { $utils, $confirm, $store } = getCurrentInstance()?.proxy!
+
 const PLAYBAR_OPTIONS = 'playbar_options'
-const store = usePlayStateStore()
-const { currentSong, playList, playlistId, isPaused, currentLoopOption } = toRefs(store)
+const store = $store.usePlayStateStore()
+const { currentSong, playList, isPaused, currentLoopOption } = toRefs(store)
 const { next, prev, switchLoopOption, clearPlayList, changeUserClickPlayActionType } = store
-const { $utils, $COMMON, $confirm } = getCurrentInstance()?.appContext.config.globalProperties!
 // $confirm('双击播放单曲时，用当前歌曲所在的歌曲列表替换播放列？')
 
 const cover = computed(() => {
-  let sizeQuery = $COMMON.IMG_SIZE_SEARCH_PARAMS.squar.small
-  const picUrl = currentSong.value?.album.picUrl
-  return picUrl ? picUrl + sizeQuery : 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
+
+  return currentSong.value?.album.cover || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
 })
 const baseOptions = {
   currentPlayProgress: 0,  //播放进度
@@ -102,7 +101,10 @@ watch(currenPlayTime, (val) => {
           <el-carousel-item>
             <div class="left-bottom">
               <div @click="carousel.next">
-                <img :src="cover">
+                <div class="img">
+                  <my-image :src="cover"></my-image>
+                  <span></span>
+                </div>
               </div>
               <div class="info">
                 <div v-title class="name">{{ currentSong.name }}</div>
@@ -164,7 +166,7 @@ watch(currenPlayTime, (val) => {
             <div class="info"> <span>总{{ playList.length }}首</span> <a @click="clearPlayList" href="javascript:;"><i
                   class="iconfont icon-del"></i> 清空列表</a></div>
             <div class="list">
-              <song-table size="small" :list-id="String(playlistId)" :data-list="playList" :show-header="false"
+              <song-table size="small" :data-list="playList" :show-header="false"
                 :need-show-items="['singer', 'duration', 'title']">
                 <template #title-prefix="{ song }">
                   <i v-if="song.id === currentSong?.id" class="iconfont icon-volume"></i>
@@ -177,9 +179,9 @@ watch(currenPlayTime, (val) => {
 
     </li>
     <!-- audio元素 -->
-    <li v-show="false">
+    <li>
       <audio-box ref="audio" @update-song-time="val => currenPlayTime = val" :inputVal="inputVal"
-        :currenPlayTime="currenPlayTime" :volume="volume" :cur-song-info="currentSong"></audio-box>
+        :currenPlayTime="currenPlayTime" :volume="volume"></audio-box>
     </li>
   </ul>
 </template>
@@ -223,10 +225,8 @@ watch(currenPlayTime, (val) => {
       }
     }
 
-    img {
+    .img {
       width: 46px;
-      aspect-ratio: 1/1;
-      border-radius: 5px;
     }
   }
 
@@ -266,7 +266,7 @@ watch(currenPlayTime, (val) => {
         align-items: center;
 
         .iconfont {
-          font-size: 24px;
+          font-size: 28px;
           color: var(--color-text-main);
         }
 

@@ -24,7 +24,7 @@ const emit = defineEmits<{
     <div class="top">
       <div>
         <div class="cover">
-          <my-image :src="cover" :is-album="type === '专辑'"></my-image>
+          <my-image :src="cover" :lazy="false" :is-album="type === '专辑'"></my-image>
         </div>
       </div>
       <div class="info">

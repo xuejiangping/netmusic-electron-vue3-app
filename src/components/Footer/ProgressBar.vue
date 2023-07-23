@@ -1,10 +1,9 @@
 <script setup lang="ts">
 // const val = ref(80)
 
-import usePlayStateStore from '../../store/play_state_store'
-
+const { $store } = getCurrentInstance()?.proxy!
 // const { playProgressBarIsPressed } = usePlayStateStore()
-const { setIsUpdateCurTime } = usePlayStateStore()
+const { setIsUpdateCurTime } = $store.usePlayStateStore()
 
 const props = withDefaults(defineProps<{
   color1?: string,

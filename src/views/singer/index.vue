@@ -23,7 +23,7 @@ const taskA = $http.artistAlbum({ id, limit: LIMIT }).then(res => aritst.value =
 $http.artistDesc({ id }).then(({ briefDesc, introduction }) => singerDetai.value = { briefDesc, introduction })
 $utils2.loading([taskA])
 
-const [getMoreArtistAlbum, getMoreArtistMv] = [$http.artistAlbum, $http.artistMv].map((item) => $utils2.getMoreHandler(item, 500, 1))
+const [getMoreArtistAlbum, getMoreArtistMv] = [$http.artistAlbum, $http.artistMv].map((item) => $utils2.getMoreHandler(item, 500))
 function moreAlbum() {
   getMoreArtistAlbum({ id, limit: LIMIT }).then(res => hotAlbums.value.push(...$utils.formatList('albumlist', res.hotAlbums, 'middle')))
 }
@@ -32,6 +32,7 @@ function moreVideo() {
 }
 moreVideo()
 moreAlbum()
+$http.simiAtrist({ id: '6724' }).then(console.log)
 
 const more = () => {
   if (tabIndex.value === tabs.专辑.index) return moreAlbum
@@ -60,7 +61,7 @@ const more = () => {
             <p>{{ singerDetai.briefDesc }}</p>
             <div class="introduction" v-for="({ txt, ti }) in singerDetai.introduction">
               <h4>{{ ti }}</h4>
-              <p v-for="(item) in txt.split(/(?=●)/)">{{ item }}</p>
+              <p v-for="(item) in txt.split(/(?=(●|\n))/)">{{ item }}</p>
             </div>
           </div>
           <VideoTable v-show="tabIndex === tabs.相似歌手.index" type='singer' :data-list="[]"></VideoTable>

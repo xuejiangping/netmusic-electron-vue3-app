@@ -1,6 +1,10 @@
-<script setup>
+<script setup lang="ts">
 import SearchPanel from '@components/SearchPanel.vue'
-import { ArrowLeft,ArrowRight } from '@element-plus/icons-vue'
+import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
+const { $store } = getCurrentInstance()?.proxy!
+const store = $store.userLoginStore()
+const { } = storeToRefs(store)
+
 </script>
 
 <template>
@@ -19,8 +23,12 @@ import { ArrowLeft,ArrowRight } from '@element-plus/icons-vue'
       <SearchPanel></SearchPanel>
     </div>
     <div class="right">
-      <el-avatar class="avatar" size="small" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
-      <span> xue6474</span>
+      <label>
+        <el-avatar class="avatar" size='small'
+          src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+        <span>未登录</span>
+      </label>
+      <span>1</span><span>2</span><span>3</span>
     </div>
     <span></span>
   </div>
@@ -34,19 +42,18 @@ import { ArrowLeft,ArrowRight } from '@element-plus/icons-vue'
   justify-content: space-between;
   align-items: center;
   color: azure;
-  font-weight: 500;
   height: 100%;
   overflow-wrap: nowrap;
-  font-size: 16px;
+  font-size: 12px;
 
   .left {
-    max-width: 20vw;
     padding-right: 20px;
+    font-size: 16px;
 
     .logo {
       height: 34px;
       vertical-align: middle;
-      padding-right: 6px;
+      margin-right: 6px;
     }
   }
 
@@ -58,7 +65,7 @@ import { ArrowLeft,ArrowRight } from '@element-plus/icons-vue'
     flex: 1;
     display: flex;
     align-items: center;
-    justify-content: center; // 水平对齐，不然会有竖直线。。。。。。。。
+    justify-content: end; // 水平对齐，不然会有竖直线。。。。。。。。
 
     .back,
     .forward {
@@ -69,10 +76,14 @@ import { ArrowLeft,ArrowRight } from '@element-plus/icons-vue'
   }
 
   .right {
+    display: flex;
+    justify-content: end;
+    align-items: center;
     flex: 1;
 
     >* {
-      .no-drag
+      .no-drag;
+      padding: 0 1rem;
     }
 
     .avatar {

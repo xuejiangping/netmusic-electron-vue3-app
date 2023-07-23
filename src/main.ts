@@ -34,7 +34,7 @@ window.document.body.oncontextmenu = () => false
 //        util2 需要用到 store,所以必须，放到createPinia() 调用后异步绑定
 //==========================================================
 
-app.config.globalProperties.$store = Object.values(import.meta.glob('./store/*.ts', { eager: true })).reduce((t: object, v) => Object.assign(t, v), {},)
+app.config.globalProperties.$store = Object.values(import.meta.glob('./store/*.ts', { eager: true })).reduce((t: object, v) => Object.assign(t, v), {},) as any
 
 import('./utils/util2.js').then($utils2 => {
   app.config.globalProperties.$utils2 = $utils2
@@ -60,7 +60,10 @@ app.directive('split', (el: HTMLElement, { value }) => {
   }
 })
 // 给元素自动添加title
-app.directive('title', (el: HTMLElement) => el.title = el.textContent!)
+app.directive('title', (el: HTMLElement) => {
+  el.title = el.textContent!
+  el.classList.add('text-in-oneline')
+})
 /**  利用 IntersectionObserver 实现无限滚动 */
 app.directive('my-infinite-scroll', {
   mounted(el: HTMLElement & { ob: IntersectionObserver }, binding) {

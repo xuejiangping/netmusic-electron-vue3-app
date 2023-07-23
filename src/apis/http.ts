@@ -33,6 +33,9 @@ const personalized = (limit = 30) => { return api.get(`/personalized?limit=${lim
 /******** 独家放送*******/
 const dujiafangsong = () => { return api.get('/personalized/privatecontent', {}) }
 
+/******** 新歌速递*******/
+const topSong = () => { return api.get('/top/song', {}) }
+
 /******** 精品歌单*******/
 const highquality = (limit = 20, before = 0) => { return api.get(`/top/playlist/highquality?limit=${limit}&before=${before}`, {}) }
 /******** 精品歌单标签*******/
@@ -160,7 +163,8 @@ const videoDetail = ({ id = '' }) => { return api.get(`/video/detail?id=${id}`, 
 const simiVideo = ({ id = '' }) => { return api.get(`/related/allvideo?id=${id}`, {}) }
 /******** 获取video评论*******/
 const commentVideo = ({ id = '', limit = 20, offset = 0, before = 0, timestamp = 0 }) => { return api.get(`/comment/video?id=${id}&limit=${limit}&offset=${offset}&before=${before}&timestamp=${timestamp}`, {}) }
-
+/***********************推荐MV*************************/
+const recoMV = () => api.get('/personalized/mv')
 /******** 热门话题*******/
 const hotTopic = (limit = 20, offset = 0) => { return api.get(`/hot/topic?limit=${limit}&offset=${offset}`, {}) }
 /******** 新碟上架*******/
@@ -169,10 +173,13 @@ const topAlbum = ({ limit = 20, offset = 0, area = 'all', type = 'new', year = '
 const topArtists = ({ limit = 30, offset = 0 }) => { return api.get(`/top/artists?limit=${limit}&offset=${offset}`, {}) }
 /******** 最新MV*******/
 const getNewMv = ({ limit = 30, area = '' }) => { return api.get(`/mv/first?limit=${limit}&area=${area}`, {}) }
+
 /******** 热门电台*******/
 const getHotDj = ({ limit = 30, offset = 0 }) => { return api.get(`/dj/hot?limit=${limit}&offset=${offset}`, {}) }
 
 export default {
+    recoMV,
+    topSong,
     simiAtrist,
     dujiafangsong,
     listTracks,

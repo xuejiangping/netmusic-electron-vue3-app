@@ -5,8 +5,7 @@ import $http from '../apis/http.ts'
 import $common from '../assets/js/common.js';
 import $utils from '../utils/util.js'
 import * as $utils2 from '../utils/util2.js'
-
-
+import $store from '../store'
 export { }  //
 
 
@@ -22,6 +21,7 @@ declare module 'vue' {
     $confirm: Function
     $utils: typeof $utils
     $utils2: typeof $utils2
+    $store: typeof $store
   }
 }
 
@@ -69,7 +69,7 @@ interface AllProps extends BaseProps {
   dt: number,
   title: string,
   singer: BaseProps,
-  album: BaseProps & { picUrl: string },
+  album: AlbumItem,
   audioUrl: string,
   userId: string,
   trackCount: number,
@@ -91,7 +91,7 @@ interface AllProps extends BaseProps {
 
 // 定义全局 和 window
 declare global {
-  type VideoTabelType = 'singer' | 'playlist' | 'video' | 'album'
+  type ListType = 'singer' | 'playlist' | 'video' | 'album' | 'song'
 
   interface BaseProps { name: string, id: string }
   type SomePartial<T, U extends keyof T> = Partial<Pick<T, U>> & Omit<T, U>

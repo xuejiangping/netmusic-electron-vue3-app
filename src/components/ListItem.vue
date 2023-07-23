@@ -4,18 +4,19 @@
 
 defineProps<{
   img1v1Url: string,
-  type?: VideoTabelType
+  type?: ListType
 }>()
-
+defineEmits(['dbclick_handler', 'icon_play_click_handler'])
 </script>
 
 <template>
-  <div class="item">
+  <div class="item" @dblclick="$emit('dbclick_handler')">
     <!-- <img class="img" :src="img1v1Url"> -->
-    <div class="cover">
-      <MyImage :is-album="type === 'album'" :src="img1v1Url"></MyImage>
-    </div>
     <div class="left">
+      <div class="cover">
+        <MyImage :is-album="type === 'album'" :src="img1v1Url"></MyImage>
+        <i v-if="type === 'song'" @click="$emit('icon_play_click_handler')" class="iconfont icon-play"></i>
+      </div>
       <slot></slot>
     </div>
     <div class="middle">
@@ -33,30 +34,34 @@ defineProps<{
 .item {
   display: flex;
   justify-content: space-between;
-  padding: 0.4rem;
+  padding: 0.2rem 0.4rem;
   font-size: 0.8rem;
+  align-items: center;
+  border-radius: 4px;
+  color: var(--color-text);
 
   .cover {
+    position: relative;
     width: 4rem;
-    aspect-ratio: 1/1;
-    margin-right: 1rem
+    margin-right: 0.8rem;
+
+    .icon-play {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      font-size: 2rem;
+      color: rgb(230, 213, 213);
+    }
   }
 
   .hover-scale-mixin();
 
   .left {
     display: flex;
-    align-items: center;
-    flex: 1;
     justify-content: space-between;
+    align-items: center;
   }
-
-  .right {
-    margin-left: 2rem;
-    align-self: center;
-  }
-
-
-
 }
 </style>
