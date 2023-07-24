@@ -46,6 +46,7 @@ const { main_page_loading } = storeToRefs(useGlobalPropsStore())
   .main-container {
     margin: 0 auto;
     max-width: 1000px;
+    height: 100%;
   }
 }
 

@@ -13,8 +13,18 @@ const searchDefaultKeywords = () => api.get('/search/default')
 const searchHotDetail = () => { return api.get('/search/hot/detail', {}) }
 const serachSuggest = ({ keywords = '' }) => { return api.get(`/search/suggest?keywords=${keywords}`, {}) }
 const serachMatch = ({ keywords = '' }) => { return api.get(`/search/multimatch?keywords=${keywords}`, {}) }
+
+/*********************** 生成qrKey*************************/
+const getQrKey = () => api.get('/login/qr/key')
+/***********************  生成二维码图片*************************/
+const getQrImg = ({ key = '' }) => api.get(`/login/qr/create?key=${key}&qrimg`)
+/***********************查询二维码状态 *************************/
+const getQrStatus = ({ key = '' }) => api.get(`/login/qr/check?key=${key}`)
+
+
+'/login/qr/check?key=xxx'
 /******** 登录*******/
-const login = ({ phone = '', pwd = '', realIP = '43.241.243.255' }) => { return api.post(`/login/cellphone`, { phone, password: pwd, realIP }) }
+const login = ({ phone = '', pwd = '', captcha = '', realIP = '43.241.243.255' }) => { return api.post(`/login/cellphone`, { phone, password: pwd, realIP, captcha }) }
 /******** 退出登录*******/
 const logout = () => { return api.get('/logout', {}) }
 /******** 获取用户详情*******/
@@ -178,6 +188,7 @@ const getNewMv = ({ limit = 30, area = '' }) => { return api.get(`/mv/first?limi
 const getHotDj = ({ limit = 30, offset = 0 }) => { return api.get(`/dj/hot?limit=${limit}&offset=${offset}`, {}) }
 
 export default {
+    getQrImg, getQrKey, getQrStatus,
     recoMV,
     topSong,
     simiAtrist,

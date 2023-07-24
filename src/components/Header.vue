@@ -3,8 +3,8 @@ import SearchPanel from '@components/SearchPanel.vue'
 import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
 const { $store } = getCurrentInstance()?.proxy!
 const store = $store.userLoginStore()
-const { } = storeToRefs(store)
-
+const { setLoginCardVisible } = store
+const { loginStatus, loginCardVisible } = storeToRefs(store)
 </script>
 
 <template>
@@ -23,12 +23,19 @@ const { } = storeToRefs(store)
       <SearchPanel></SearchPanel>
     </div>
     <div class="right">
-      <label>
-        <el-avatar class="avatar" size='small'
-          src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
-        <span>未登录</span>
-        <LoginCard></LoginCard>
-      </label>
+      <div class="user">
+        <MyLink v-if="loginStatus">
+          <el-avatar class="avatar" size='small'
+            src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+          <span>xue6474</span>
+        </MyLink>
+        <MyLink color="#fff" @click="setLoginCardVisible(true)">
+          <el-avatar class="avatar" size='small'
+            src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+          <span>未登录</span>
+        </MyLink>
+        <LoginCard v-if="loginCardVisible"></LoginCard>
+      </div>
       <span>1</span><span>2</span><span>3</span>
     </div>
     <span></span>
@@ -42,7 +49,7 @@ const { } = storeToRefs(store)
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: azure;
+  color: var(--color-text-white);
   height: 100%;
   overflow-wrap: nowrap;
   font-size: 12px;

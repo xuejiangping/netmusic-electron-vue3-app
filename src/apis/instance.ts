@@ -12,9 +12,7 @@ const instance = axios.create({
   withCredentials: true,
   // `validateStatus` 定义对于给定的HTTP 响应状态码是 resolve 或 reject  promise 。
   // 如果 `validateStatus` 返回 `true` (或者设置为 `null` 或 `undefined`)，promise 将被 resolve; 否则，promise 将被 rejecte
-  validateStatus: status => {
-    return status >= 200 && status < 300; // default
-  },
+  validateStatus: status => status >= 200 && status < 300,
   baseURL // 服务端域名
 });
 // window.open('https://www.douyin.com')
@@ -34,7 +32,7 @@ instance.interceptors.request.use(function (config) {
 instance.interceptors.response.use(function (response) {
   // 对响应数据做点什么
   const { code, message } = response.data
-  if (code && code === 200) {
+  if (code && (code === 200 || code >= 800)) {
     return response.data
   } else {
     appProxy.$alert(`响应数据失败,code:${code} message:${message}`)

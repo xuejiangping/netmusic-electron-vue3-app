@@ -39,9 +39,5 @@
   {
     "name": "album",
     "path": "/album"
-  },
-  {
-    "name": "login",
-    "path": "/login"
   }
 ]
