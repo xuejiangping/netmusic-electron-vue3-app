@@ -24,12 +24,12 @@ const { loginStatus, loginCardVisible } = storeToRefs(store)
     </div>
     <div class="right">
       <div class="user">
-        <MyLink v-if="loginStatus">
+        <MyLink v-if="false">
           <el-avatar class="avatar" size='small'
             src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
           <span>xue6474</span>
         </MyLink>
-        <MyLink color="#fff" @click="setLoginCardVisible(true)">
+        <MyLink v-else color="#fff" @click="setLoginCardVisible(true)">
           <el-avatar class="avatar" size='small'
             src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
           <span>未登录</span>

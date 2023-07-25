@@ -1,5 +1,7 @@
 import api from './instance'
-
+// import { userLoginStore } from '../store/login_store'
+// const { cookie } = storeToRefs(userLoginStore())
+const cookie = window.encodeURIComponent(localStorage.getItem('cookie') || '')
 /******** 首页轮播图*******/
 const getBanner = () => { return api.get('/banner', {}) }
 /******** 搜索*******/
@@ -17,11 +19,17 @@ const serachMatch = ({ keywords = '' }) => { return api.get(`/search/multimatch?
 /*********************** 生成qrKey*************************/
 const getQrKey = () => api.get('/login/qr/key')
 /***********************  生成二维码图片*************************/
-const getQrImg = ({ key = '' }) => api.get(`/login/qr/create?key=${key}&qrimg`)
+const getQrImg = ({ key = '' }) => api.get(`/login/qr/create?key=${key}&qrimg=true`)
 /***********************查询二维码状态 *************************/
-const getQrStatus = ({ key = '' }) => api.get(`/login/qr/check?key=${key}`)
+const getQrStatus = ({ key = '' }) => api.get(`/login/qr/check?key=${key}&noCookie=true&timestamp=${Date.now()}`)
+/***********************登录状态*************************/
+const loginStatus = () => api.get(`/login/status?timestamp=${Date.now()}`, { params: { cookie } })
+const userDetail = ({ uid = '' }) => api.get(`/user/detail?uid=${uid}`)
+const test = (url = '') => api.get(url)
+'/user/account'
 
-
+'/login/status'
+'/login/status'
 '/login/qr/check?key=xxx'
 /******** 登录*******/
 const login = ({ phone = '', pwd = '', captcha = '', realIP = '43.241.243.255' }) => { return api.post(`/login/cellphone`, { phone, password: pwd, realIP, captcha }) }
@@ -138,7 +146,7 @@ const artistList = ({ type = -1, area = -1, initial = '', limit = 10, offset = 0
 /******** 收藏的歌手列表*******/
 const subArtist = () => { return api.get('/artist/sublist', {}) }
 /***********************相似歌手, 需要登录*************************/
-const simiAtrist = ({ id = '' }) => api.get(`/simi/artist?id=${id}`)
+const simiAtrist = ({ id = '' }) => api.get(`/simi/artist?id=${id}&cookie=${cookie}`)
 /* ********* MV ********* */
 /******** 获取 mv*******/
 const mv = ({ area = '', type = '', order = '', limit = 50, offset = 0 }) => { return api.get(`/mv/all?area=${area}&type=${type}&order=${order}&limit=${limit}&offset=${offset}`, {}) }
@@ -188,7 +196,8 @@ const getNewMv = ({ limit = 30, area = '' }) => { return api.get(`/mv/first?limi
 const getHotDj = ({ limit = 30, offset = 0 }) => { return api.get(`/dj/hot?limit=${limit}&offset=${offset}`, {}) }
 
 export default {
-    getQrImg, getQrKey, getQrStatus,
+    test,
+    getQrImg, getQrKey, getQrStatus, loginStatus, userDetail,
     recoMV,
     topSong,
     simiAtrist,

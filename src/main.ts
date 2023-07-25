@@ -68,7 +68,7 @@ app.directive('title', (el: HTMLElement) => {
 app.directive('my-infinite-scroll', {
   mounted(el: HTMLElement & { ob: IntersectionObserver }, binding) {
     const footerEl = document.createElement('div')
-    // footerEl.style.height = '10rem'
+    footerEl.style.height = '1rem'
     const getmoreFN = binding.value
     el.parentElement?.appendChild(footerEl)
     const ob = el.ob = new IntersectionObserver((entries) => {
@@ -87,7 +87,6 @@ app.directive('my-infinite-scroll', {
 app.directive('topN', (el: HTMLElement, { value }) => value[0] < value[1] && (el.style.color = 'red'))
 
 //*********************************************************** */
-/************************************************/
 app.use(vue3videoPlay)
 app.use(router)
 app.use(pinia)

@@ -1,30 +1,31 @@
 <script setup lang="ts">
-import { PhoneFilled, Lock } from '@element-plus/icons-vue'
+import { PhoneFilled, Lock, Key } from '@element-plus/icons-vue'
 import { toRefs, reactive, getCurrentInstance } from 'vue';
 
 const { $store, $http } = getCurrentInstance()?.proxy!
 const store = $store.userLoginStore()
-const { setLoginCardVisible } = store
-
-const { codeBtnText, mode, qrKey, tel, password, code, autoLogin, codeBtnDisabled } = toRefs(reactive({
+const { setLoginCardVisible, saveCookie } = store
+enum LOGIN_STATUS {
+  请求二维码 = 799, 已过期, 等待扫码, 待确认, 登录成功
+}
+const { codeBtnText, qrImg, statusCode, mode, qrKey, tel, password, code, autoLogin, codeBtnDisabled } = toRefs(reactive({
   mode: 'qr' as 'password' | 'code' | 'qr',
   tel: '',
   password: '',
   code: '',
   qrKey: '',
+  statusCode: LOGIN_STATUS.已过期,
+  qrImg: '',
   autoLogin: true,
   codeBtnDisabled: false,
   codeBtnText: '获取验证码',
 }))
 const CODE_TIME = 6
-enum LOGIN_STATUS {
-  已过期 = 800, 等待扫码, 待确认, 登录成功
-}
 
+getQrKey()
 /***********************请求验证码*************************/
 
 function getCode() {
-
   /***********************更改按钮状态*************************/
   codeBtnDisabled.value = true
   let t = CODE_TIME
@@ -32,7 +33,11 @@ function getCode() {
   upDateRestTime(t)
   const timer = setInterval(() => {
     upDateRestTime(--t)
-    if (t === 0) { clearInterval(timer); codeBtnText.value = '获取验证码'; codeBtnDisabled.value = false }
+    if (t === 0) {
+      clearInterval(timer);
+      codeBtnText.value = '获取验证码';
+      codeBtnDisabled.value = false
+    }
   }, 1000)
 }
 
@@ -41,7 +46,20 @@ watch(mode, (val) => {
     console.log('请求二维码')
   }
 }, { 'immediate': true })
-
+watchEffect(() => poolCodeStatus())
+watchEffect(() => {
+  if (qrKey.value) {
+    $http.getQrImg({ key: qrKey.value })
+      .then(res => {
+        qrImg.value = res.data.qrimg
+        statusCode.value = LOGIN_STATUS.等待扫码
+      })
+  }
+})
+async function getQrKey() {
+  statusCode.value = LOGIN_STATUS.请求二维码
+  qrKey.value = (await $http.getQrKey()).data.unikey
+}
 function login() {
   // $http.login({ phone:tel.value,pwd:password.value})
   switch (mode.value) {
@@ -56,22 +74,29 @@ function login() {
   }
 }
 
-watchEffect(poolCodeStatus)
-
-function poolCodeStatus() {
+async function poolCodeStatus(t = 2000) {
   if (qrKey.value) {
-    // console.log('11', 11)
-    let timer = setInterval(async () => {
-      const { code, message } = await $http.getQrStatus({ key: qrKey.value })
-      if (code === LOGIN_STATUS.已过期) {
-        clearTimeout(timer)
+    const timer = setInterval(async () => {
+      const res = await $http.getQrStatus({ key: qrKey.value })
+      const { code, cookie } = res
 
-      } else if (code === LOGIN_STATUS.登录成功) {
-        clearTimeout(timer)
-
+      switch (code) {
+        case LOGIN_STATUS.已过期:
+          clearInterval(timer)
+          statusCode.value = LOGIN_STATUS.已过期
+          break
+        case LOGIN_STATUS.待确认:
+          statusCode.value = LOGIN_STATUS.待确认
+          break
+        case LOGIN_STATUS.登录成功:
+          statusCode.value = LOGIN_STATUS.登录成功
+          clearInterval(timer)
+          setLoginCardVisible(false)
+          saveCookie(cookie)
+          console.log('登录成功', res)
+          break
       }
-      console.log(message, code)
-    }, 1000)
+    }, t)
   }
 
 }
@@ -84,16 +109,20 @@ function poolCodeStatus() {
     <div class="box1-bg">
 
       <div class="box1">
-        <div v-show="mode === 'qr'">
+        <div class="qr" v-show="mode === 'qr'">
           <h3>扫码登录</h3>
-          <div class="qr-img">
-            <img src="https://p2.music.126.net/ATce5mCIf_GqCLBqJcmzTg==/109951165166142900.jpg?param=300y300" />
+          <div class="qr-img" v-loading="statusCode === LOGIN_STATUS.请求二维码">
+            <img :src="qrImg" />
+            <div v-if="statusCode === LOGIN_STATUS.待确认 || statusCode === LOGIN_STATUS.已过期" class="status-block">
+              <span v-show="LOGIN_STATUS.已过期 === statusCode" @click="getQrKey">二维码已过期,点击重新获取</span>
+              <span v-show="LOGIN_STATUS.待确认 === statusCode">已扫描，等待确认</span>
+            </div>
           </div>
           <div @click="mode = 'password'">
             <my-link color="var(--color-text-main)">选择其它登录方式</my-link>
           </div>
         </div>
-        <div v-show="mode === 'password' || mode === 'code'">
+        <div class="tel" v-show="mode === 'password' || mode === 'code'">
 
           <h3 @click="mode = 'qr'"> <my-link color="var(--color-text-main)">扫码登录更安全</my-link>
           </h3>
@@ -155,21 +184,33 @@ function poolCodeStatus() {
 
   .box1 {
 
-
-
     backdrop-filter: blur(15px);
-
-
     text-align: center;
     padding: 1rem 2.5rem;
-    line-height: 45px;
+    line-height: 40px;
     box-shadow: var(--el-box-shadow-dark);
 
     .qr-img {
+      position: relative;
       display: inline-block;
       margin: 1rem 0;
-      width: 10rem;
+      width: 12rem;
       aspect-ratio: 1/1;
+      background-size: cover;
+
+      .status-block {
+        position: absolute;
+        top: 0;
+        left: 0;
+        backdrop-filter: blur(8px);
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        line-height: 2rem;
+        font-weight: 700;
+
+      }
 
       img {
         width: 100%;
