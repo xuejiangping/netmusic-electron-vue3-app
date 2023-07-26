@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { Cloudy } from '@element-plus/icons-vue'
 
+const { $store, $http } = getCurrentInstance()?.proxy!
+const { userPlaylist } = storeToRefs($store.userLoginStore())
 const { activeIndex, asideDirs } = toRefs(reactive({
   activeIndex: 'index',
   asideDirs: {
@@ -13,9 +16,41 @@ const { activeIndex, asideDirs } = toRefs(reactive({
         { index: 'artistlist', text: '歌手', icon: 'icon-artist' },
       ],
     },
-    myMusic: { title: '我的音乐', items: [{ text: '我喜欢的音乐', icon: 'icon-my', index: 'like' }] },
+    myMusic: {
+      title: '我的音乐',
+      items: [
+        { text: '我喜欢的音乐', icon: '', index: 'like', color: '' },
+        { text: '我的音乐云盘', icon: '', index: 'cloud-song', color: '' },
+      ]
+    },
+    created: {
+      title: '创建的歌单',
+      items: [] as any[]
+    },
   }
 }))
+
+watchEffect(() => {
+  if (userPlaylist.value.length) {
+    const [like, ...created] = userPlaylist.value.map(({ name, id }, i) => {
+      if (i === 0) {
+        return {
+          text: '我喜欢的音乐', icon: '',
+          index: 'playlist-detail?' + new URLSearchParams({ name, id }),
+          color: ''
+        }
+      } else {
+        return {
+          text: name, icon: 'icon-my',
+          index: 'playlist-detail?' + new URLSearchParams({ name, id }),
+          color: 'gray'
+        }
+      }
+    })
+    asideDirs.value.myMusic.items[0] = like
+    asideDirs.value.created.items = created
+  }
+})
 
 
 </script>
@@ -23,9 +58,9 @@ const { activeIndex, asideDirs } = toRefs(reactive({
 <template>
   <el-menu class="menu" :default-active="'index'" router @select="index => activeIndex = index">
     <el-menu-item-group v-for="(value, key) in asideDirs" :key="key" :title="value.title">
-      <el-menu-item v-for="(item, index) in value.items" :key="index" :index="item.index"
+      <el-menu-item v-for="(item, index) in value.items" :key="index" :index="item.index" v-title
         :class="['menu-item', item.index === activeIndex && 'active-select']">
-        <i :class="['iconfont', item.icon]"></i>
+        <i :class="['iconfont', item.icon]" :style="{ color: item.color }"></i>
         <span style="padding-left: 0.5rem">{{ item.text }}</span>
       </el-menu-item>
     </el-menu-item-group>

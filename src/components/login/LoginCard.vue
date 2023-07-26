@@ -1,15 +1,30 @@
 <script setup lang="ts">
 import { PhoneFilled, Lock, Key } from '@element-plus/icons-vue'
+import { ElFormItem } from 'element-plus';
 import { toRefs, reactive, getCurrentInstance } from 'vue';
+import { FormRules, FormInstance } from 'element-plus'
 
-const { $store, $http } = getCurrentInstance()?.proxy!
+const { $store, $http, $message } = getCurrentInstance()?.proxy!
 const store = $store.userLoginStore()
 const { setLoginCardVisible, saveCookie } = store
 enum LOGIN_STATUS {
   请求二维码 = 799, 已过期, 等待扫码, 待确认, 登录成功
 }
-const { codeBtnText, qrImg, statusCode, mode, qrKey, tel, password, code, autoLogin, codeBtnDisabled } = toRefs(reactive({
-  mode: 'qr' as 'password' | 'code' | 'qr',
+
+const validateForm = reactive({
+  tel: '',
+  password: '',
+  code: '',
+})
+const { tel, password, code } = toRefs(validateForm)
+const formRef = ref<FormInstance>()
+const validateRules: FormRules = {
+  tel: [{ required: true, message: '手机号码格式不正确', pattern: /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/ }],
+  password: [{ required: true, pattern: /^[a-zA-Z]\w{5,17}$/, message: '密码格式不正确' }],
+  code: [{ required: true, pattern: /\d{4}/, len: 4, message: '验证码格式不正确' }]
+}
+const { codeBtnText, qrImg, statusCode, mode, qrKey, autoLogin, codeBtnDisabled } = toRefs(reactive({
+  mode: 'code' as 'password' | 'code' | 'qr',
   tel: '',
   password: '',
   code: '',
@@ -26,6 +41,9 @@ getQrKey()
 /***********************请求验证码*************************/
 
 function getCode() {
+
+  $http.getCaptcha({ phone: tel.value }).then(res => (res.data === true) && $message('验证码发送成功'))
+
   /***********************更改按钮状态*************************/
   codeBtnDisabled.value = true
   let t = CODE_TIME
@@ -60,17 +78,23 @@ async function getQrKey() {
   statusCode.value = LOGIN_STATUS.请求二维码
   qrKey.value = (await $http.getQrKey()).data.unikey
 }
-function login() {
-  // $http.login({ phone:tel.value,pwd:password.value})
-  switch (mode.value) {
-    case 'password':
-      $http.login({ phone: tel.value, pwd: password.value })
+async function login() {
+  try {
 
-      break
-    case 'code':
-      $http.login({ phone: tel.value, captcha: code.value })
+    await formRef.value?.validate()
+    switch (mode.value) {
+      case 'password':
+        $http.login({ phone: tel.value, pwd: password.value }).then(console.log)
+        console.log(tel.value, password.value)
+        break
+      case 'code':
+        $http.login({ phone: tel.value, captcha: code.value }).then(console.log)
+        console.log(tel.value, code.value)
 
-      break
+        break
+    }
+  } catch (err) {
+    console.log('验证失败', err)
   }
 }
 
@@ -128,28 +152,36 @@ async function poolCodeStatus(t = 2000) {
           </h3>
 
           <div style="margin: 1rem 0;font-size: 14px;">
-            <el-input v-model="tel" class="w-50 m-2" placeholder="请输入手机号" :prefix-icon="PhoneFilled" />
-            <el-input v-if="mode === 'password'" v-model="password" class="w-50 m-2" placeholder="请输入密码"
-              :prefix-icon="Lock" />
-            <el-input v-else-if="mode === 'code'" v-model="code" class="w-50 m-2" placeholder="请输入验证码" :prefix-icon="Key">
-              <template #append>
-                <!-- <span></span> -->
-                <el-button @click="getCode" :disabled="codeBtnDisabled" type="danger">{{ codeBtnText }}</el-button>
-              </template>
-            </el-input>
+            <el-form ref="formRef" :model="validateForm" :rules="validateRules">
+              <el-form-item prop="tel">
+                <el-input v-model.number="validateForm.tel" placeholder="请输入手机号" :prefix-icon="PhoneFilled" />
+              </el-form-item>
+              <el-form-item prop="password" v-if="mode === 'password'">
+                <el-input type="password" v-model="validateForm.password" placeholder="请输入密码" :prefix-icon="Lock" />
+              </el-form-item>
 
-            <el-row justify='space-between'>
-              <el-col :span="8">
-                <el-checkbox size="small" v-model="autoLogin" label="自动登录" />
-              </el-col>
-              <el-col :span="10">
-                <my-link @click="mode = 'code'" v-show="mode === 'password'">验证码登录</my-link>
-                <my-link @click="mode = 'password'" v-show="mode === 'code'">密码登录</my-link>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-button @click="login" style="width: 100%;" size="" type="primary">登录</el-button>
-            </el-row>
+              <el-form-item prop="code" v-else-if="mode === 'code'">
+                <el-input v-model.number="validateForm.code" placeholder="请输入验证码" :prefix-icon="Key">
+                  <template #append>
+                    <el-button @click="getCode" :disabled="codeBtnDisabled" type="danger">{{ codeBtnText }}</el-button>
+                  </template>
+                </el-input>
+              </el-form-item>
+
+              <el-row justify='space-between'>
+                <el-col :span="8">
+                  <el-checkbox size="small" v-model="autoLogin" label="自动登录" />
+                </el-col>
+                <el-col :span="10">
+                  <my-link @click="mode = 'code'" v-show="mode === 'password'">验证码登录</my-link>
+                  <my-link @click="mode = 'password'" v-show="mode === 'code'">密码登录</my-link>
+                </el-col>
+              </el-row>
+              <el-form-item>
+                <el-button @click="login" style="width: 100%;" type="primary">登录</el-button>
+              </el-form-item>
+            </el-form>
+
           </div>
 
         </div>
@@ -202,13 +234,14 @@ async function poolCodeStatus(t = 2000) {
         position: absolute;
         top: 0;
         left: 0;
-        backdrop-filter: blur(8px);
         height: 100%;
         width: 100%;
         display: flex;
         align-items: center;
         line-height: 2rem;
         font-weight: 700;
+        backdrop-filter: blur(5px);
+        // background-color: hotpink;
 
       }
 

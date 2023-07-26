@@ -39,5 +39,9 @@
   {
     "name": "album",
     "path": "/album"
+  },
+  {
+    "name": "cloud-song",
+    "path": "/cloud-song"
   }
 ]

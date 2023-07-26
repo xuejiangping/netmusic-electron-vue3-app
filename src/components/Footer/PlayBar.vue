@@ -266,7 +266,7 @@ watch(currenPlayTime, (val) => {
         align-items: center;
 
         .iconfont {
-          font-size: 28px;
+          font-size: 26px;
           color: var(--color-text-main);
         }
 

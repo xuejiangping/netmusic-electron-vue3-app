@@ -26,17 +26,38 @@ const getQrStatus = ({ key = '' }) => api.get(`/login/qr/check?key=${key}&noCook
 const loginStatus = () => api.get(`/login/status?timestamp=${Date.now()}`, { params: { cookie } })
 const userDetail = ({ uid = '' }) => api.get(`/user/detail?uid=${uid}`)
 const test = (url = '') => api.get(url)
+
+/***********************请求验证码*************************/
+const getCaptcha = ({ phone = '' }) => api.get(`/captcha/sent?phone=${phone}`)
+
+/******** 登录*******/
+interface Login {
+    ({ phone, pwd }: { phone: string, pwd: string }): Promise<any>;
+    ({ phone, captcha }: { phone: string, captcha: string }): Promise<any>;
+}
+const login: Login = ({ phone, pwd, captcha }: { phone: string, pwd?: string, captcha?: string }) => {
+    if (pwd) {
+        return api.post(`/login/cellphone`, { phone, password: pwd })
+    } else {
+        return api.post(`/login/cellphone`, { phone, captcha })
+    }
+}
+
+/******** 退出登录*******/
+const logout = () => { return api.get('/logout', {}) }
+/******** 获取用户详情*******/
+const getUserInfo = ({ uid = '' }) => { return api.get(`/user/detail?uid=${uid}`, {}) }
+
+
+/***********************云盘*************************/
+const cloudSongs = () => api.get('/user/cloud?cookie=' + cookie)
+'/user/cloud'
+
 '/user/account'
 
 '/login/status'
 '/login/status'
 '/login/qr/check?key=xxx'
-/******** 登录*******/
-const login = ({ phone = '', pwd = '', captcha = '', realIP = '43.241.243.255' }) => { return api.post(`/login/cellphone`, { phone, password: pwd, realIP, captcha }) }
-/******** 退出登录*******/
-const logout = () => { return api.get('/logout', {}) }
-/******** 获取用户详情*******/
-const getUserInfo = ({ uid = '' }) => { return api.get(`/user/detail?uid=${uid}`, {}) }
 /******** 音乐是否可用*******/
 const checkSong = ({ id = '' }) => { return api.get(`/check/music?id=${id}`, {}) }
 
@@ -196,7 +217,7 @@ const getNewMv = ({ limit = 30, area = '' }) => { return api.get(`/mv/first?limi
 const getHotDj = ({ limit = 30, offset = 0 }) => { return api.get(`/dj/hot?limit=${limit}&offset=${offset}`, {}) }
 
 export default {
-    test,
+    test, getCaptcha, cloudSongs,
     getQrImg, getQrKey, getQrStatus, loginStatus, userDetail,
     recoMV,
     topSong,

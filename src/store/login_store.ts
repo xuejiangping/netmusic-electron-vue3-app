@@ -27,7 +27,8 @@ interface UserInfo {
     userType: 1 | 0,
     vipType: 1 | 0,
     nickname: string,
-    city: number
+    city: number,
+    userId: string
   }
 }
 export const userLoginStore = defineStore('login', () => {
@@ -39,9 +40,17 @@ export const userLoginStore = defineStore('login', () => {
   const state = reactive({
     loginCardVisible: false, // 登录弹窗显示与隐藏
     userInfo: null as UserInfo | null, // 登录用户信息
-    cookie: cookie || ''
+    cookie: cookie || '',
+    userPlaylist: [] as PlaylistItem[]
   })
   initUserInfo()
+
+
+  watchEffect(() => {
+    if (!state.userInfo) return
+    const uid = state.userInfo.profile.userId
+    $http.playlistUser({ uid }).then(res => state.userPlaylist = res.playlist)
+  })
 
   const loginStatus = computed(() => !!state.cookie)
 

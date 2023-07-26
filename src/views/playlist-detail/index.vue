@@ -2,7 +2,8 @@
 import SongTable from '../../components/SongTable.vue'
 import Comment from '../../components/Comment.vue'
 const { $http, $utils, $utils2 } = getCurrentInstance()?.proxy!
-const { id } = useRoute().query as any
+const route = useRoute()
+const id = computed(() => route.query.id)
 
 const songTabeNeedShowItems = ['index', 'title', 'singer', 'album', 'duration']
 const tagInfoEnum = {
@@ -19,17 +20,20 @@ const { tracks, playlist, commentData } = toRefs(reactive({
 const currentComponent = shallowRef<any>(SongTable)
 
 
-const tastA = $http.playlistdetail({ id }).then(res => {
-  playlist.value = $utils.formatList('playlist', [res.playlist], 'middle')[0]
-  tracks.value = $utils.formatList('songlist', res.playlist.tracks)
+watchEffect(() => {
+  const idVal = toValue(id) as string
+  const tastA = $http.playlistdetail({ id: idVal }).then(res => {
+    playlist.value = $utils.formatList('playlist', [res.playlist], 'middle')[0]
+    tracks.value = $utils.formatList('songlist', res.playlist.tracks)
+  })
+  const tastB = $http.playlistComment({ id: idVal }).then(({
+    comments, total, hotComments
+  }) => {
+    commentData.value = { comments, total, hotComments }
+    tagInfoEnum.评论.suffix = `(${total})`
+  })
+  $utils2.loading([tastA, tastB])
 })
-const tastB = $http.playlistComment({ id: String(id) }).then(({
-  comments, total, hotComments
-}) => {
-  commentData.value = { comments, total, hotComments }
-  tagInfoEnum.评论.suffix = `(${total})`
-})
-$utils2.loading([tastA, tastB])
 
 const handleTabsChange = (index: number) => {
   console.log('index', index)

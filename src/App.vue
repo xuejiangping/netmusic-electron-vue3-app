@@ -17,7 +17,7 @@ const { main_page_loading } = storeToRefs(useGlobalPropsStore())
       <Header></Header>
     </el-header>
     <el-container style=" overflow: auto">
-      <el-aside v-show="aside" class="aside" width="20vw" style="background-color: antiquewhite">
+      <el-aside v-show="aside" class="aside" style="background-color: antiquewhite">
         <AsideNav></AsideNav>
       </el-aside>
       <el-main id="main">
@@ -36,6 +36,8 @@ const { main_page_loading } = storeToRefs(useGlobalPropsStore())
 <style scoped lang="less">
 .aside {
   color: v-bind(color);
+  width: 20vw;
+  min-width: 150px;
 }
 
 #main {

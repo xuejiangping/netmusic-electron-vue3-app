@@ -55,8 +55,8 @@ function play(id: string) {
         <span v-if="artistName && type === 'playlist'" class="artist"><i v-if="isOfficial"
             class="iconfont icon-artist"></i>
           {{ artistName }}</span>
-        <span class="iconPlay">
-          <i v-if="type === 'video'" class=" center iconfont icon-video-play"></i>
+        <span class="iconPlay" :class="{ center: type === 'video' }">
+          <i v-if="type === 'video'" class="iconfont icon-video-play"></i>
           <i v-else-if="type !== 'singer'" @click.prevent="play(id)" class=" iconfont icon-play"></i>
         </span>
       </div>
@@ -121,7 +121,6 @@ function play(id: string) {
         }
       }
 
-
       .paly-count {
         top: 0;
       }
@@ -136,6 +135,10 @@ function play(id: string) {
           font-size: 2rem;
           color: #fff;
 
+        }
+
+        .icon-video-play {
+          font-size: 3rem;
         }
       }
 
