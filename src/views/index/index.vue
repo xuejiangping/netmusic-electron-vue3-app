@@ -62,7 +62,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <Icons></Icons>
+    <!-- <Icons></Icons> -->
     <section ref="carousel">
       <el-carousel class="carousel" type="card" :interval="4000" :height="carousel_height + 'px'">
         <el-carousel-item label="⭕" v-for="banner in banners">

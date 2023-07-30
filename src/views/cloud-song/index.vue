@@ -1,17 +1,21 @@
 <script setup lang="ts">
-const { $http, $utils } = getCurrentInstance()?.proxy!
-
+const { $http, $utils, $store } = getCurrentInstance()?.proxy!
+const { cookie } = storeToRefs($store.userLoginStore())
 const dataInfo = ref<{
   size: string, maxSize: string, count: number,
   list: SongItem[],
 }>()
 
 const formatSizeGB = (val: number) => (val / (1024 ** 3)).toPrecision(2)
-$http.cloudSongs().then(({ size, maxSize, count, data }) => {
+$http.cloudSongs({ cookie: cookie.value }).then(async ({ size, maxSize, count, data }) => {
+  const list = $utils.formatList('songlist', (<any[]>data).map((item: any) => item.simpleSong))
+  // const urls = await $http.songUrl({ id: list.map(song => song.id).join(',') }).then(res => res.data.map((v: any) => v.url))
+  // list.map(song=>)
+  // console.log('urls', urls)
   dataInfo.value = {
     size: formatSizeGB(size),
     maxSize: formatSizeGB(maxSize), count,
-    list: $utils.formatList('songlist', (<any[]>data).map((item: any) => item.simpleSong))
+    list
   }
 })
 const progress = computed(() => {

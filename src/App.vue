@@ -2,7 +2,6 @@
 import { usePageShowStore } from './store/page-show-state-store'
 import { useGlobalPropsStore } from './store/global-props-store'
 // import hot_recom from './assets/js/index/hot_recom'
-const color = ref('blue')
 
 
 const { aside, footer } = storeToRefs(usePageShowStore())
@@ -16,7 +15,7 @@ const { main_page_loading } = storeToRefs(useGlobalPropsStore())
     <el-header class="header  drag">
       <Header></Header>
     </el-header>
-    <el-container style=" overflow: auto">
+    <el-container id="container" style=" overflow: auto">
       <el-aside v-show="aside" class="aside" style="background-color: antiquewhite">
         <AsideNav></AsideNav>
       </el-aside>
@@ -35,15 +34,14 @@ const { main_page_loading } = storeToRefs(useGlobalPropsStore())
 
 <style scoped lang="less">
 .aside {
-  color: v-bind(color);
   width: 20vw;
   min-width: 150px;
 }
 
 #main {
-  animation: collapse 0.3s ease-in;
   padding: 14px;
   overflow-x: hidden;
+  position: relative;
 
   .main-container {
     margin: 0 auto;
@@ -54,23 +52,13 @@ const { main_page_loading } = storeToRefs(useGlobalPropsStore())
 
 .header {
   background-color: #ec4141;
-  height: 50px;
+  height: var(--header-height);
 }
 
-@keyframes collapse {
-  0% {
-    transform: translateY(100%);
-    // transform: scale(0);
-  }
 
-  100% {
-    transform: translateY(0);
-    // transform: scale(1);
-  }
-}
 
 .footer {
-  height: 60px;
+  height: var(--footer-height);
   // background-color: bisque;
   padding: 0px;
 

@@ -1,7 +1,5 @@
 import api from './instance'
-// import { userLoginStore } from '../store/login_store'
-// const { cookie } = storeToRefs(userLoginStore())
-const cookie = window.encodeURIComponent(localStorage.getItem('cookie') || '')
+
 /******** 首页轮播图*******/
 const getBanner = () => { return api.get('/banner', {}) }
 /******** 搜索*******/
@@ -23,7 +21,7 @@ const getQrImg = ({ key = '' }) => api.get(`/login/qr/create?key=${key}&qrimg=tr
 /***********************查询二维码状态 *************************/
 const getQrStatus = ({ key = '' }) => api.get(`/login/qr/check?key=${key}&noCookie=true&timestamp=${Date.now()}`)
 /***********************登录状态*************************/
-const loginStatus = () => api.get(`/login/status?timestamp=${Date.now()}`, { params: { cookie } })
+const loginStatus = ({ cookie = '' }) => api.get(`/login/status?timestamp=${Date.now()}`, { params: { cookie } })
 const userDetail = ({ uid = '' }) => api.get(`/user/detail?uid=${uid}`)
 const test = (url = '') => api.get(url)
 
@@ -42,7 +40,11 @@ const login: Login = ({ phone, pwd, captcha }: { phone: string, pwd?: string, ca
         return api.post(`/login/cellphone`, { phone, captcha })
     }
 }
+/***********************每日签到*************************/
+const daily_signin = ({ cookie = '' }) => api.get('/daily_signin?cookie=' + cookie)
 
+/***********************查询签到*************************/
+const signin_status = ({ cookie = '' }) => api.get('/signin/progress?cookie=' + cookie)
 /******** 退出登录*******/
 const logout = () => { return api.get('/logout', {}) }
 /******** 获取用户详情*******/
@@ -50,7 +52,7 @@ const getUserInfo = ({ uid = '' }) => { return api.get(`/user/detail?uid=${uid}`
 
 
 /***********************云盘*************************/
-const cloudSongs = () => api.get('/user/cloud?cookie=' + cookie)
+const cloudSongs = ({ cookie = '' }) => api.get('/user/cloud?cookie=' + cookie)
 '/user/cloud'
 
 '/user/account'
@@ -167,7 +169,7 @@ const artistList = ({ type = -1, area = -1, initial = '', limit = 10, offset = 0
 /******** 收藏的歌手列表*******/
 const subArtist = () => { return api.get('/artist/sublist', {}) }
 /***********************相似歌手, 需要登录*************************/
-const simiAtrist = ({ id = '' }) => api.get(`/simi/artist?id=${id}&cookie=${cookie}`)
+const simiAtrist = ({ id = '', cookie = '' }) => api.get(`/simi/artist?id=${id}&cookie=${cookie}`)
 /* ********* MV ********* */
 /******** 获取 mv*******/
 const mv = ({ area = '', type = '', order = '', limit = 50, offset = 0 }) => { return api.get(`/mv/all?area=${area}&type=${type}&order=${order}&limit=${limit}&offset=${offset}`, {}) }
@@ -217,7 +219,7 @@ const getNewMv = ({ limit = 30, area = '' }) => { return api.get(`/mv/first?limi
 const getHotDj = ({ limit = 30, offset = 0 }) => { return api.get(`/dj/hot?limit=${limit}&offset=${offset}`, {}) }
 
 export default {
-    test, getCaptcha, cloudSongs,
+    test, getCaptcha, cloudSongs, daily_signin, signin_status,
     getQrImg, getQrKey, getQrStatus, loginStatus, userDetail,
     recoMV,
     topSong,

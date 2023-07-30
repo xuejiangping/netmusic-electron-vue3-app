@@ -29,6 +29,7 @@ interface UserInfo {
     nickname: string,
     city: number,
     userId: string
+    eventCount: number
   }
 }
 export const userLoginStore = defineStore('login', () => {
@@ -41,18 +42,34 @@ export const userLoginStore = defineStore('login', () => {
     loginCardVisible: false, // 登录弹窗显示与隐藏
     userInfo: null as UserInfo | null, // 登录用户信息
     cookie: cookie || '',
-    userPlaylist: [] as PlaylistItem[]
-  })
-  initUserInfo()
-
-
-  watchEffect(() => {
-    if (!state.userInfo) return
-    const uid = state.userInfo.profile.userId
-    $http.playlistUser({ uid }).then(res => state.userPlaylist = res.playlist)
+    userPlaylist: [] as PlaylistItem[],
+    todaySignedIn: false
   })
 
   const loginStatus = computed(() => !!state.cookie)
+
+
+
+  watchEffect(() => {
+    if (!state.cookie) return
+    $http.loginStatus({ cookie: state.cookie }).then(res => {
+      // console.log('res', res)
+      const uid = res.data.account.id
+      $http.userDetail({ uid }).then(res => state.userInfo = res)
+      $http.playlistUser({ uid }).then(res => state.userPlaylist = res.playlist)
+    })
+    update_signin_status()
+  })
+  function update_signin_status() {
+    $http.signin_status({ cookie: state.cookie }).then(res => state.todaySignedIn = res.data.today.todaySignedIn)
+
+  }
+
+  function signin() {
+    $http.daily_signin({ cookie: state.cookie }).then(() => {
+      update_signin_status()
+    })
+  }
 
   function saveCookie(cookie: string) {
     state.cookie = cookie
@@ -64,24 +81,15 @@ export const userLoginStore = defineStore('login', () => {
     state.cookie = ''
     window.localStorage.removeItem(COOKIE)
     state.userInfo = null
+    state.userPlaylist = []
   }
 
-  function initUserInfo() {
-    if (!cookie) return
-    $http.loginStatus().then(res => {
-      const uid = res.data.account.id
-      $http.userDetail({ uid }).then(res => state.userInfo = res)
-    })
-  }
   function setLoginCardVisible(val: boolean) {
     state.loginCardVisible = val
   }
-  function setUserInfo(val: any) { state.userInfo = val }
-  // function setLoginStatus(val: boolean) { state.loginStatus = val }
 
   return {
     ...toRefs(state), setLoginCardVisible, loginStatus,
-    setUserInfo,
-    logout, saveCookie
+    logout, saveCookie, update_signin_status, signin
   }
 })

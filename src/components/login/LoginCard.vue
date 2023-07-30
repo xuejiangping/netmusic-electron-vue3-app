@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { PhoneFilled, Lock, Key } from '@element-plus/icons-vue'
-import { ElFormItem } from 'element-plus';
 import { toRefs, reactive, getCurrentInstance } from 'vue';
-import { FormRules, FormInstance } from 'element-plus'
+import { FormRules, FormInstance, ElFormItem } from 'element-plus'
 
 const { $store, $http, $message } = getCurrentInstance()?.proxy!
 const store = $store.userLoginStore()
@@ -24,7 +23,7 @@ const validateRules: FormRules = {
   code: [{ required: true, pattern: /\d{4}/, len: 4, message: '验证码格式不正确' }]
 }
 const { codeBtnText, qrImg, statusCode, mode, qrKey, autoLogin, codeBtnDisabled } = toRefs(reactive({
-  mode: 'code' as 'password' | 'code' | 'qr',
+  mode: 'qr' as 'password' | 'code' | 'qr',
   tel: '',
   password: '',
   code: '',
@@ -41,22 +40,29 @@ getQrKey()
 /***********************请求验证码*************************/
 
 function getCode() {
+  formRef.value?.validate().catch(reason => {
+    if (reason.tel) {
+      $message('请输入正确的手机号码')
+    } else {
+      debugger
+      $http.getCaptcha({ phone: tel.value }).then(res => res.data && $message('验证码发送成功'))
 
-  $http.getCaptcha({ phone: tel.value }).then(res => (res.data === true) && $message('验证码发送成功'))
-
-  /***********************更改按钮状态*************************/
-  codeBtnDisabled.value = true
-  let t = CODE_TIME
-  const upDateRestTime = (t: number) => codeBtnText.value = `剩余 ${t} s`
-  upDateRestTime(t)
-  const timer = setInterval(() => {
-    upDateRestTime(--t)
-    if (t === 0) {
-      clearInterval(timer);
-      codeBtnText.value = '获取验证码';
-      codeBtnDisabled.value = false
+      /***********************更改按钮状态*************************/
+      codeBtnDisabled.value = true
+      let t = CODE_TIME
+      const upDateRestTime = (t: number) => codeBtnText.value = `剩余 ${t} s`
+      upDateRestTime(t)
+      const timer = setInterval(() => {
+        upDateRestTime(--t)
+        if (t === 0) {
+          clearInterval(timer);
+          codeBtnText.value = '获取验证码';
+          codeBtnDisabled.value = false
+        }
+      }, 1000)
     }
-  }, 1000)
+  })
+
 }
 
 watch(mode, (val) => {
@@ -117,7 +123,8 @@ async function poolCodeStatus(t = 2000) {
           clearInterval(timer)
           setLoginCardVisible(false)
           saveCookie(cookie)
-          console.log('登录成功', res)
+          $message('登录成功')
+          // console.log('登录成功', res)
           break
       }
     }, t)
@@ -142,13 +149,13 @@ async function poolCodeStatus(t = 2000) {
               <span v-show="LOGIN_STATUS.待确认 === statusCode">已扫描，等待确认</span>
             </div>
           </div>
-          <div @click="mode = 'password'">
-            <my-link color="var(--color-text-main)">选择其它登录方式</my-link>
+          <div>
+            <el-link @click="mode = 'password'" color="var(--color-text-main)">选择其它登录方式 &gt;</el-link>
           </div>
         </div>
         <div class="tel" v-show="mode === 'password' || mode === 'code'">
 
-          <h3 @click="mode = 'qr'"> <my-link color="var(--color-text-main)">扫码登录更安全</my-link>
+          <h3> <el-link @click="mode = 'qr'" color="var(--color-text-main)"> &lt; 扫码登录更安全</el-link>
           </h3>
 
           <div style="margin: 1rem 0;font-size: 14px;">
@@ -163,10 +170,12 @@ async function poolCodeStatus(t = 2000) {
               <el-form-item prop="code" v-else-if="mode === 'code'">
                 <el-input v-model.number="validateForm.code" placeholder="请输入验证码" :prefix-icon="Key">
                   <template #append>
-                    <el-button @click="getCode" :disabled="codeBtnDisabled" type="danger">{{ codeBtnText }}</el-button>
+                    <el-button @click="getCode" size="small" :disabled="codeBtnDisabled"
+                      type="danger">{{ codeBtnText }}</el-button>
                   </template>
                 </el-input>
               </el-form-item>
+
 
               <el-row justify='space-between'>
                 <el-col :span="8">
@@ -201,12 +210,7 @@ async function poolCodeStatus(t = 2000) {
   left: 50%;
   z-index: 9;
   transform: translate(-50%, -50%);
-  width: 25%;
-  // border: 1px solid hotpink;
-  min-width: 240px;
-  max-width: 400px;
-  background-image: url('../../assets/img/login-bg.webp');
-  background-size: cover;
+  max-width: 300px;
 
   .close {
     position: absolute;
@@ -218,15 +222,15 @@ async function poolCodeStatus(t = 2000) {
 
     backdrop-filter: blur(15px);
     text-align: center;
-    padding: 1rem 2.5rem;
-    line-height: 40px;
+    padding: 1rem 32px;
+    line-height: 20px;
     box-shadow: var(--el-box-shadow-dark);
 
     .qr-img {
       position: relative;
       display: inline-block;
       margin: 1rem 0;
-      width: 12rem;
+      width: 10rem;
       aspect-ratio: 1/1;
       background-size: cover;
 
@@ -237,10 +241,11 @@ async function poolCodeStatus(t = 2000) {
         height: 100%;
         width: 100%;
         display: flex;
+        justify-content: center;
         align-items: center;
         line-height: 2rem;
         font-weight: 700;
-        backdrop-filter: blur(5px);
+        backdrop-filter: blur(6px);
         // background-color: hotpink;
 
       }
@@ -251,7 +256,7 @@ async function poolCodeStatus(t = 2000) {
     }
 
     &:deep(.el-input-group__append) {
-      padding: 0 1rem;
+      // padding: 0 14px;
     }
   }
 }

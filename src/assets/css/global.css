@@ -17,6 +17,8 @@
   --color-border: #dcdfe6;
   --color-modal-gray: #ffffffba;
   --el-color-primary: var(--color-theme) !important;
+  --header-height: 50px;
+  --footer-height: 60px;
 }
 li {
   list-style: none;

@@ -16,6 +16,7 @@ declare module 'vue' {
     ContextMenu: typeof import('./../components/ContextMenu.vue')['default']
     Detail: typeof import('./../components/Detail.vue')['default']
     DetailTemplate: typeof import('./../components/Detail-Template.vue')['default']
+    ElAffix: typeof import('element-plus/es')['ElAffix']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElButton: typeof import('element-plus/es')['ElButton']
@@ -34,6 +35,7 @@ declare module 'vue' {
     ElImage: typeof import('element-plus/es')['ElImage']
     ElImgage: typeof import('element-plus/es')['ElImgage']
     ElInput: typeof import('element-plus/es')['ElInput']
+    ElLink: typeof import('element-plus/es')['ElLink']
     ElMain: typeof import('element-plus/es')['ElMain']
     ElMenu: typeof import('element-plus/es')['ElMenu']
     ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
@@ -73,6 +75,7 @@ declare module 'vue' {
     SearchSuggest: typeof import('./../components/SearchSuggest.vue')['default']
     SingerItem: typeof import('./../components/Singer/SingerItem.vue')['default']
     SingerTable: typeof import('./../components/SingerTable.vue')['default']
+    SongDetail: typeof import('./../components/Song-Detail.vue')['default']
     SongTable: typeof import('./../components/SongTable.vue')['default']
     VideoTable: typeof import('./../components/VideoTable.vue')['default']
   }

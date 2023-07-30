@@ -1,17 +1,23 @@
 <script setup lang="ts">
 import SearchPanel from '@components/SearchPanel.vue'
 import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
-const { $store } = getCurrentInstance()?.proxy!
+const { $store, $COMMON, $utils, $confirm } = getCurrentInstance()?.proxy!
 const store = $store.userLoginStore()
-const { setLoginCardVisible } = store
-const { loginStatus, loginCardVisible } = storeToRefs(store)
+const { setLoginCardVisible, signin, logout } = store
+const { loginStatus, loginCardVisible, userInfo, todaySignedIn } = storeToRefs(store)
+
+const debounceSignin = $utils.debounce(signin, 500)
+function logout_confirm() {
+  $confirm('确定要退出登录吗？').then(logout).catch(console.log)
+
+}
 </script>
 
 <template>
   <div class="header">
     <div class="left">
       <div class="no-drag interact" @click="$router.push('index')">
-        <img class="logo" src="@/assets/img/wangyiyunlogo.png" alt="">
+        <img class="logo" src="@/assets/img/wangyiyunlogo.png">
         <span>网易云音乐</span>
       </div>
     </div>
@@ -24,18 +30,45 @@ const { loginStatus, loginCardVisible } = storeToRefs(store)
     </div>
     <div class="right">
       <div class="user">
-        <MyLink v-if="false">
-          <el-avatar class="avatar" size='small'
-            src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
-          <span>xue6474</span>
-        </MyLink>
+        <el-popover v-if="loginStatus" placement="bottom" :width="240" trigger="click">
+          <template #reference>
+            <el-link type="info" style="color: #fff;" :underline="false">
+              <el-avatar class="avatar" size="small"
+                :src="userInfo?.profile.avatarUrl + $COMMON.IMG_SIZE_SEARCH_PARAMS.squar.small" />
+              <span>{{ userInfo?.profile.nickname }}</span>
+            </el-link>
+          </template>
+
+          <div class="info-card">
+            <div class="event">
+              <span>{{ userInfo?.profile.eventCount }}</span>
+              <span>{{ userInfo?.profile.follows }}</span>
+              <span>{{ userInfo?.profile.followeds }}</span>
+              <span>动态</span>
+              <span>关注</span>
+              <span>粉丝</span>
+            </div>
+            <div style="margin: 0.8rem 0;text-align: center;">
+              <el-button @click="debounceSignin" size="default" :disabled="todaySignedIn"
+                round>{{ todaySignedIn ? '已签到' : '签到' }}</el-button>
+            </div>
+
+            <div class="function-list">
+              <ul>
+                <li @click="logout_confirm">退出登录</li>
+              </ul>
+            </div>
+
+          </div>
+        </el-popover>
+
         <MyLink v-else color="#fff" @click="setLoginCardVisible(true)">
-          <el-avatar class="avatar" size='small'
-            src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+          <el-avatar class="avatar" size='small' />
           <span>未登录</span>
         </MyLink>
         <LoginCard v-if="loginCardVisible"></LoginCard>
       </div>
+
       <span>1</span><span>2</span><span>3</span>
     </div>
     <span></span>
@@ -44,6 +77,32 @@ const { loginStatus, loginCardVisible } = storeToRefs(store)
 
 <style scoped lang="less">
 @import '@/assets/css/global.less';
+
+.info-card {
+  .event {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
+
+    span:nth-child(-n+3) {
+      font-weight: 700;
+      font-size: large;
+    }
+
+  }
+
+  .function-list {
+    li {
+      padding: 5px;
+
+      &:hover {
+        background-color: var(--color-text-white);
+
+      }
+    }
+
+  }
+}
 
 .header {
   display: flex;
@@ -73,7 +132,7 @@ const { loginStatus, loginCardVisible } = storeToRefs(store)
     flex: 1;
     display: flex;
     align-items: center;
-    justify-content: end; // 水平对齐，不然会有竖直线。。。。。。。。
+    justify-content: center; // 水平对齐，不然会有竖直线。。。。。。。。
 
     .back,
     .forward {
@@ -101,6 +160,11 @@ const { loginStatus, loginCardVisible } = storeToRefs(store)
       width: 36px;
       height: 36px;
     }
+
+    .user {
+      color: blue;
+    }
+
   }
 
 

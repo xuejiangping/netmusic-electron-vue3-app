@@ -9,11 +9,18 @@ interface CommentItem {
   beReplied: (Pick<CommentItem, 'content' | 'user'> & { beRepliedCommentId: number })[]
 }
 const props = defineProps<{
-  commentData: { comments: CommentItem[], total: number, hotComments: CommentItem[] }
+  commentData: { comments: CommentItem[], total: number, hotComments: CommentItem[] },
+  info?: { type: string, title: string },
+  layout?: 'relative' | 'absolute'
 }>()
 
-
-
+const inputBoxStatus = ref(false)
+function setInputBoxStatus(val: boolean) {
+  inputBoxStatus.value = val
+}
+defineExpose({
+  setInputBoxStatus
+})
 
 
 const formatedData = computed(() => {
@@ -27,7 +34,30 @@ const formatedData = computed(() => {
 
 <template>
   <div>
-    <div class="input-box">
+    <div v-if="layout === 'absolute'">
+      <Teleport to="body">
+        <div v-show="inputBoxStatus"
+          style="position: absolute;top: 50%;left: 50%; transform:translate(-50%,-50%);z-index: 3;width: 50%;">
+          <el-card shadow="always">
+            <div style="padding: 10px 0;">
+              <span @click="setInputBoxStatus(false)"
+                style="position: absolute;right: 5px;top:5px;font-size: 10px;">✖️</span>
+              <h3 v-if="info" style="text-align: center;"> <span>{{ info?.type }}</span>: <span>{{ info?.title }}</span>
+              </h3>
+              <div class="input-box">
+                <el-input v-model="text" resize="none" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea"
+                  placeholder="Please input" />
+                <div class="send">
+                  <el-button size="small" round>评论</el-button>
+                </div>
+              </div>
+            </div>
+          </el-card>
+        </div>
+      </Teleport>
+    </div>
+
+    <div v-else class="input-box">
       <el-input v-model="text" resize="none" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea"
         placeholder="Please input" />
       <div class="send">
@@ -96,7 +126,7 @@ const formatedData = computed(() => {
   grid-template-rows: repeat(2);
   margin: 1.8rem 0;
   border-bottom: 1px dashed #e9e9e9;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   // justify-items: center;
 
   .item1 {

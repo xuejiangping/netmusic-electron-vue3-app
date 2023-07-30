@@ -76,13 +76,19 @@ const formatedCurTime = computed(() => {
 watch(currenPlayTime, (val) => {
   currentPlayProgress.value = currentSong.value ? $utils.transformSongTime({ dt: currentSong.value.dt, time: val * 1000 }) : 0
 })
-
+const song_detail_status = ref(false)
 </script>
 
 <template>
+  <transition name="slide">
+    <div v-if="song_detail_status" class="song-detail">
+      <song-detail></song-detail>
+    </div>
+  </transition>
   <ul class="container">
+
     <!-- 播放列表无歌曲时显示 该模态 -->
-    <li v-if="!playList.length" class="modal"></li>
+    <li v-if="!playList.length" class="modal"><button @click="song_detail_status = !song_detail_status">12</button></li>
 
     <!-- 左边显示当前歌曲信息部分 -->
     <li>
@@ -189,6 +195,32 @@ watch(currenPlayTime, (val) => {
 <style scoped lang="less">
 @import '@/assets/css/global.less';
 
+// song-detail 的height
+@h: calc(100vh - var(--footer-height));
+
+
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.5s ease-in;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  transform: translateY(@h);
+
+}
+
+.song-detail {
+  z-index: 2;
+  position: absolute;
+  width: 100%;
+  height: @h;
+  left: 0;
+  bottom: var(--footer-height);
+}
+
+
 
 .container {
   display: grid;
@@ -196,9 +228,13 @@ watch(currenPlayTime, (val) => {
   grid-template-columns: 1fr 2fr 1fr;
   align-items: center;
   font-size: 12px;
-  max-height: 60px;
+  height: 100%;
+  box-sizing: border-box;
   padding: 7px;
   border-top: 1px solid var(--color-border);
+  background-color: #fff;
+
+  z-index: 3;
 
   .modal {
     position: absolute;
