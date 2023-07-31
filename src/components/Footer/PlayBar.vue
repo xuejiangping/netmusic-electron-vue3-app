@@ -17,7 +17,6 @@ const { next, prev, switchLoopOption, clearPlayList, changeUserClickPlayActionTy
 // $confirm('双击播放单曲时，用当前歌曲所在的歌曲列表替换播放列？')
 
 const cover = computed(() => {
-
   return currentSong.value?.album.cover || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
 })
 const baseOptions = {
@@ -82,7 +81,7 @@ const song_detail_status = ref(false)
 <template>
   <transition name="slide">
     <div v-if="song_detail_status" class="song-detail">
-      <song-detail></song-detail>
+      <song-detail :currenPlayTime="currenPlayTime" @close="song_detail_status = false; carousel.next()"></song-detail>
     </div>
   </transition>
   <ul class="container">
@@ -97,7 +96,8 @@ const song_detail_status = ref(false)
           :autoplay="false">
           <el-carousel-item>
             <div class="left-top">
-              <div class="arrow-down" @click="carousel.next"> <i class="iconfont icon-arrow"></i></div>
+              <div class="arrow-down" @click="carousel.next(); song_detail_status = false"> <i
+                  class="iconfont icon-arrow"></i></div>
               <el-button color="#fff5" circle :icon="StarFilled" />
               <el-button color="#fff5" circle :icon="Download" />
               <el-button color="#fff5" circle :icon="Share" />
@@ -106,7 +106,7 @@ const song_detail_status = ref(false)
 
           <el-carousel-item>
             <div class="left-bottom">
-              <div @click="carousel.next">
+              <div @click="carousel.next(); song_detail_status = true">
                 <div class="img">
                   <my-image :src="cover"></my-image>
                   <span></span>
@@ -202,7 +202,7 @@ const song_detail_status = ref(false)
 
 .slide-enter-active,
 .slide-leave-active {
-  transition: all 0.5s ease-in;
+  transition: all 0.3s ease-in;
 }
 
 .slide-enter-from,
@@ -212,7 +212,7 @@ const song_detail_status = ref(false)
 }
 
 .song-detail {
-  z-index: 2;
+  z-index: 3;
   position: absolute;
   width: 100%;
   height: @h;

@@ -30,14 +30,12 @@ defineOptions({ inheritAttrs: false })
 .box {
   position: relative;
 
-
-
   .img {
     width: 100%;
     z-index: 1;
     box-shadow: .4rem 0px .1875rem .1875rem #ffffff33;
-    // border-radius: 0.3rem;
-    border-radius: 8px;
+    // border-radius: 0.4rem;
+    border-radius: 6px;
 
     &:deep(.el-image__inner) {
       &:hover {

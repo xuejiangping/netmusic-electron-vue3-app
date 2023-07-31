@@ -188,7 +188,7 @@ export default {
           const { license, name, id, ar, artists, al, album, dt, duration, mv, mvid, fee, pop, popularity, ratio } = item
           return {
             dt: dt || duration, license, name, id, artists: ar || artists,
-            album: this.formatList('albumlist', [al || album], 'small')[0],
+            album: this.formatList('albumlist', [al || album], 'middle')[0],
             mv: mv || mvid,
             duration: this.formatSongTime(dt || duration), fee, pop: pop || popularity, ratio,
             audioUrl: `https://music.163.com/song/media/outer/url?id=${id}.mp3`
