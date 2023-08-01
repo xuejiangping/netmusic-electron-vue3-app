@@ -2,18 +2,21 @@
 <script setup lang="ts">
 /**  listitem  用于列表组件的列 如歌手 专辑 歌单*/
 
-defineProps<{
+withDefaults(defineProps<{
   img1v1Url: string,
   type?: ListType
-}>()
-defineEmits(['dbclick_handler', 'icon_play_click_handler'])
+  cover_width?: string
+}>(), {
+  cover_width: '4rem'
+})
+defineEmits(['icon_play_click_handler'])
 </script>
 
 <template>
-  <div class="item" @dblclick="$emit('dbclick_handler')">
+  <div class="item">
     <!-- <img class="img" :src="img1v1Url"> -->
     <div class="left">
-      <div class="cover">
+      <div class="cover" :style="{ width: cover_width }">
         <MyImage :is-album="type === 'album'" :src="img1v1Url"></MyImage>
         <i v-if="type === 'song'" @click="$emit('icon_play_click_handler')" class="iconfont icon-play"></i>
       </div>
@@ -42,7 +45,6 @@ defineEmits(['dbclick_handler', 'icon_play_click_handler'])
 
   .cover {
     position: relative;
-    width: 4rem;
     margin-right: 0.8rem;
 
     .icon-play {

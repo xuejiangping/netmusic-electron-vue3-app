@@ -42,7 +42,8 @@ const formatedData = computed(() => {
             <div style="padding: 10px 0;">
               <span @click="setInputBoxStatus(false)"
                 style="position: absolute;right: 5px;top:5px;font-size: 10px;">✖️</span>
-              <h3 v-if="info" style="text-align: center;"> <span>{{ info?.type }}</span>: <span>{{ info?.title }}</span>
+              <h3 v-if="info" style="text-align: center;margin-bottom: 1rem;"> <span>{{ info?.type }}</span>:
+                <span>{{ info?.title }}</span>
               </h3>
               <div class="input-box">
                 <el-input v-model="text" resize="none" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea"
@@ -75,7 +76,7 @@ const formatedData = computed(() => {
             <!-- 主帖 -->
             <div><span class="uname">
                 <RouterLink :to="{
-                  name: 'singer', query: {
+                  name: 'index', query: {
                     name: comment.user.nickname, id: comment.user.userId
                   }
                 }">{{ comment.user.nickname }}</RouterLink>
@@ -86,7 +87,7 @@ const formatedData = computed(() => {
             <div class="beReplied" v-for="({ content, user }) in comment.beReplied">
               <span class="uname">
                 <RouterLink :to="{
-                  name: 'singer', query: {
+                  name: 'index', query: {
                     name: user.nickname, id: user.userId
                   }
                 }">@{{ user.nickname }}</RouterLink>
@@ -128,6 +129,7 @@ const formatedData = computed(() => {
   border-bottom: 1px dashed #e9e9e9;
   font-size: 0.9rem;
   // justify-items: center;
+  gap: 1rem;
 
   .item1 {
     grid-column: 1;
@@ -158,7 +160,7 @@ const formatedData = computed(() => {
     display: flex;
     justify-content: space-evenly;
     grid-row: 2;
-    grid-column: 10/-1;
+    grid-column: 8/-1;
     color: var(--color-text);
   }
 

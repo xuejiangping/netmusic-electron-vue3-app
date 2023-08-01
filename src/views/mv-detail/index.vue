@@ -71,7 +71,7 @@ onBeforeMount(() => {
 <template>
   <div v-if="commentData" class="box">
     <h2>
-      <label @click="$router.back()"><i class="back iconfont icon-arrow"></i><span>MV 详情</span></label>
+      <el-link @click="$router.back"><i class="back iconfont icon-arrow"></i><span>MV 详情</span></el-link>
     </h2>
     <div class="player">
       <vue3VideoPlay v-bind="options"></vue3VideoPlay>

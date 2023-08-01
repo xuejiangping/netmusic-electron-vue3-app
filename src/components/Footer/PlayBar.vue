@@ -113,8 +113,10 @@ const song_detail_status = ref(false)
                 </div>
               </div>
               <div class="info">
-                <div v-title class="name">{{ currentSong.name }}</div>
-                <div v-title>{{ currentSong.artists[0].name }}</div>
+                <div class="name"><span v-title>{{ currentSong.name }}</span></div>
+                <div><router-link v-title
+                    :to="{ name: 'singer', query: { name: currentSong.artists[0].name, id: currentSong.artists[0].id } }">{{ currentSong.artists[0].name }}</router-link>
+                </div>
               </div>
             </div>
           </el-carousel-item>
