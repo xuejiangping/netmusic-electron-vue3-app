@@ -4,24 +4,23 @@ import { Directive } from 'vue';
 import lyric_handler from '../assets/js/index/lyric'
 const { $store, $http, $notify, $utils } = getCurrentInstance()?.proxy!
 const store = $store.usePlayStateStore()
+const { addSong } = $store.usePlayStateStore()
 const { audioELcontrol } = store
 const { isPaused, currentSong } = storeToRefs(store)
 defineEmits(['close'])
 const props = defineProps<{
   currenPlayTime: number,
 }>()
-const a = ref(false)
 
 
 
 const { lyric, curIndex, offsetTime } = lyric_handler({ currenPlayTimeRef: toRef(props, 'currenPlayTime'), id: toRef(() => currentSong.value?.id!) })
 // watchEffect(() => console.log(lyric.value?.lines[curIndex.value]))
 
-const { commentRef, showCommentBtn, aside_status, commentData, simiPlaylists, simiSongs } = toRefs(shallowReactive({
+const { commentRef, showCommentBtn, aside_status, simiPlaylists, simiSongs } = toRefs(shallowReactive({
   commentRef: null as any,
   showCommentBtn: false,
   aside_status: true,
-  commentData: null as any,
   simiSongs: [] as SongItem[],
   simiPlaylists: [] as PlaylistItem[]
 }))
@@ -30,7 +29,6 @@ const { commentRef, showCommentBtn, aside_status, commentData, simiPlaylists, si
 watchEffect(() => {
   if (currentSong.value) {
     const id = unref(currentSong.value.id)
-    $http.commentSong({ id }).then(({ total, comments, hotComments }) => commentData.value = { total, comments, hotComments })
     $http.simiSong({ id }).then(res => simiSongs.value = $utils.formatList('songlist', res.songs, 'middle'))
     $http.simiPlayList({ id }).then(res => simiPlaylists.value = $utils.formatList('playlist', res.playlists, 'middle'))
   }
@@ -83,7 +81,7 @@ watchEffect(() => {
 
     <div class="container">
 
-      <el-button v-if="showCommentBtn" @click="commentRef?.setInputBoxStatus(true)" color="#f1f1f1"
+      <el-button v-if="showCommentBtn" @click="commentRef?.comment" color="#f1f1f1"
         style="position: absolute; left: 50%;bottom: 10px;transform: translate(-50%);" :icon="EditPen" size="small" round>
         发表评论</el-button>
       <el-link @click="$emit('close')" :underline="false" style="position: absolute;left: 5px;top: 5px;">
@@ -114,7 +112,7 @@ watchEffect(() => {
           <div @click="audioELcontrol && (isPaused ? audioELcontrol.play() : audioELcontrol.pause())"
             style="position: relative;" :class="{ 'active-playing': !isPaused }">
             <img src="../assets/img/stylus.png" class="stylus">
-            <div class="cover" @click="a = !a">
+            <div class="cover">
               <img :src="currentSong?.album.cover" class="img">
             </div>
           </div>
@@ -140,19 +138,21 @@ watchEffect(() => {
         <!-- 右边栏 推荐 -->
         <div v-show="aside_status" class="aside">
           <h4 class="title">包含这首歌的歌单</h4>
-          <ListItem @click="$emit('close')" v-for="(item) in simiPlaylists" cover_width="3rem" :img1v1-url="item.cover">
+          <ListItem v-for="(item) in simiPlaylists" cover_width="2rem" :img1v1-url="item.cover"
+            @click="$emit('close'); $router.push({ name: 'playlist-detail', query: { name: item.name, id: item.id } })">
             <span v-title class="name">{{ item.name }}</span>
           </ListItem>
           <h4 class="title">喜欢这首歌的人也喜欢</h4>
-          <ListItem cover_width="3rem" @click="$emit('close')" v-for="(item) in simiSongs" :img1v1-url="item.album.cover">
+          <ListItem cover_width="2rem" v-for="(item) in simiSongs" :img1v1-url="item.album.cover"
+            @click=" addSong(item, true)">
             <span v-title class="name">{{ item.name }}</span>
           </ListItem>
 
         </div>
       </div>
       <div class="bottom" v-intersection>
-        <Comment v-if="commentData" ref="commentRef" :info="{ type: '歌曲', title: currentSong?.name! }" layout='absolute'
-          :comment-data="commentData">
+        <Comment v-if="currentSong" ref="commentRef" layout='absolute' type='歌曲'
+          :info="{ id: currentSong.id, name: currentSong.name }">
         </Comment>
       </div>
     </div>
@@ -174,7 +174,7 @@ watchEffect(() => {
 
     .top {
       text-align: center;
-      line-height: 1.5rem;
+      line-height: 2rem;
       color: var(--color-text);
       margin: 1rem 0;
 

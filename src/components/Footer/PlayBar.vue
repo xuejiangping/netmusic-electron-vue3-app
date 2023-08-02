@@ -87,7 +87,7 @@ const song_detail_status = ref(false)
   <ul class="container">
 
     <!-- 播放列表无歌曲时显示 该模态 -->
-    <li v-if="!playList.length" class="modal"><button @click="song_detail_status = !song_detail_status">12</button></li>
+    <li v-if="!playList.length" class="modal"></li>
 
     <!-- 左边显示当前歌曲信息部分 -->
     <li>
@@ -109,7 +109,6 @@ const song_detail_status = ref(false)
               <div @click="carousel.next(); song_detail_status = true">
                 <div class="img">
                   <my-image :src="cover"></my-image>
-                  <span></span>
                 </div>
               </div>
               <div class="info">
@@ -264,7 +263,29 @@ const song_detail_status = ref(false)
     }
 
     .img {
+      position: relative;
       width: 46px;
+
+      &:hover:after {
+        display: unset;
+      }
+
+
+      &::after {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        content: '';
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        cursor: pointer;
+        backdrop-filter: blur(2px);
+        // background-color: #fff;
+        transition: all 1s;
+
+      }
     }
   }
 

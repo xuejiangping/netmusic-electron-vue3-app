@@ -84,6 +84,7 @@ async function getQrKey() {
   statusCode.value = LOGIN_STATUS.请求二维码
   qrKey.value = (await $http.getQrKey()).data.unikey
 }
+/***********************手机号登录*************************/
 async function login() {
   try {
 
@@ -103,7 +104,7 @@ async function login() {
     console.log('验证失败', err)
   }
 }
-
+/***********************轮询二维码状态*************************/
 async function poolCodeStatus(t = 2000) {
   if (qrKey.value) {
     const timer = setInterval(async () => {
@@ -211,6 +212,7 @@ async function poolCodeStatus(t = 2000) {
   z-index: 9;
   transform: translate(-50%, -50%);
   max-width: 300px;
+  background-color: var(--color-bg-light);
 
   .close {
     position: absolute;
@@ -220,7 +222,7 @@ async function poolCodeStatus(t = 2000) {
 
   .box1 {
 
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(10px);
     text-align: center;
     padding: 1rem 32px;
     line-height: 20px;

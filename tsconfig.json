@@ -39,7 +39,7 @@
 		"src/apis/instance.ts",
 		"src/apis/http1.jss",
 		"src/apis/http1.jss",
-		"electron-preload/index.js",
+		"electron-preload/index.ts",
 		"electron-preload/createViewsDir.js",
 		"src/utils/util.ts"
 	],

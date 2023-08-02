@@ -51,7 +51,7 @@ const { main_page_loading } = storeToRefs(useGlobalPropsStore())
 }
 
 .header {
-  background-color: #ec4141;
+  background-color: var(--color-theme);
   height: var(--header-height);
 }
 

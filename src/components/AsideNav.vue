@@ -59,26 +59,26 @@ watchEffect(() => {
 <template>
   <el-menu class="menu" :default-active="'index'" router @select="index => activeIndex = index">
     <el-menu-item-group :title="discover.title">
-      <el-menu-item v-for="(item, index) in discover.items" :key="index" :index="item.index" v-title
+      <el-menu-item v-for="(item, index) in discover.items" :key="index" :index="item.index"
         :class="['menu-item', item.index === activeIndex && 'active-select']">
         <i :class="['iconfont', item.icon]" :style="{ color: item.color }"></i>
-        <span style="padding-left: 0.5rem">{{ item.text }}</span>
+        <span>{{ item.text }}</span>
       </el-menu-item>
     </el-menu-item-group>
 
     <div v-if="loginStatus">
       <el-menu-item-group :title="myMusic.title">
-        <el-menu-item v-for="(item, index) in myMusic.items" :key="index" :index="item.index" v-title
+        <el-menu-item v-for="(item, index) in myMusic.items" :key="index" :index="item.index"
           :class="['menu-item', item.index === activeIndex && 'active-select']">
           <i :class="['iconfont', item.icon]" :style="{ color: item.color }"></i>
-          <span style="padding-left: 0.5rem">{{ item.text }}</span>
+          <span>{{ item.text }}</span>
         </el-menu-item>
       </el-menu-item-group>
       <el-menu-item-group :title="created.title">
-        <el-menu-item v-for="(item, index) in created.items" :key="index" :index="item.index" v-title
+        <el-menu-item v-for="(item, index) in created.items" :key="index" :index="item.index"
           :class="['menu-item', item.index === activeIndex && 'active-select']">
           <i :class="['iconfont', item.icon]" :style="{ color: item.color }"></i>
-          <span style="padding-left: 0.5rem">{{ item.text }}</span>
+          <span class="name">{{ item.text }}</span>
         </el-menu-item>
       </el-menu-item-group>
     </div>
@@ -99,10 +99,18 @@ watchEffect(() => {
 
   .menu-item {
     height: 2.5rem;
-    font-size: 1rem;
+    font-size: 0.8rem;
+
+    /* overflow: hidden;
+    text-overflow: ellipsis; */
+    .name {
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
 
     .iconfont {
       font-size: 1rem;
+      padding-right: 0.5rem;
     }
   }
 

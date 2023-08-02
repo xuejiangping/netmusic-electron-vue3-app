@@ -18,10 +18,12 @@ export async function loading<T>(tasklist: Promise<T>[]) {
  * @param i 起始页，默认为0
  */
 
-export function getMoreHandler<T extends { limit: number, offset: number, id: string } & Record<string, any>, U extends (arg: T) => any>(fn: U, t?: number, i = 0) {
-  type Arg2 = Omit<Parameters<U>['0'], 'offset'>
+export function getMoreHandler<T extends { limit: number, offset: number, id: string },
+  U extends (arg: T) => any>(fn: U, t?: number, i = 0) {
+  type Arg2 = Omit<T, 'offset'>
+
   return $utils.debounce(function (arg: Arg2): ReturnType<U> {
-    let b = { ...arg, offset: arg.limit * i++ }
-    return fn(b)
+    ///@ts-ignore
+    return fn({ ...arg, offset: arg.limit * i++ })
   }, t)
 }

@@ -70,8 +70,14 @@ enum Fee {
     '可免费播放低音质' = 8
 }
 
+// 0删除 1发送 2回复 type: 0: 歌曲 1: mv 2: 歌单 3: 专辑 4: 电台 5: 视频 6: 动态
 
-
+enum Comment_SOURCE_TYPE {
+    歌曲 = 0, mv, 歌单, 专辑, 电台, 视频, 动态
+}
+enum Comment_ACTION_TYPE {
+    删除 = 0, 发送, 回复
+}
 
 
 export default {
@@ -82,5 +88,7 @@ export default {
     MV_TYPE,
     MV_ORDER,
     ARTIST_AREA,
-    ARTIST_TYPE, Fee
+    ARTIST_TYPE, Fee,
+    Comment_SOURCE_TYPE,
+    Comment_ACTION_TYPE
 }

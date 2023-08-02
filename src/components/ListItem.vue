@@ -20,7 +20,10 @@ defineEmits(['icon_play_click_handler'])
         <MyImage :is-album="type === 'album'" :src="img1v1Url"></MyImage>
         <i v-if="type === 'song'" @click="$emit('icon_play_click_handler')" class="iconfont icon-play"></i>
       </div>
-      <slot></slot>
+      <div style="flex: 1;">
+        <slot></slot>
+      </div>
+
     </div>
     <div class="middle">
       <slot name="middle"></slot>

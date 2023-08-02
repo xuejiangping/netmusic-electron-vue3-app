@@ -8,28 +8,21 @@ const { $http, $utils, $utils2 } = getCurrentInstance()?.proxy!
 interface AlbumInfo {
   album: null | AlbumItem,
   songs: SongItem[],
-  commentData: any
 }
 const songTableneedShowItmes = ['index', 'title', 'singer', 'duration']
 
 const state = reactive<AlbumInfo>({
   album: null, songs: []
-  , commentData: null
 })
-const { album, songs, commentData } = toRefs(state)
+const { album, songs } = toRefs(state)
 
 const tastA = $http.album({ id }).then(({ songs, album }) => {
   state.album = $utils.formatList('albumlist', [album], 'middle')[0]
   state.songs = $utils.formatList('songlist', songs)
 })
 
-const tastB = $http.albumComment({ id: String(id) }).then(({
-  comments, total, hotComments
-}) => {
-  commentData.value = { comments, total, hotComments }
-  tagInfoEnum.评论.suffix = `(${total})`
-})
-$utils2.loading([tastA, tastB])
+
+$utils2.loading([tastA])
 
 const tagInfoEnum = {
   歌曲列表: { index: 0, suffix: '' },
@@ -69,8 +62,8 @@ const handleTabsChange = (index: number) => {
       <span v-if="album.description">简介：{{ album.description }}</span>
     </template>
     <KeepAlive>
-      <component :listId="id" :need-show-items="songTableneedShowItmes" :commentData="commentData" :is="currentComponent"
-        :data-list="(songs as any[])">
+      <component :listId="id" :need-show-items="songTableneedShowItmes" type="专辑" :info="{ id, name: album.name }"
+        :is="currentComponent" :data-list="(songs as any[])">
       </component>
     </KeepAlive>
   </DetailTemplate>

@@ -61,12 +61,14 @@ app.directive('split', (el: HTMLElement, { value }) => {
 })
 // 给元素自动添加title
 app.directive('title', (el: HTMLElement) => {
+  // console.log('arg', arg)
   el.title = el.textContent!
   el.classList.add('text-in-oneline')
 })
 /**  利用 IntersectionObserver 实现无限滚动 */
 app.directive('my-infinite-scroll', {
   mounted(el: HTMLElement & { ob: IntersectionObserver }, binding) {
+
     const footerEl = document.createElement('div')
     footerEl.style.height = '1rem'
     const getmoreFN = binding.value

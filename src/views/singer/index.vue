@@ -3,42 +3,56 @@ import MixedTable from '../../components/MixedTable.vue'
 import VideoTable from '../../components/VideoTable.vue'
 type SingerDetai = { briefDesc: string, introduction: { ti: string, txt: string }[] }
 
-const query = useRoute().query as { id: string, cover: string, name: string }
-const { id, name } = query
-watchEffect(() => query.id)
+const route = useRoute()
+const id = computed(() => (route.query as { id: string, name: string }).id)
+const name = computed(() => (route.query as { id: string, name: string }).name)
 
-const { $http, $utils, $utils2 } = getCurrentInstance()?.proxy!
+// watchEffect(() => query.id)
+// console.log('query', query)
+
+const { $http, $utils, $utils2, $store } = getCurrentInstance()?.proxy!
 const LIMIT = 3
 const tabs = { 专辑: { index: 0 }, MV: { index: 1 }, 歌手详情: { index: 2 }, 相似歌手: { index: 3 } }
 
-const { singerDetai, tabIndex, aritst, hotAlbums, mvs } = toRefs(reactive({
+const { cookie } = storeToRefs($store.userLoginStore())
+const { singerDetai, tabIndex, aritst, hotAlbums, mvs, simiAtrist } = toRefs(reactive({
   aritst: {} as SingerItem,
   hotAlbums: [] as AlbumItem[],
   datalist: [],
   mvs: [] as MvItem[],
   tabIndex: 0,
-  singerDetai: {} as SingerDetai
+  singerDetai: {} as SingerDetai,
+  simiAtrist: [] as any[]
 }))
-const taskA = $http.artistAlbum({ id, limit: LIMIT }).then(res => aritst.value = $utils.formatList('singerlist', [res.artist], 'middle')[0])
-$http.artistDesc({ id }).then(({ briefDesc, introduction }) => singerDetai.value = { briefDesc, introduction })
-$utils2.loading([taskA])
 
-const [getMoreArtistAlbum, getMoreArtistMv] = [$http.artistAlbum, $http.artistMv].map((item) => $utils2.getMoreHandler(item, 500))
+
+
+const [getMoreArtistAlbum, getMoreArtistMv] = [$http.artistAlbum, $http.artistMv].map((fn) => $utils2.getMoreHandler(fn, 500))
 function moreAlbum() {
-  getMoreArtistAlbum({ id, limit: LIMIT }).then(res => hotAlbums.value.push(...$utils.formatList('albumlist', res.hotAlbums, 'middle')))
+  getMoreArtistAlbum({ id: id.value, limit: LIMIT }).then(res => hotAlbums.value.push(...$utils.formatList('albumlist', res.hotAlbums, 'middle')))
 }
 function moreVideo() {
-  getMoreArtistMv({ id, limit: LIMIT }).then(res => mvs.value.push(...$utils.formatList('mvlist', res.mvs, 'middle')))
+  getMoreArtistMv({ id: id.value, limit: LIMIT }).then(res => mvs.value.push(...$utils.formatList('mvlist', res.mvs, 'middle')))
 }
-moreVideo()
-moreAlbum()
-$http.simiAtrist({ id: '6724' }).then(console.log)
+function getSimiAtrist() {
+  $http.simiAtrist({ id: id.value, cookie: cookie.value }).then(res => simiAtrist.value = $utils.formatList('singerlist', res.artists, 'middle'))
+}
 
 const more = () => {
   if (tabIndex.value === tabs.专辑.index) return moreAlbum
   else if (tabIndex.value === tabs.MV.index) return moreVideo
   else return () => 0
 }
+
+watchEffect(() => {
+  const taskA = $http.artistAlbum({ id: id.value, limit: LIMIT }).then(res => aritst.value = $utils.formatList('singerlist', [res.artist], 'middle')[0])
+  $http.artistDesc({ id: id.value }).then(({ briefDesc, introduction }) => singerDetai.value = { briefDesc, introduction })
+  moreVideo()
+  moreAlbum()
+  getSimiAtrist()
+  $utils2.loading([taskA])
+})
+
 
 </script>
 
@@ -64,7 +78,7 @@ const more = () => {
               <p v-for="(item) in txt.split(/(?=(●|\n))/)">{{ item }}</p>
             </div>
           </div>
-          <VideoTable v-show="tabIndex === tabs.相似歌手.index" type='singer' :data-list="[]"></VideoTable>
+          <VideoTable v-show="tabIndex === tabs.相似歌手.index" type='singer' :data-list="simiAtrist"></VideoTable>
 
         </div>
       </KeepAlive>

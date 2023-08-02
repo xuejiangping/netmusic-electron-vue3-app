@@ -10,10 +10,9 @@ const tagInfoEnum = {
   歌曲列表: { index: 0, suffix: '' },
   评论: { index: 1, suffix: '' }
 }
-const { tracks, playlist, commentData } = toRefs(reactive({
+const { tracks, playlist } = toRefs(reactive({
   tracks: [] as SongItem[],
   playlist: {} as PlaylistItem,
-  commentData: {}
 }))
 
 
@@ -26,13 +25,7 @@ watchEffect(() => {
     playlist.value = $utils.formatList('playlist', [res.playlist], 'middle')[0]
     tracks.value = $utils.formatList('songlist', res.playlist.tracks)
   })
-  const tastB = $http.playlistComment({ id: idVal }).then(({
-    comments, total, hotComments
-  }) => {
-    commentData.value = { comments, total, hotComments }
-    tagInfoEnum.评论.suffix = `(${total})`
-  })
-  $utils2.loading([tastA, tastB])
+  $utils2.loading([tastA])
 })
 
 const handleTabsChange = (index: number) => {
@@ -50,7 +43,6 @@ const handleTabsChange = (index: number) => {
 </script>
 
 <template>
-  <!-- <div>playlist-detail</div> -->
   <div v-if="playlist.cover">
     <detail-template :tag-info-enum="tagInfoEnum" type="歌单" :cover="playlist.cover"
       @handle-tabs-change="handleTabsChange">
@@ -75,7 +67,7 @@ const handleTabsChange = (index: number) => {
         <span class="desc ">简介：{{ playlist.description }}</span>
       </template>
       <KeepAlive>
-        <component :listId="id" :need-show-items="songTabeNeedShowItems" :commentData="commentData" :is="currentComponent"
+        <component :listId="id" :need-show-items="songTabeNeedShowItems" type="歌单" :info="{ id }" :is="currentComponent"
           :data-list="(tracks as any[])">
         </component>
       </KeepAlive>

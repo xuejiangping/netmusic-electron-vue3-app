@@ -3,7 +3,7 @@
 
 import { usePageShowStore } from '../../store/page-show-state-store'
 
-const { $http, $utils, $COMMON } = getCurrentInstance()!.appContext.config.globalProperties
+const { $http, $utils2, $COMMON } = getCurrentInstance()!.appContext.config.globalProperties
 const { display1, reset } = usePageShowStore()
 
 const route = useRoute()
@@ -39,17 +39,16 @@ const options = reactive({
 const isShowDesc = ref(false)
 // 视频源信息
 const videoSoure = ref<{ src: string, resolution: number | string }[]>()
-const commentData = ref()
 
 
 //用户头像 小图片
 const avatarUrl = computed(() => {
   return mvDetailData.value?.artists[0].img1v1Url + $COMMON.IMG_SIZE_SEARCH_PARAMS.squar.small
 })
-onBeforeUnmount(() => reset())
+onBeforeUnmount(reset)
 onBeforeMount(() => {
   display1()
-  $http.mvDetail({ id }).then(({ data }) => {
+  const taskA = $http.mvDetail({ id }).then(({ data }) => {
     mvDetailData.value = data
     options.poster = mvDetailData.value!.cover
     //请求所有清晰度视频源
@@ -61,15 +60,15 @@ onBeforeMount(() => {
     // })
 
   })
-  $http.mvUrl({ id }).then(res => options.src = res.data.url)
-  $http.commentMv({ id }).then(({ comments, hotComments, total }) => commentData.value = { comments, hotComments, total })
+  const taskB = $http.mvUrl({ id }).then(res => options.src = res.data.url)
+  $utils2.loading([taskA, taskB])
 })
 
 
 </script>
 
 <template>
-  <div v-if="commentData" class="box">
+  <div class="box">
     <h2>
       <el-link @click="$router.back"><i class="back iconfont icon-arrow"></i><span>MV 详情</span></el-link>
     </h2>
@@ -101,14 +100,13 @@ onBeforeMount(() => {
       <div class="action">
         <el-tag round>点赞</el-tag>
         <el-tag round>分享({{ mvDetailData?.shareCount }})</el-tag>
-
       </div>
     </div>
     <div>
-      <Comment :comment-data="commentData"></Comment>
+      <Comment type='mv' :info="{ id, name: mvDetailData?.name }"></Comment>
     </div>
   </div>
-  <Loading v-else></Loading>
+  <!-- <Loading v-else></Loading> -->
 </template>
 
 <style scoped lang="less">

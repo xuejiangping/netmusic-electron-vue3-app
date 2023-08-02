@@ -22,7 +22,6 @@ const taskA = $http.getBanner().then(res => banners.value = res.banners)
 const taskB = $http.personalized(10).then(res => personalizedPlaylist.value = $utils.formatList('playlist', res.result, 'middle'))
 
 $http.dujiafangsong().then(res => dujiafangsong.value = $utils.formatList('videolist', res.result, 'middle'))
-
 $http.topSong().then(res => topSong.value = $utils.formatList('songlist', res.data.slice(0, 12)))
 $http.recoMV().then(res => recoMV.value = $utils.formatList('mvlist', res.result, 'middle'))
 $utils2.loading([taskA, taskB])
@@ -86,7 +85,7 @@ onMounted(() => {
       <h3><span>最新音乐 <i class="iconfont icon-arrow"> </i></span> </h3>
       <ul class="musiclist">
         <ListItem type="song" v-for="(song) in topSong" :img1v1-url="song.album.cover"
-          @icon_play_click_handler="addSong(song, true)" @dbclick_handler="addSong(song, true)">
+          @icon_play_click_handler="addSong(song, true)" @dblclick="addSong(song, true)">
           <div class="musiclist-info">
             <div v-title>{{ song.name }}</div>
             <div v-title>
@@ -152,7 +151,6 @@ section h3 {
     flex-direction: column;
     justify-content: space-evenly;
     row-gap: 0.8rem;
-    flex: 1;
   }
 }
 </style>

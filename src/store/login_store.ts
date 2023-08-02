@@ -6,9 +6,9 @@
 *        管理登录状态
 *
  **************************************************/
-const COOKIE = 'cookie'
 
 import $http from '../apis/http'
+const COOKIE = 'cookie'
 
 interface UserInfo {
   level: number,
@@ -34,9 +34,6 @@ interface UserInfo {
 }
 export const userLoginStore = defineStore('login', () => {
   const cookie = window.localStorage.getItem(COOKIE)
-
-
-
   // console.log('cookie', cookie)
   const state = reactive({
     loginCardVisible: false, // 登录弹窗显示与隐藏
@@ -45,11 +42,11 @@ export const userLoginStore = defineStore('login', () => {
     userPlaylist: [] as PlaylistItem[],
     todaySignedIn: false
   })
-
+  /***********************登录状态*************************/
   const loginStatus = computed(() => !!state.cookie)
 
 
-
+  /***********************根据cookie更新用户的歌单和信息*************************/
   watchEffect(() => {
     if (!state.cookie) return
     $http.loginStatus({ cookie: state.cookie }).then(res => {
@@ -60,30 +57,29 @@ export const userLoginStore = defineStore('login', () => {
     })
     update_signin_status()
   })
+  /***********************更新登录签到状态*************************/
   function update_signin_status() {
     $http.signin_status({ cookie: state.cookie }).then(res => state.todaySignedIn = res.data.today.todaySignedIn)
 
   }
-
+  /***********************签到*************************/
   function signin() {
-    $http.daily_signin({ cookie: state.cookie }).then(() => {
-      update_signin_status()
-    })
+    $http.daily_signin({ cookie: state.cookie }).then(update_signin_status)
   }
-
+  /***********************储存cookie*************************/
   function saveCookie(cookie: string) {
     state.cookie = cookie
     window.localStorage.setItem(COOKIE, cookie)
   }
 
-
+  /***********************退出登录*************************/
   function logout() {
     state.cookie = ''
     window.localStorage.removeItem(COOKIE)
     state.userInfo = null
     state.userPlaylist = []
   }
-
+  /***********************管理登录窗口*************************/
   function setLoginCardVisible(val: boolean) {
     state.loginCardVisible = val
   }

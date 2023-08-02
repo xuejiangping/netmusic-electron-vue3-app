@@ -90,13 +90,16 @@ const playlistSCollect = ({ id = '', limit = 20, offset = 0 }) => { return api.g
 /******** 相关歌单推荐*******/
 const playlistRelated = ({ id = '' }) => { return api.get(`/related/playlist?id=${id}`, {}) }
 /******** 歌单评论*******/
-const playlistComment = ({ id = '', limit = 20, offset = 0, before = 0 }) => { return api.get(`/comment/playlist?id=${id}&limit=${limit}&offset=${offset}&before=${before}`, {}) }
+const playlistComment = ({ id = '', limit = 20, offset = 0, before = 0, timestamp = 0, cookie = '' }) => { return api.get(`/comment/playlist?id=${id}&limit=${limit}&offset=${offset}&before=${before}&timestamp=${timestamp}&cookie=${cookie}`, {}) }
 /******** 收藏、取消歌单 1：收藏 2取消*******/
 const subPlayList = ({ t = 1, id = '' }) => { return api.get(`/playlist/subscribe?t=${t}&id=${id}`, {}) }
 /******** 获取用户歌单*******/
 const playlistUser = ({ uid = '', limit = 30, offset = 0 }) => { return api.get(`/user/playlist?uid=${uid}&limit=${limit}&offset=${offset}`, {}) }
 /******** 添加歌曲到歌单*******/
 const addPlayList = ({ op = 'add', pid = '', tracks = '' }) => { return api.get(`/playlist/tracks?op=${op}&pid=${pid}&tracks=${tracks}`, {}) }
+
+
+
 
 /* ********* 歌曲 ********* */
 /******** 歌曲详情 多个id , 隔开*******/
@@ -116,7 +119,7 @@ const simiPlayList = ({ id = '' }) => { return api.get(`/simi/playlist?id=${id}`
 
 /* ********* 歌曲评论 ********* */
 /******** 歌曲评论*******/
-const commentSong = ({ id = '', limit = 20, offset = 0, before = 0, timestamp = 0 }) => { return api.get(`/comment/music?id=${id}&limit=${limit}&offset=${offset}&before=${before}&timestamp=${timestamp}`, {}) }
+const commentSong = ({ id = '', limit = 20, offset = 0, before = 0, timestamp = 0, cookie = '' }) => { return api.get(`/comment/music?id=${id}&limit=${limit}&offset=${offset}&before=${before}&cookie=${cookie}&timestamp=${timestamp}`, {}) }
 
 /**
 * 发送/删除评论
@@ -126,7 +129,10 @@ const commentSong = ({ id = '', limit = 20, offset = 0, before = 0, timestamp = 
 * content: 发送的内容/对应内容的id
 * commentId: 回复的评论id
 */
-const comment = ({ t = 1, type = 0, id = '', content = '', commentId = '' }) => { return api.get(`/comment?t=${t}&type=${type}&id=${id}&content=${content}&commentId=${commentId}`, {}) }
+const comment = ({ t = 1, type = 0, id = '', content = '', commentId = '', timestamp = 0, cookie = '' }) => { return api.get(`/comment?t=${t}&type=${type}&id=${id}&content=${content}&commentId=${commentId}&cookie=${cookie}&timestamp=${timestamp}`, {}) }
+
+// const getComment= ({ id = '', limit = 20, offset = 0, before = 0, timestamp = 0 }) =>  api.get(`/comment/music?id=${id}&limit=${limit}&offset=${offset}&before=${before}&timestamp=${timestamp}`, {}) 
+
 
 /** 
 * 给评论点赞
@@ -135,7 +141,7 @@ const comment = ({ t = 1, type = 0, id = '', content = '', commentId = '' }) => 
 * t: 是否点赞 1: 是  0: 取消
 * type: 0: 歌曲 1: mv 2: 歌单 3: 专辑  4: 电台 5: 视频 6: 动态
 */
-const commentLike = ({ id = '', cid = '', t = 1, type = 0 }) => { return api.get(`/comment/like?id=${id}&cid=${cid}&t=${t}&type=${type}`, {}) }
+const commentLike = ({ id = '', cid = '', t = 1, type = 0, cookie = '', timestamp = 0 }) => { return api.get(`/comment/like?id=${id}&cid=${cid}&t=${t}&type=${type}&cookie=${cookie}&timestamp=${timestamp}`, {}) }
 
 /* ********* 专辑 ********* */
 /******** 获取专辑内容*******/
@@ -143,7 +149,7 @@ const album = ({ id = '' }) => { return api.get(`/album?id=${id}`, {}) }
 const albumDynamic = ({ id = '' }) => { return api.get(`/album/detail/dynamic?id=${id}`, {}) }
 const albumSub = ({ id = '', t = 1 }) => { return api.get(`/album/sub?id=${id}&t=${t}`, {}) }
 /******** 专辑评论*******/
-const albumComment = ({ id = '', limit = 20, offset = 0, before = 0, timestamp = 0 }) => { return api.get(`/comment/album?id=${id}&limit=${limit}&offset=${offset}&before=${before}&timestamp=${timestamp}`, {}) }
+const albumComment = ({ id = '', limit = 20, offset = 0, before = 0, timestamp = 0, cookie = '' }) => { return api.get(`/comment/album?id=${id}&limit=${limit}&offset=${offset}&before=${before}&timestamp=${timestamp}&cookie=${cookie}`, {}) }
 
 /* ********* 歌手 ********* */
 /******** 歌手介绍*******/
@@ -178,7 +184,7 @@ const mvDetail = ({ id = '' }) => { return api.get(`/mv/detail?mvid=${id}`, {}) 
 /******** 获取 地址*******/
 const mvUrl = ({ id = '', r = 1080 }) => { return api.get(`/mv/url?id=${id}&r=${r}`, {}) }
 /******** 获取mv评论*******/
-const commentMv = ({ id = '', limit = 20, offset = 0, before = 0, timestamp = 0 }) => { return api.get(`/comment/mv?id=${id}&limit=${limit}&offset=${offset}&before=${before}&timestamp=${timestamp}`, {}) }
+const commentMv = ({ id = '', limit = 20, offset = 0, before = 0, timestamp = 0, cookie = '' }) => { return api.get(`/comment/mv?id=${id}&limit=${limit}&offset=${offset}&before=${before}&timestamp=${timestamp}&cookie=${cookie}`, {}) }
 /******** 相似mv*******/
 const simiMv = ({ id = '' }) => { return api.get(`/simi/mv?mvid=${id}`, {}) }
 

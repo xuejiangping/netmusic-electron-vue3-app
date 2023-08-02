@@ -10,8 +10,7 @@ type RankItem = { tracks: SongItem[], trackIds: { ratio: string }[], coverImgUrl
 const { toplist } = toRefs(shallowReactive({
   toplist: [] as RankItem[]
 }))
-const taskA = $http.toplist().then(res => toplist.value = res.list)
-$utils2.loading([taskA])
+$http.toplist().then(res => toplist.value = res.list)
 /***********************官方榜 排行榜前4*************************/
 const official_list = asyncComputed(async () => {
   const tasklist = toplist.value.filter((_, i) => i < 4).map(item => {
@@ -19,7 +18,7 @@ const official_list = asyncComputed(async () => {
       .then(item => item.songs)
       .then(tracks => (item.tracks = $utils.formatList('songlist', tracks), item))
   })
-  // console.log('tasklist', tasklist)
+  console.log('tasklist', tasklist)
   return $utils.formatList('ranklist', await $utils2.loading(tasklist), 'middle')
 })
 /***********************全球榜*************************/

@@ -1,4 +1,9 @@
-import { app, BrowserWindow, Menu, globalShortcut } from 'electron'
+/**************************************************
+*
+*        ipcMain 主进程 
+*
+ **************************************************/
+import { app, BrowserWindow, Menu, globalShortcut, ipcMain } from 'electron'
 import path from 'path'
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
@@ -9,14 +14,15 @@ const createWin = () => {
     width: 800, height: 560,
     minWidth: 650,
     minHeight: 450,
-    frame: false, //去掉 关闭按钮等
+    frame: false, //去掉 边框
     // skipTaskbar: true,
     title: '网易云音乐',
-    autoHideMenuBar: true,
+    // transparent: true,
+    // autoHideMenuBar: true, //隐藏菜单
     webPreferences: {
       contextIsolation: false, // 防止同时创建多个页面的同时窗口引起的死锁 （DevTools activelty on by default
       nodeIntegration: true, // 允许使用任何外部访问控制语言的Node.js API。这意味着如  
-      preload: path.join(__dirname, '../electron-preload/index.js') // 在脚本文件中加载插件时可以省略该文件
+      preload: path.join(__dirname, '../electron-preload/index.ts') // 在脚本文件中加载插件时可以省略该文件
     }
   })
   // win.webContents.openDevTools

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SearchPanel from '@components/SearchPanel.vue'
-import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
+import { ArrowLeft, ArrowRight, CaretBottom, Minus, Close, FullScreen } from '@element-plus/icons-vue'
 const { $store, $COMMON, $utils, $confirm } = getCurrentInstance()?.proxy!
 const store = $store.userLoginStore()
 const { setLoginCardVisible, signin, logout } = store
@@ -30,12 +30,16 @@ function logout_confirm() {
     </div>
     <div class="right">
       <div class="user">
+        <!-- 用户资料卡片 -->
         <el-popover v-if="loginStatus" placement="bottom" :width="240" trigger="click">
           <template #reference>
-            <el-link type="info" style="color: #fff;" :underline="false">
+            <el-link style="color: var(--color-text-white);" :underline="false">
               <el-avatar class="avatar" size="small"
                 :src="userInfo?.profile.avatarUrl + $COMMON.IMG_SIZE_SEARCH_PARAMS.squar.small" />
               <span>{{ userInfo?.profile.nickname }}</span>
+              <el-icon>
+                <CaretBottom />
+              </el-icon>
             </el-link>
           </template>
 
@@ -62,14 +66,23 @@ function logout_confirm() {
           </div>
         </el-popover>
 
-        <MyLink v-else color="#fff" @click="setLoginCardVisible(true)">
+        <el-link v-else style="color: var(--color-text-white);font-size: inherit;" :underline="false"
+          @click="setLoginCardVisible(true)">
           <el-avatar class="avatar" size='small' />
           <span>未登录</span>
-        </MyLink>
+        </el-link>
         <LoginCard v-if="loginCardVisible"></LoginCard>
       </div>
 
-      <span>1</span><span>2</span><span>3</span>
+      <span class="icon"><el-icon>
+          <Minus />
+        </el-icon></span>
+      <span class="icon"><el-icon>
+          <FullScreen />
+        </el-icon></span>
+      <span class="icon"><el-icon>
+          <Close />
+        </el-icon></span>
     </div>
     <span></span>
   </div>
@@ -104,6 +117,8 @@ function logout_confirm() {
   }
 }
 
+@baseFontSize: 12px;
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -111,7 +126,7 @@ function logout_confirm() {
   color: var(--color-text-white);
   height: 100%;
   overflow-wrap: nowrap;
-  font-size: 12px;
+  font-size: @baseFontSize;
 
   .left {
     padding-right: 20px;
@@ -147,6 +162,17 @@ function logout_confirm() {
     justify-content: end;
     align-items: center;
     flex: 1;
+
+    // font-size: 1rem;
+    .icon {
+      font-size: @baseFontSize+6px;
+      font-weight: bolder;
+      cursor: pointer;
+
+      &:hover {
+        color: blue
+      }
+    }
 
     >* {
       .no-drag;
