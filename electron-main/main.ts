@@ -3,8 +3,9 @@
 *        ipcMain 主进程 
 *
  **************************************************/
-import { app, BrowserWindow, Menu, globalShortcut, ipcMain } from 'electron'
+import { app, BrowserWindow, Menu, globalShortcut } from 'electron'
 import path from 'path'
+import { create_app_apis } from '../electron-apis'
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 const createWin = () => {
@@ -17,6 +18,7 @@ const createWin = () => {
     frame: false, //去掉 边框
     // skipTaskbar: true,
     title: '网易云音乐',
+
     // transparent: true,
     // autoHideMenuBar: true, //隐藏菜单
     webPreferences: {
@@ -35,10 +37,11 @@ const createWin = () => {
   }
   return win
 }
+//*************************************************
 app.whenReady().then(() => {
   const win = createWin()
 
-
+  /***********************快捷键*************************/
   globalShortcut.register('CommandOrControl+Shift+i', function () {
     win.webContents.openDevTools()
   })
@@ -49,10 +52,13 @@ app.whenReady().then(() => {
   if (process.env.VITE_DEV_SERVER_URL) {
     win.loadURL(process.env.VITE_DEV_SERVER_URL)
   } else {
-    // Load your file
+    // 加载打包后的文件
     win.loadFile('dist/index.html');
   }
+  /***********************绑定窗口控制*************************/
+  create_app_apis(win)
 })
+
 
 // 关闭窗口
 app.on('window-all-closed', () => {

@@ -6,6 +6,7 @@ import $common from '../assets/js/common.js';
 import $utils from '../utils/util.js'
 import * as $utils2 from '../utils/util2.js'
 import $store from '../store'
+// import second from '../../electron-preload/index.ts'
 export { }  //
 
 
@@ -89,6 +90,10 @@ interface AllProps extends BaseProps {
 
 
 
+
+
+type Tray_MenuItem_EventName = 'music_detail' | 'playMusic' | 'prevMusic' | 'nextMusic'
+
 // 定义全局 和 window
 declare global {
   type ListType = 'singer' | 'playlist' | 'video' | 'album' | 'song'
@@ -102,6 +107,18 @@ declare global {
   type VideoItem = Pick<AllProps, 'artistName' | 'name' | 'artists' | 'cover' | 'duration' | 'playCount' | 'id' | 'artistId'>
   type SingerItem = Pick<AllProps, 'hotAlbums' | 'musicSize' | 'albumSize' | 'alias' | 'accountId' | 'id' | 'cover' | 'name' | 'trans'>
   type MvItem = Pick<AllProps, 'artistName' | 'duration' | 'playCount' | 'cover' | 'publishTime' | 'name' | 'id'>
+  /***********************添加新属性到window*************************/
+  interface Window {
 
-
+    app_control: {
+      window_close(): void,
+      window_min(): void,
+      window_max(): void,
+      window_hide(): void,
+      tray_setToolTip(title: string): void,
+      tray_setContextMenu_musicName(musicName: string): void,
+      tray_menuitem_event_bind(eventName: Tray_MenuItem_EventName, handler: (...args: any[]) => void): void
+    } & Record<string, (...args: any[]) => any>
+  }
 }
+

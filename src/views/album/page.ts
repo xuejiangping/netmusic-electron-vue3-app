@@ -1,1 +1,1 @@
-export default { name:'album',menuOrder:7 }
+export default { name: 'album', menuOrder: 7 }

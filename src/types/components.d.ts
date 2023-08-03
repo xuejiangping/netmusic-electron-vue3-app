@@ -7,8 +7,6 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    '混合展示': typeof import('./../components/混合展示.vue')['default']
-    AAA: typeof import('./../components/AAA.vue')['default']
     AlbumTable: typeof import('./../components/AlbumTable.vue')['default']
     AsideNav: typeof import('./../components/AsideNav.vue')['default']
     AudioBox: typeof import('./../components/Footer/AudioBox.vue')['default']

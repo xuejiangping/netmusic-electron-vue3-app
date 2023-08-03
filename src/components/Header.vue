@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import SearchPanel from '@components/SearchPanel.vue'
+import { ElRadio, ElRadioGroup } from 'element-plus'
 import { ArrowLeft, ArrowRight, CaretBottom, Minus, Close, FullScreen } from '@element-plus/icons-vue'
-const { $store, $COMMON, $utils, $confirm } = getCurrentInstance()?.proxy!
+const { $store, $COMMON, $utils, $confirm, $messageBox } = getCurrentInstance()?.proxy!
 const store = $store.userLoginStore()
 const { setLoginCardVisible, signin, logout } = store
 const { loginStatus, loginCardVisible, userInfo, todaySignedIn } = storeToRefs(store)
@@ -11,9 +12,42 @@ function logout_confirm() {
   $confirm('确定要退出登录吗？').then(logout).catch(console.log)
 
 }
+enum EXIT_TYPE { minimizeSystemtray, exit }
+const exit_type = ref(EXIT_TYPE.minimizeSystemtray)
+const window_control = {
+  minimize() {
+    window.app_control?.window_min()
+  },
+  maximize() {
+    window.app_control?.window_max()
+
+  },
+  close() {
+
+    if (!window.app_control) return
+
+    $messageBox({
+      title: '关闭提示',
+      center: true, roundButton: true, showClose: true, confirmButtonText: '确定',
+      message: h(ElRadioGroup, { modelValue: exit_type as any, onChange(val: any) { exit_type.value = val } }, () => [
+        h(ElRadio, { size: 'small', label: EXIT_TYPE.minimizeSystemtray }, () => '最小化到系统托盘'),
+        h(ElRadio, { size: 'small', label: EXIT_TYPE.exit }, () => '退出网易云音乐')
+      ]),
+      buttonSize: 'small'
+    }).then(() => {
+      if (exit_type.value === EXIT_TYPE.minimizeSystemtray) {
+        window.app_control.window_hide()
+      } else {
+        window.app_control.window_close()
+      }
+    })
+  }
+}
+
 </script>
 
 <template>
+  <!-- <input type="radio"> -->
   <div class="header">
     <div class="left">
       <div class="no-drag interact" @click="$router.push('index')">
@@ -74,13 +108,13 @@ function logout_confirm() {
         <LoginCard v-if="loginCardVisible"></LoginCard>
       </div>
 
-      <span class="icon"><el-icon>
+      <span class="icon" @click="window_control.minimize"><el-icon>
           <Minus />
         </el-icon></span>
-      <span class="icon"><el-icon>
+      <span class="icon" @click="window_control.maximize"><el-icon>
           <FullScreen />
         </el-icon></span>
-      <span class="icon"><el-icon>
+      <span class="icon" @click="window_control.close"><el-icon>
           <Close />
         </el-icon></span>
     </div>
