@@ -7,10 +7,6 @@
 
 const { ipcRenderer } = require('electron')
 
-// global.version=process.version
-// contextBridge.exposeInMainWorld('app_window_control', )
-// contextBridge.exposeInIsolatedWorld
-
 window.app_control = {
   window_close() { ipcRenderer.invoke('window_close') },
   window_min() { ipcRenderer.invoke('window_min') },

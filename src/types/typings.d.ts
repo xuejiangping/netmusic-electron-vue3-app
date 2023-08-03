@@ -116,7 +116,7 @@ declare global {
       window_max(): void,
       window_hide(): void,
       tray_setToolTip(title: string): void,
-      tray_setContextMenu_musicName(musicName: string): void,
+      tray_setContextMenu_musicName(info: string): void,
       tray_menuitem_event_bind(eventName: Tray_MenuItem_EventName, handler: (...args: any[]) => void): void
     } & Record<string, (...args: any[]) => any>
   }

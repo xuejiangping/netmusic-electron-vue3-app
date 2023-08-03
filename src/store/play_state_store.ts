@@ -223,8 +223,9 @@ export const usePlayStateStore = defineStore('play_state', () => {
 
     watch(() => state.currentSong, (song) => {
       if (song) {
-        tray_setContextMenu_musicName(song.name)
-        tray_setToolTip(song.name)
+        const info = `${song.name} - ${song.artists[0].name}`
+        tray_setContextMenu_musicName(info)
+        tray_setToolTip(info)
       }
     })
   }

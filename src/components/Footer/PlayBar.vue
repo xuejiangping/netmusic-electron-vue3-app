@@ -8,7 +8,7 @@ import { Share, StarFilled, Download } from '@element-plus/icons-vue'
 //        数据
 
 //==========================================================
-const { $utils, $confirm, $store } = getCurrentInstance()?.proxy!
+const { $utils, $store } = getCurrentInstance()?.proxy!
 
 const PLAYBAR_OPTIONS = 'playbar_options'
 const store = $store.usePlayStateStore()
@@ -67,15 +67,16 @@ const formatedCurTime = computed(() => {
   return $utils.formatSongTime(time ?? 0)
 })
 /**************************************************
-*
 *        watch
-*
  **************************************************/
 
 watch(currenPlayTime, (val) => {
   currentPlayProgress.value = currentSong.value ? $utils.transformSongTime({ dt: currentSong.value.dt, time: val * 1000 }) : 0
 })
 const song_detail_status = ref(false)
+
+
+window.app_control?.tray_menuitem_event_bind('music_detail', () => song_detail_status.value = true)
 </script>
 
 <template>
