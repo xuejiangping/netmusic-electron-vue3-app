@@ -1,70 +1,230 @@
-<script setup>
-import { ref } from 'vue';
+<script setup lang="ts">
 import SearchPanel from '@components/SearchPanel.vue'
+import { ElRadio, ElRadioGroup } from 'element-plus'
+import { ArrowLeft, ArrowRight, CaretBottom, Minus, Close, FullScreen } from '@element-plus/icons-vue'
+const { $store, $COMMON, $utils, $confirm, $messageBox } = getCurrentInstance()?.proxy!
+const store = $store.userLoginStore()
+const { setLoginCardVisible, signin, logout } = store
+const { loginStatus, loginCardVisible, userInfo, todaySignedIn } = storeToRefs(store)
+
+const debounceSignin = $utils.debounce(signin, 500)
+function logout_confirm() {
+  $confirm('确定要退出登录吗？').then(logout).catch(console.log)
+
+}
+enum EXIT_TYPE { minimizeSystemtray, exit }
+const exit_type = ref(EXIT_TYPE.minimizeSystemtray)
+const window_control = {
+  minimize() {
+    window.app_control?.window_min()
+  },
+  maximize() {
+    window.app_control?.window_max()
+
+  },
+  close() {
+
+    if (!window.app_control) return
+
+    $messageBox({
+      title: '关闭提示',
+      center: true, roundButton: true, showClose: true, confirmButtonText: '确定',
+      message: h(ElRadioGroup, { modelValue: exit_type as any, onChange(val: any) { exit_type.value = val } }, () => [
+        h(ElRadio, { size: 'small', label: EXIT_TYPE.minimizeSystemtray }, () => '最小化到系统托盘'),
+        h(ElRadio, { size: 'small', label: EXIT_TYPE.exit }, () => '退出网易云音乐')
+      ]),
+      buttonSize: 'small'
+    }).then(() => {
+      if (exit_type.value === EXIT_TYPE.minimizeSystemtray) {
+        window.app_control.window_hide()
+      } else {
+        window.app_control.window_close()
+      }
+    })
+  }
+}
+
 </script>
 
 <template>
+  <!-- <input type="radio"> -->
   <div class="header">
     <div class="left">
-      <img class="logo" src="@/assets/img/wangyiyunlogo.png" alt="">
-      <span>网易云音乐</span>
+      <div class="no-drag interact" @click="$router.push('index')">
+        <img class="logo" src="@/assets/img/wangyiyunlogo.png">
+        <span>网易云音乐</span>
+      </div>
     </div>
     <div class="middle">
-      <img src="@/assets/img/arrow-left.png">
-      <img src="@/assets/img/arrow-right.png">
+      <el-button class=" back" color="#d93c3c" @click="$router.back" size="small" type="danger" :icon="ArrowLeft"
+        circle />
+      <el-button class="forward " color="#d93c3c" @click="$router.forward" size="small" type="danger" :icon="ArrowRight"
+        circle />
       <SearchPanel></SearchPanel>
     </div>
     <div class="right">
-      <el-avatar class="avatar" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
-      <span> xue6474</span>
+      <div class="user">
+        <!-- 用户资料卡片 -->
+        <el-popover v-if="loginStatus" placement="bottom" :width="240" trigger="click">
+          <template #reference>
+            <el-link style="color: var(--color-text-white);" :underline="false">
+              <el-avatar class="avatar" size="small"
+                :src="userInfo?.profile.avatarUrl + $COMMON.IMG_SIZE_SEARCH_PARAMS.squar.small" />
+              <span>{{ userInfo?.profile.nickname }}</span>
+              <el-icon>
+                <CaretBottom />
+              </el-icon>
+            </el-link>
+          </template>
+
+          <div class="info-card">
+            <div class="event">
+              <span>{{ userInfo?.profile.eventCount }}</span>
+              <span>{{ userInfo?.profile.follows }}</span>
+              <span>{{ userInfo?.profile.followeds }}</span>
+              <span>动态</span>
+              <span>关注</span>
+              <span>粉丝</span>
+            </div>
+            <div style="margin: 0.8rem 0;text-align: center;">
+              <el-button @click="debounceSignin" size="default" :disabled="todaySignedIn"
+                round>{{ todaySignedIn ? '已签到' : '签到' }}</el-button>
+            </div>
+
+            <div class="function-list">
+              <ul>
+                <li @click="logout_confirm">退出登录</li>
+              </ul>
+            </div>
+
+          </div>
+        </el-popover>
+
+        <el-link v-else style="color: var(--color-text-white);font-size: inherit;" :underline="false"
+          @click="setLoginCardVisible(true)">
+          <el-avatar class="avatar" size='small' />
+          <span>未登录</span>
+        </el-link>
+        <LoginCard v-if="loginCardVisible"></LoginCard>
+      </div>
+
+      <span class="icon" @click="window_control.minimize"><el-icon>
+          <Minus />
+        </el-icon></span>
+      <span class="icon" @click="window_control.maximize"><el-icon>
+          <FullScreen />
+        </el-icon></span>
+      <span class="icon" @click="window_control.close"><el-icon>
+          <Close />
+        </el-icon></span>
     </div>
     <span></span>
   </div>
 </template>
 
 <style scoped lang="less">
+@import '@/assets/css/global.less';
+
+.info-card {
+  .event {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
+
+    span:nth-child(-n+3) {
+      font-weight: 700;
+      font-size: large;
+    }
+
+  }
+
+  .function-list {
+    li {
+      padding: 5px;
+
+      &:hover {
+        background-color: var(--color-text-white);
+
+      }
+    }
+
+  }
+}
+
+@baseFontSize: 12px;
+
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: azure;
-  font-weight: 500;
+  color: var(--color-text-white);
   height: 100%;
   overflow-wrap: nowrap;
-  font-size: 1rem;
+  font-size: @baseFontSize;
 
   .left {
-    max-width: 20vw;
-    padding-right: 10vw;
+    padding-right: 20px;
+    font-size: 16px;
 
     .logo {
-      height: 2rem;
+      height: 34px;
       vertical-align: middle;
-      padding-right: 0.5rem;
+      margin-right: 6px;
     }
   }
 
   .middle {
+    >* {
+      .no-drag;
+    }
+
     flex: 1;
     display: flex;
-
     align-items: center;
     justify-content: center; // 水平对齐，不然会有竖直线。。。。。。。。
 
-    img {
-      height: 1rem;
-      padding: 0 0.2rem;
-      vertical-align: middle;
-
+    .back,
+    .forward {
+      margin: 0 3px;
+      width: 20px;
+      height: 20px;
     }
   }
 
   .right {
+    display: flex;
+    justify-content: end;
+    align-items: center;
     flex: 1;
+
+    // font-size: 1rem;
+    .icon {
+      font-size: @baseFontSize+6px;
+      font-weight: bolder;
+      cursor: pointer;
+
+      &:hover {
+        color: blue
+      }
+    }
+
+    >* {
+      .no-drag;
+      padding: 0 1rem;
+    }
 
     .avatar {
       vertical-align: middle;
+      margin-right: 0.5rem;
+      // height: 30px;
+      width: 36px;
+      height: 36px;
     }
+
+    .user {
+      color: blue;
+    }
+
   }
 
 

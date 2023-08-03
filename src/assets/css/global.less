@@ -1,28 +1,118 @@
-@bassFontSize: 14px;
+@bassFontSize: 12px;
+@linkTextcolor: #969696;
+
+// 定义应用不能拖到区域
+.no-drag {
+  -webkit-app-region: no-drag
+}
+
+// electron 可拖动区域
+.drag {
+  -webkit-app-region: drag
+}
+
 
 :root {
-  --color-text-main: #2d2d2d;
+  --color-text-main: #1d1d1f;
   --color-text: #909090;
   --color-text-height: #ff641e;
+  --color-text-link: #8ea3ba;
+  --color-text-light: #c3c2c2;
+  --color-text-white: #f5f5f7;
+  --color-theme: #ec4141;
+  --color-bg-light: #f2f2f3;
+  --color-bg-main: #eaeaed;
+  --color-border: #dcdfe6;
+  --color-modal-gray: #ffffffba;
+  --el-color-primary: var(--color-theme) !important;
+  --header-height: 50px;
+  --footer-height: 60px;
+}
+
+li {
+  list-style: none;
+  // line-height: 1rem;
+}
+
+.iconfont,
+.interact {
+  cursor: pointer;
 }
 
 // 响应式处理
-@media screen and (max-height: 400px) {
+
+@base-width: 600px;
+
+// 宽度小于 @base-width: 600px; 时：
+@media screen and (max-width:@base-width) {
   html {
-    font-size: @bassFontSize;
+    font-size: @bassFontSize*0.8;
   }
 }
 
-@media screen and (min-height: 600px) {
-  html {
-    font-size: @bassFontSize*1.5;
+@step: 200;
+
+each(0 1 2 3 4 5, {
+  @_min-width: @base-width+@value * @step;
+  @_max-width: @_min-width+@step;
+
+  @media screen and (min-width:@_min-width)and(max-width:@_max-width) {
+    html {
+      font-size: @bassFontSize*(@value*0.2+1);
+    }
   }
+
+});
+
+
+// 文字单行省略
+.text-in-oneline {
+  // text-overflow: ellipsis;
+  // // white-space: nowrap;
+  // word-break: break-all;
+  // overflow: hidden;
+  .multi-line(1)
 }
 
-@media screen and (min-height: 800px) {
-  html {
-    font-size: @bassFontSize*2;
+.desc {
+  color: var(--color-text);
+  .multi-line(1)
+}
+
+// 多行省略
+.multi-line(@lines) {
+  word-break: break-all;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: @lines;
+  -webkit-box-orient: vertical;
+}
+
+.my-text-shadow {
+  text-shadow: 0 0 0.6rem BLACK,
+    0 0 0.6rem red;
+}
+
+// v-split 指令分隔符的样式
+.separator {
+  color: var(--color-text-main);
+}
+
+// alias 的样式
+.alias {
+  color: var(--color-text-light);
+}
+
+
+// hover 动画
+.hover-scale-mixin() {
+  &:hover {
+    // box-shadow: var(--el-box-shadow-light);
+    transform: scale(1.01) translateY(-5%);
+    background-color: var(--color-bg-main);
   }
+
+  transition: all 0.5s;
 }
 
 
@@ -34,7 +124,6 @@
 html,
 body {
   height: 100%;
-  // font-size: 14px;
   font-family: PingFang SC, Arial, Microsoft YaHei, sans-serif;
   color: var(--color-text-main);
   background-color: #fafafa;
@@ -45,7 +134,7 @@ body {
 
 a {
   text-decoration: none;
-  color: var(--color-text-main);
+  color: var(--color-text-link);
 }
 
 *,
@@ -54,6 +143,7 @@ a {
 input {
   outline: none;
 }
+
 
 ::-webkit-scrollbar {
   width: 0px;
@@ -77,7 +167,6 @@ input {
 }
 
 #app {
-  width: 100vw;
-  // min-width: 730px;
+
   height: 100%;
 }

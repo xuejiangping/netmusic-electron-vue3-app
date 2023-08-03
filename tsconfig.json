@@ -1,44 +1,52 @@
 {
-  "compilerOptions": {
-    "jsxImportSource": "vue",
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    // "skipLibCheck": true,
-    /* Bundler mode */
-    "moduleResolution": "node",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "preserve",
-    "allowSyntheticDefaultImports": true,
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "allowJs": true,
-    "types": ["element-plus/global"]
-  },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "electron-main/**/*.ts",
-    "electron-preload/**/*.ts",
-    "src/apis/instance.ts",
-    "src/apis/instance.ts",
-    "src/apis/http1.jss",
-    "src/apis/http1.jss",
-    "electron-preload/index.js",
-    "electron-preload/createViewsDir.js"
-  ],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    }
-  ]
+	"compilerOptions": {
+		"jsxImportSource": "vue",
+		"target": "ES2020",
+		"useDefineForClassFields": true,
+		"module": "ESNext",
+		"lib": ["ES2020", "DOM", "DOM.Iterable"],
+		// "skipLibCheck": true,
+		/* Bundler mode */
+		"moduleResolution": "node",
+		"allowImportingTsExtensions": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"noEmit": true,
+		"jsx": "preserve",
+		"allowSyntheticDefaultImports": true,
+		/* Linting */
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		"allowJs": true,
+		"types": ["element-plus/global"],
+		"baseUrl": ".",
+		"paths": {
+			"@/": ["src/"],
+			"@components/": ["src/components/"],
+			"@store/": ["src/store/"]
+		}
+	},
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.d.ts",
+		"src/**/*.tsx",
+		"src/**/*.vue",
+		"electron-main/**/*.ts",
+		"electron-preload/**/*.ts",
+		"src/apis/instance.ts",
+		"src/apis/instance.ts",
+		"src/apis/http1.jss",
+		"src/apis/http1.jss",
+		"electron-preload/index.ts",
+		"electron-preload/createViewsDir.js",
+		"src/utils/util.ts"
+	],
+
+	"references": [
+		{
+			"path": "./tsconfig.node.json"
+		}
+	]
 }

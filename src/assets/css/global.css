@@ -1,22 +1,90 @@
+.no-drag {
+  -webkit-app-region: no-drag;
+}
+.drag {
+  -webkit-app-region: drag;
+}
 :root {
-  --color-text-main: #2d2d2d;
+  --color-text-main: #1d1d1f;
   --color-text: #909090;
   --color-text-height: #ff641e;
+  --color-text-link: #8ea3ba;
+  --color-text-light: #c3c2c2;
+  --color-text-white: #f5f5f7;
+  --color-theme: #ec4141;
+  --color-bg-light: #f2f2f3;
+  --color-bg-main: #eaeaed;
+  --color-border: #dcdfe6;
+  --color-modal-gray: #ffffffba;
+  --el-color-primary: var(--color-theme) !important;
+  --header-height: 50px;
+  --footer-height: 60px;
 }
-@media screen and (max-height: 400px) {
+li {
+  list-style: none;
+}
+.iconfont,
+.interact {
+  cursor: pointer;
+}
+@media screen and (max-width: 600px) {
   html {
-    font-size: 14px;
+    font-size: 9.6px;
   }
 }
-@media screen and (min-height: 600px) {
+@media screen and (min-width: 600px) and (max-width: 800px) {
   html {
-    font-size: 21px;
+    font-size: 12px;
   }
 }
-@media screen and (min-height: 800px) {
+@media screen and (min-width: 800px) and (max-width: 1000px) {
   html {
-    font-size: 28px;
+    font-size: 14.4px;
   }
+}
+@media screen and (min-width: 1000px) and (max-width: 1200px) {
+  html {
+    font-size: 16.8px;
+  }
+}
+@media screen and (min-width: 1200px) and (max-width: 1400px) {
+  html {
+    font-size: 19.2px;
+  }
+}
+@media screen and (min-width: 1400px) and (max-width: 1600px) {
+  html {
+    font-size: 21.6px;
+  }
+}
+@media screen and (min-width: 1600px) and (max-width: 1800px) {
+  html {
+    font-size: 24px;
+  }
+}
+.text-in-oneline {
+  word-break: break-all;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.desc {
+  color: var(--color-text);
+  word-break: break-all;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.my-text-shadow {
+  text-shadow: 0 0 0.6rem BLACK, 0 0 0.6rem red;
+}
+.separator {
+  color: var(--color-text-main);
+}
+.alias {
+  color: var(--color-text-light);
 }
 * {
   padding: 0;
@@ -32,7 +100,7 @@ body {
 }
 a {
   text-decoration: none;
-  color: var(--color-text-main);
+  color: var(--color-text-link);
 }
 *,
 *:focus,
@@ -57,6 +125,5 @@ input {
   background: #999;
 }
 #app {
-  width: 100vw;
   height: 100%;
 }

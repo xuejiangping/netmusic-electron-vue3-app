@@ -1,0 +1,1 @@
+  export default { name:'cloud-song',menuOrder:0 }
