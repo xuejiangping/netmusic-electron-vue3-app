@@ -262,8 +262,10 @@ export default {
   * @ 进入页面时读取数据
   * @ 第三个参数save可 停止保存数据集
   */
-    save_and_load<T>(key: string, dataGetter: () => T, save = true): T {
-      save && window.addEventListener('unload', () => window.localStorage.setItem(key, JSON.stringify(dataGetter())))
+    save_and_load<T>(key: string, dataGetter: () => T, save = false): T {
+      if (save) {
+        window.addEventListener('unload', () => window.localStorage.setItem(key, JSON.stringify(dataGetter())))
+      }
       return JSON.parse(window.localStorage.getItem(key) || 'null')
     },
     clear(key: string) {

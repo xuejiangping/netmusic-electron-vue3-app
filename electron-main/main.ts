@@ -37,6 +37,8 @@ const createWin = () => {
   }
   return win
 }
+
+
 //*************************************************
 app.whenReady().then(() => {
   const win = createWin()
@@ -55,7 +57,7 @@ app.whenReady().then(() => {
     // 加载打包后的文件
     win.loadFile('dist/index.html');
   }
-  /***********************绑定窗口控制*************************/
+  /************************************************/
   create_app_apis(win)
 })
 

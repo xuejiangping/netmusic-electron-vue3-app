@@ -12,14 +12,40 @@ const { $utils, $store } = getCurrentInstance()?.proxy!
 
 const PLAYBAR_OPTIONS = 'playbar_options'
 const store = $store.usePlayStateStore()
-const { currentSong, playList, isPaused, currentLoopOption } = toRefs(store)
-const { next, prev, switchLoopOption, clearPlayList, changeUserClickPlayActionType } = store
+const { currentSong, playList, isPaused, loopIndex } = toRefs(store)
+const { next, prev, clearPlayList, changeUserClickPlayActionType, setLoopIndex } = store
 // $confirm('双击播放单曲时，用当前歌曲所在的歌曲列表替换播放列？')
 
-const cover = computed(() => {
-  return currentSong.value?.album.cover || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
-})
-const baseOptions = {
+enum LoopEnum {
+  顺序播放,
+  列表循环,
+  单曲循环,
+  随机播放,
+}
+const loopOptions = [
+  {
+    index: LoopEnum.顺序播放,
+    icon: 'iconfont icon-playsong',
+    title: LoopEnum[LoopEnum.顺序播放]
+  },
+  {
+    index: LoopEnum.列表循环,
+    icon: 'iconfont icon-loop',
+    title: LoopEnum[LoopEnum.列表循环]
+  },
+  {
+    index: LoopEnum.单曲循环,
+    icon: 'iconfont icon-single-cycle',
+    title: LoopEnum[LoopEnum.单曲循环]
+  },
+  {
+    index: LoopEnum.随机播放,
+    icon: 'iconfont icon-shuffle',
+    title: LoopEnum[LoopEnum.随机播放]
+  }
+]
+
+const baseOption = {
   currentPlayProgress: 0,  //播放进度
   volume: 50,   //当前音量
   lastVolume: 0,    //静音前的音量
@@ -27,8 +53,8 @@ const baseOptions = {
   inputVal: 0,   //输入的播放时间，用于更改播放进度，单位秒
   currenPlayTime: 0,//当前 歌曲播放时间
 }
-const initedOptions: typeof baseOptions = $utils.localstorage.save_and_load(PLAYBAR_OPTIONS, () => options, window.NetMusic.init) || baseOptions
-const options = reactive(initedOptions)
+const initializationOption: typeof baseOption = $utils.localstorage.save_and_load(PLAYBAR_OPTIONS, () => options) || baseOption
+const options = reactive(initializationOption)
 const { currenPlayTime, inputVal,
   currentPlayProgress, volume, lastVolume, isShowPlayListBox } = toRefs(options)
 // $utils.localstorage.save_when_unload(PLAYBAR_OPTIONS, )
@@ -37,6 +63,7 @@ window.document.addEventListener('click', () => isShowPlayListBox.value = false)
 //==========================================================
 const carousel = ref()   //左边的轮播组件
 const audio = ref() // audio-box 
+const song_detail_status = ref(false)
 
 //==========================================================
 
@@ -52,14 +79,18 @@ function switchMute() {
     volume.value = 0
   }
 }
+function switchLoopOption() {
+  if (loopIndex.value === LoopEnum.随机播放) {
+    setLoopIndex(LoopEnum.顺序播放)
+  } else setLoopIndex(loopIndex.value + 1)
+
+}
 /**************************************************
-*
 *        计算属性
-*
  **************************************************/
 
 const isMuted = computed(() => volume.value == 0)
-
+const currentLoopOption = computed(() => loopOptions[loopIndex.value])
 /**将当前歌曲播播放百分比 转换为 分秒格式时间*/
 const formatedCurTime = computed(() => {
   if (!currentSong.value) return ''
@@ -70,13 +101,14 @@ const formatedCurTime = computed(() => {
 *        watch
  **************************************************/
 
-watch(currenPlayTime, (val) => {
-  currentPlayProgress.value = currentSong.value ? $utils.transformSongTime({ dt: currentSong.value.dt, time: val * 1000 }) : 0
+watchEffect(() => {
+  currentPlayProgress.value = currentSong.value ? $utils.transformSongTime({ dt: currentSong.value.dt, time: currenPlayTime.value * 1000 }) : 0
 })
-const song_detail_status = ref(false)
+function close_song_detail() { carousel.value.next(); song_detail_status.value = false }
+function open_song_detail() { carousel.value.next(); song_detail_status.value = true }
 
 
-window.app_control?.tray_menuitem_event_bind('music_detail', () => song_detail_status.value = true)
+window.app_control?.tray_menuitem_event_bind('music_detail', open_song_detail)
 </script>
 
 <template>
@@ -97,8 +129,7 @@ window.app_control?.tray_menuitem_event_bind('music_detail', () => song_detail_s
           :autoplay="false">
           <el-carousel-item>
             <div class="left-top">
-              <div class="arrow-down" @click="carousel.next(); song_detail_status = false"> <i
-                  class="iconfont icon-arrow"></i></div>
+              <div class="arrow-down" @click="close_song_detail"> <i class="iconfont icon-arrow"></i></div>
               <el-button color="#fff5" circle :icon="StarFilled" />
               <el-button color="#fff5" circle :icon="Download" />
               <el-button color="#fff5" circle :icon="Share" />
@@ -107,9 +138,9 @@ window.app_control?.tray_menuitem_event_bind('music_detail', () => song_detail_s
 
           <el-carousel-item>
             <div class="left-bottom">
-              <div @click="carousel.next(); song_detail_status = true">
+              <div @click="open_song_detail">
                 <div class="img">
-                  <my-image :src="cover"></my-image>
+                  <my-image :src="currentSong.album.cover"></my-image>
                 </div>
               </div>
               <div class="info">

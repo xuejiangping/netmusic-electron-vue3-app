@@ -4,8 +4,8 @@
 *
  **************************************************/
 import $utils from '../utils/util.ts'
+import { ElMessage } from 'element-plus'
 // console.log(getCurrentInstance()?.proxy!)
-
 
 type SongId = SongItem['id']
 type PlayAciton = 'next' | 'prev'
@@ -22,46 +22,21 @@ interface PlayState {
 
 }
 
-
-/***********************循环的选项*************************/
+/***********************循环播放的选项*************************/
 enum LoopEnum {
   顺序播放,
   列表循环,
   单曲循环,
   随机播放,
 }
-const loopOptions = [
-  {
-    index: LoopEnum.顺序播放,
-    icon: 'iconfont icon-playsong',
-    title: LoopEnum[LoopEnum.顺序播放]
-  },
-  {
-    index: LoopEnum.列表循环,
-    icon: 'iconfont icon-loop',
-    title: LoopEnum[LoopEnum.列表循环]
-  },
-  {
-    index: LoopEnum.单曲循环,
-    icon: 'iconfont icon-single-cycle',
-    title: LoopEnum[LoopEnum.单曲循环]
-  },
-  {
-    index: LoopEnum.随机播放,
-    icon: 'iconfont icon-shuffle',
-    title: LoopEnum[LoopEnum.随机播放]
-  }
-]
+
 
 
 
 export const usePlayStateStore = defineStore('play_state', () => {
   // play_state_store
   const PLAY_STATE_STORE = 'play_state_store'
-
-
-  const state: PlayState = reactive($utils.localstorage.save_and_load(PLAY_STATE_STORE,
-    () => ({ ...state, isPaused: true }), window.NetMusic.init) || {
+  const baseOption = {
     isPaused: true, // 当前播放状态
     playList: [], // 播放列表
     playIndex: 0, // 当前播放歌曲在播放列表的所有位置
@@ -72,8 +47,11 @@ export const usePlayStateStore = defineStore('play_state', () => {
     audioELcontrol: null,
     currentSong: null,
     userClickPlayActionType: 'next'  //用户手动点击的 类型,上一曲或下一曲
-  })
+  }
 
+
+  const initializationOption = $utils.localstorage.save_and_load(PLAY_STATE_STORE, () => ({ ...state, isPaused: true }), true) || baseOption
+  const state: PlayState = reactive(initializationOption)
 
   watch(() => state.loopIndex, (_, lastIndex) => {
     if (lastIndex === LoopEnum.随机播放) {
@@ -89,18 +67,6 @@ export const usePlayStateStore = defineStore('play_state', () => {
   function setPauseState(val: boolean) { state.isPaused = val }
 
 
-  //==========================================================
-  //
-  //        循环模式 功能
-  //
-  //==========================================================
-  const currentLoopOption = computed(() => loopOptions[state.loopIndex])
-  function switchLoopOption() {
-    if (state.loopIndex === loopOptions.length - 1) {
-      state.loopIndex = 0
-    } else state.loopIndex++
-
-  }
 
   //==========================================================
   //
@@ -111,20 +77,22 @@ export const usePlayStateStore = defineStore('play_state', () => {
   const { currentSong } = toRefs(state)
 
   const curSongId = computed(() => currentSong && currentSong.value?.id || '-1')
-  const curPlayingList = computed(() => currentLoopOption.value.index === LoopEnum.随机播放 ? shufflePlayList.value : state.playList)
+  const curPlayingList = computed(() => state.loopIndex === LoopEnum.随机播放 ? shufflePlayList.value : state.playList)
   /***********************判断歌曲是否存在于列表*************************/
-  const isExist = (songId: SongId) => state.playList.some(item => item.id === songId)
+  const isExist = (songId: SongId) => state.playList.some(song => song.id === songId)
 
   /**根据 playIndex 更新播放的音乐 */
   function updateCurSong() {
     state.currentSong = curPlayingList.value[state.playIndex]
   }
 
+  function setLoopIndex(val: LoopEnum) { state.loopIndex = val }
+
   /**根据 songId 更新playindex */
 
   function updatePlayIndex(songId: SongId) {
     const index = curPlayingList.value.findIndex(song => song.id === songId)
-    if (index < 0) console.error('请先添加歌曲到播放列表')
+    if (index < 0) ElMessage({ message: '请先添加歌曲到播放列表', type: 'error' })
     else state.playIndex = index
   }
 
@@ -140,8 +108,9 @@ export const usePlayStateStore = defineStore('play_state', () => {
   }
   /**添加歌单到当前播放列表 */
   function addPlayList(list: SongItem[], listId: string) {
-    if (state.includedListIds.includes(listId)) return console.log(123)
-    _add(list)
+
+    if (state.includedListIds.includes(listId)) ElMessage({ message: '当前歌单已在播放列表', type: 'error' })
+    else _add(list)
   }
   /**添加歌曲到播放列表，可选择立即播放 */
   function addSong(song: SongItem, playNow = false) {
@@ -149,6 +118,8 @@ export const usePlayStateStore = defineStore('play_state', () => {
     if (playNow) play(song.id)
 
   }
+
+
   function clearPlayList() {
     state.playList = []
     state.includedListIds = []
@@ -163,9 +134,11 @@ export const usePlayStateStore = defineStore('play_state', () => {
   }
   /***********************播放歌曲 songId*********************/
   function play(songId: SongId) {
-    if (currentSong && songId === currentSong.value?.id) return console.log('正在播放该歌曲', songId)
-    updatePlayIndex(songId)
-    updateCurSong()
+    if (currentSong && songId === currentSong.value?.id) ElMessage({ message: '正在播放该歌曲', type: 'info' })
+    else {
+      updatePlayIndex(songId)
+      updateCurSong()
+    }
   }
   //更改 是否更新播放时间
   function setIsUpdateCurTime(val: boolean) {
@@ -184,6 +157,7 @@ export const usePlayStateStore = defineStore('play_state', () => {
         next();
     }
   }
+
   function changeUserClickPlayActionType(val: PlayAciton) {
     state.userClickPlayActionType = val
   }
@@ -208,12 +182,13 @@ export const usePlayStateStore = defineStore('play_state', () => {
     updateCurSong()
   }
   //==========================================================
-  //
-  //       获取 音频元素的控制 
-  //
+  //       初始化音频元素的控制 
   //==========================================================
   function initAudioELcontrol(val: PlayState['audioELcontrol']) { state.audioELcontrol = val }
-  /***********************绑定托盘播放功能*************************/
+
+  /**************************************************
+  *        绑定托盘 控制 播放功能*
+   **************************************************/
   if (window.app_control) {
     const { tray_setContextMenu_musicName, tray_setToolTip, tray_menuitem_event_bind } = window.app_control
 
@@ -221,9 +196,10 @@ export const usePlayStateStore = defineStore('play_state', () => {
     tray_menuitem_event_bind('nextMusic', next)
     tray_menuitem_event_bind('prevMusic', prev)
 
-    watch(() => state.currentSong, (song) => {
-      if (song) {
-        const info = `${song.name} - ${song.artists[0].name}`
+    watchEffect(() => {
+      if (state.currentSong) {
+        const { name, artists } = state.currentSong
+        const info = `${name} - ${artists[0].name}`
         tray_setContextMenu_musicName(info)
         tray_setToolTip(info)
       }
@@ -234,6 +210,10 @@ export const usePlayStateStore = defineStore('play_state', () => {
 
 
   return {
-    ...toRefs(state), changeUserClickPlayActionType, continuePlay, clearPlayList, curSongId, currentLoopOption, initAudioELcontrol, switchLoopOption, setPauseState, next, prev, addSong, updatePlayList, addPlayList, currentSong, play, setIsUpdateCurTime
+    ...toRefs(state),
+    changeUserClickPlayActionType, continuePlay,
+    clearPlayList, curSongId, initAudioELcontrol,
+    setPauseState, next, prev, addSong, updatePlayList, addPlayList,
+    currentSong, play, setIsUpdateCurTime, setLoopIndex
   }
 })

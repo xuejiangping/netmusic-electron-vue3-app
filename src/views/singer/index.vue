@@ -14,7 +14,7 @@ const { $http, $utils, $utils2, $store } = getCurrentInstance()?.proxy!
 const LIMIT = 3
 const tabs = { 专辑: { index: 0 }, MV: { index: 1 }, 歌手详情: { index: 2 }, 相似歌手: { index: 3 } }
 
-const { cookie } = storeToRefs($store.userLoginStore())
+const { cookie, loginStatus } = storeToRefs($store.userLoginStore())
 const { singerDetai, tabIndex, aritst, hotAlbums, mvs, simiAtrist } = toRefs(reactive({
   aritst: {} as SingerItem,
   hotAlbums: [] as AlbumItem[],
@@ -35,7 +35,10 @@ function moreVideo() {
   getMoreArtistMv({ id: id.value, limit: LIMIT }).then(res => mvs.value.push(...$utils.formatList('mvlist', res.mvs, 'middle')))
 }
 function getSimiAtrist() {
-  $http.simiAtrist({ id: id.value, cookie: cookie.value }).then(res => simiAtrist.value = $utils.formatList('singerlist', res.artists, 'middle'))
+  if (loginStatus) {
+    $http.simiAtrist({ id: id.value, cookie: cookie.value }).then(res => simiAtrist.value = $utils.formatList('singerlist', res.artists, 'middle'))
+
+  }
 }
 
 const more = () => {

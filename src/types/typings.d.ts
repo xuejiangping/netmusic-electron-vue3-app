@@ -1,6 +1,5 @@
-import { ComponentCustomProperties } from "vue";
-import { RouteMeta, RouteRaw } from 'vue-router'
-
+// import { ComponentCustomProperties } from "vue";
+// import { RouteMeta, RouteRaw } from 'vue-router'
 import $http from '../apis/http.ts'
 import $common from '../assets/js/common.js';
 import $utils from '../utils/util.js'
@@ -49,6 +48,9 @@ declare module 'vue-router' {
   }
 
 }
+
+
+
 
 /**所有关于 音乐数据的 类型 */
 interface BaseProps { name: string, id: string }
