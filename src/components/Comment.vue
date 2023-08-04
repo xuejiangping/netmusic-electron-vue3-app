@@ -4,6 +4,10 @@ const { $utils, $http, $COMMON, $store, $message } = getCurrentInstance()!.appCo
 const { Comment_ACTION_TYPE, Comment_SOURCE_TYPE } = $COMMON
 
 const { loginStatus, cookie } = storeToRefs($store.userLoginStore())
+//***********************输入框配置*************************/
+const word_limit = 140
+const default_placeholder = '浮生浪迹笑明月，千愁散尽一剑轻~'
+
 interface CommentItem {
   content: string, time: number
   user: { nickname: string, userId: number, avatarUrl: string },
@@ -21,15 +25,16 @@ const props = defineProps<{
 
 // $http.comment({})
 // $http.likeSong
-const word_limit = 140
-const default_placeholder = '(❁´◡`❁) 评论也要美美哒~ '
 
-const { placeholder, text, commentData, inputBoxStatus } = toRefs(shallowReactive({
+
+const { placeholder, text, commentData, inputBoxStatus } = toRefs(reactive({
   placeholder: default_placeholder,
   text: '',
   commentData: {} as CommentData,
   inputBoxStatus: false
 }))
+
+
 /***********************评论api的参数*************************/
 const inited_comment_params = {
   t: Comment_ACTION_TYPE.发送,
@@ -75,7 +80,7 @@ const init = () => {
   }
 }
 watchEffect(init)
-
+commentData.value.comments
 
 
 function setInputBoxStatus(val: boolean) {
@@ -83,7 +88,8 @@ function setInputBoxStatus(val: boolean) {
 }
 defineExpose({
   setInputBoxStatus,
-  comment
+  comment,
+  total: toRef(() => commentData.value.total)
 })
 function reply({ commentId, uname }: { commentId: string, uname: string }) {
   placeholder.value = `回复 ${uname}:`
@@ -127,12 +133,13 @@ function commentLike({ liked, commentId }: { liked: boolean, commentId: string }
   let t = liked ? 0 : 1
   const { id, type } = comment_params
   $http.commentLike({ id, cid: commentId, type, t, timestamp: Date.now(), cookie: cookie.value })
-    .then(res => {
-      console.log('评论喜欢', res)
+    .then(() => {
+      // console.log('评论喜欢', res)
       init()
       liked ? $message({ message: '已取消点赞', type: 'success' }) : $message({ message: '已点赞', type: 'success' })
     })
 }
+// const more = () => () => console.log(123)
 </script>
 
 <template>
