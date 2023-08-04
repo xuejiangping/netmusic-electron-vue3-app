@@ -5,6 +5,8 @@ import $common from '../assets/js/common.js';
 import $utils from '../utils/util.js'
 import * as $utils2 from '../utils/util2.js'
 import $store from '../store'
+import { IpcRendererEvent } from 'electron/renderer';
+import { IpcRenderer } from 'electron';
 // import second from '../../electron-preload/index.ts'
 export { }  //
 
@@ -109,18 +111,35 @@ declare global {
   type VideoItem = Pick<AllProps, 'artistName' | 'name' | 'artists' | 'cover' | 'duration' | 'playCount' | 'id' | 'artistId'>
   type SingerItem = Pick<AllProps, 'hotAlbums' | 'musicSize' | 'albumSize' | 'alias' | 'accountId' | 'id' | 'cover' | 'name' | 'trans'>
   type MvItem = Pick<AllProps, 'artistName' | 'duration' | 'playCount' | 'cover' | 'publishTime' | 'name' | 'id'>
+  type Window_Control_Type = 'close' | 'min' | 'max' | 'hide'
+
+
+
+
+
+  namespace DeskLyric {
+    type LyricData = { time: number, txt: string }
+    type DeskLrcData = {
+      lyric: LyricData
+    }
+    type EventType = 'data' | 'close' | 'open'
+  }
+
+
   /***********************添加新属性到window*************************/
   interface Window {
 
     app_control: {
-      window_close(): void,
-      window_min(): void,
-      window_max(): void,
-      window_hide(): void,
-      tray_setToolTip(title: string): void,
-      tray_setContextMenu_musicName(info: string): void,
+      ipcRenderer?: IpcRenderer
+      window_control(info: { type: Window_Control_Type }): void
+      tray_setToolTip(title: string): void
+      tray_setContextMenu_musicName(info: string): void
       tray_menuitem_event_bind(eventName: Tray_MenuItem_EventName, handler: (...args: any[]) => void): void
-    } & Record<string, (...args: any[]) => any>
+      desktop_lyric(option: { type: 'open', path: string }): Promise<any>
+      desktop_lyric(option: { type: 'data', data: DeskLyric.DeskLrcData }): Promise<any>
+      desktop_lyric(option: { type: 'close' }): Promise<any>
+
+    }
   }
 }
 

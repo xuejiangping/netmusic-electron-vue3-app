@@ -22,22 +22,26 @@ const createWin = () => {
     // transparent: true,
     // autoHideMenuBar: true, //隐藏菜单
     webPreferences: {
-      contextIsolation: false, // 防止同时创建多个页面的同时窗口引起的死锁 （DevTools activelty on by default
-      nodeIntegration: true, // 允许使用任何外部访问控制语言的Node.js API。这意味着如  
-      preload: path.join(__dirname, '../electron-preload/index.ts') // 在脚本文件中加载插件时可以省略该文件
+      // 是否在独立 JavaScript 环境中运行 Electron API和指定的preload 脚本.默认为 true
+      contextIsolation: false,
+      nodeIntegration: false, // 允许使用任何外部访问控制语言的Node.js 
+      preload: path.join(__dirname, '../electron-preload/index.ts'),
+      // 跨域同源策略
+      webSecurity: false
     }
   })
   // win.webContents.openDevTools
   // 如果打包了，渲染index.html
   if (app.isPackaged) {
-    win.loadFile(path.join(path.join(__dirname, '../index.html')))
+    win.loadFile(path.join(__dirname, '../index.html'))
   } else {
     const url = 'http://localhost:5173/'
     win.loadURL(process.env.VITE_DEV_SERVER_URL || url) // If you want to test on a real device you should use this URL. Learn more about that at https://codege
   }
   return win
 }
-
+/***********************设置左上角菜单*************************/
+// Menu.setApplicationMenu(menu)
 
 //*************************************************
 app.whenReady().then(() => {
@@ -51,12 +55,6 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWin();
   });
 
-  if (process.env.VITE_DEV_SERVER_URL) {
-    win.loadURL(process.env.VITE_DEV_SERVER_URL)
-  } else {
-    // 加载打包后的文件
-    win.loadFile('dist/index.html');
-  }
   /************************************************/
   create_app_apis(win)
 })

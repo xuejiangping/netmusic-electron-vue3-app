@@ -10,8 +10,7 @@ const { main_page_loading } = storeToRefs(useGlobalPropsStore())
 </script>
 
 <template>
-  <el-container style="height: 100%">
-
+  <el-container class="container">
     <el-header class="header  drag">
       <Header></Header>
     </el-header>
@@ -33,6 +32,12 @@ const { main_page_loading } = storeToRefs(useGlobalPropsStore())
 </template>
 
 <style scoped lang="less">
+.container {
+  height: 100%;
+  color: var(--color-text-main);
+  background-color: #fafafa;
+}
+
 .aside {
   width: 20vw;
   min-width: 150px;

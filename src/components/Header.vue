@@ -16,10 +16,10 @@ enum EXIT_TYPE { minimizeSystemtray, exit }
 const exit_type = ref(EXIT_TYPE.minimizeSystemtray)
 const window_control = {
   minimize() {
-    window.app_control?.window_min()
+    window.app_control.window_control({ type: 'min' })
   },
   maximize() {
-    window.app_control?.window_max()
+    window.app_control.window_control({ type: 'max' })
 
   },
   close() {
@@ -36,9 +36,9 @@ const window_control = {
       buttonSize: 'small'
     }).then(() => {
       if (exit_type.value === EXIT_TYPE.minimizeSystemtray) {
-        window.app_control.window_hide()
+        window.app_control.window_control({ type: 'hide' })
       } else {
-        window.app_control.window_close()
+        window.app_control.window_control({ type: 'close' })
       }
     })
   }

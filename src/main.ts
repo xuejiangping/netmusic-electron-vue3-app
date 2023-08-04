@@ -48,6 +48,7 @@ app.config.errorHandler = function (err) { console.log('err', err) }
 
 // window.$http = $http
 
+
 //*********************************************************** */
 app.use(vue3videoPlay)
 app.use(router)

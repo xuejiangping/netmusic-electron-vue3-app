@@ -18,7 +18,7 @@ const official_list = asyncComputed(async () => {
       .then(item => item.songs)
       .then(tracks => (item.tracks = $utils.formatList('songlist', tracks), item))
   })
-  console.log('tasklist', tasklist)
+  // console.log('tasklist', tasklist)
   return $utils.formatList('ranklist', await $utils2.loading(tasklist), 'middle')
 })
 /***********************全球榜*************************/

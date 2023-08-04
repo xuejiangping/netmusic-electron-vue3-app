@@ -23,15 +23,28 @@ const generateRoutes = (routesLike: RouteLike[], root = '/src/views') => {
     return route
   })
 }
-const routes = generateRoutes(views_dir)
+const c_routes = generateRoutes(views_dir)
 
-routes.push({
-  path: `/`,
-  redirect: '/index'
+c_routes.push({
+  path: '',
+  name: 'reredirect-index',
+  redirect: 'index'
 })
 
-console.log('routes', routes)
+//==========================================================
+//
+//  之前未考虑弹窗情况，没有做跟路由，所以这里用这种方式补一个根路由       
+//
+//==========================================================
+const routes: RouteLike[] = [
+  {
+    name: 'app', path: '', children: c_routes, component: () => import('@/App.vue')
+  },
+  {
+    name: 'desklrc', path: '/desklrc', component: () => import('@/views/desklrc/index.vue')
+  }
 
-
+]
+console.log('a', routes)
 
 export default routes as Readonly<RouteRecordRaw[]> 

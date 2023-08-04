@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { EditPen, ArrowDown, ArrowUp } from '@element-plus/icons-vue'
 import { Directive } from 'vue';
-import lyric_handler from '../assets/js/index/lyric'
+import { lyric_handler } from '../assets/js/index/lyric'
 const { $store, $http, $notify, $utils } = getCurrentInstance()?.proxy!
 const store = $store.usePlayStateStore()
 const { addSong } = $store.usePlayStateStore()
@@ -9,12 +9,13 @@ const { audioELcontrol } = store
 const { isPaused, currentSong } = storeToRefs(store)
 defineEmits(['close'])
 const props = defineProps<{
-  currenPlayTime: number,
+  lyricInfoGetter: () => ReturnType<typeof lyric_handler>
 }>()
 
+console.log(props.lyricInfoGetter())
 
 
-const { lyric, curIndex, offsetTime } = lyric_handler({ currenPlayTimeRef: toRef(props, 'currenPlayTime'), id: toRef(() => currentSong.value?.id!) })
+const { lyric, curIndex, offsetTime } = props.lyricInfoGetter()
 // watchEffect(() => console.log(lyric.value?.lines[curIndex.value]))
 
 const { commentRef, showCommentBtn, aside_status, simiPlaylists, simiSongs } = toRefs(shallowReactive({

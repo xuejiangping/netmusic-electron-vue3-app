@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { Share, StarFilled, Download } from '@element-plus/icons-vue'
 
-
+import { lyric_handler } from '../../assets/js/index/lyric'
+import { WatchStopHandle } from 'vue';
 
 //==========================================================
 //
-//        数据
-
 //==========================================================
 const { $utils, $store } = getCurrentInstance()?.proxy!
 
@@ -64,7 +63,7 @@ window.document.addEventListener('click', () => isShowPlayListBox.value = false)
 const carousel = ref()   //左边的轮播组件
 const audio = ref() // audio-box 
 const song_detail_status = ref(false)
-
+const desktop_lyric_status = ref(false)
 //==========================================================
 
 /**************************************************
@@ -106,15 +105,41 @@ watchEffect(() => {
 })
 function close_song_detail() { carousel.value.next(); song_detail_status.value = false }
 function open_song_detail() { carousel.value.next(); song_detail_status.value = true }
+/***********************创建桌面子窗口 歌词*************************/
 
 
+
+const { lyric, curIndex, offsetTime } = lyric_handler({ currenPlayTimeRef: currenPlayTime, id: toRef(() => currentSong.value!.id) })
+const lyricInfoGetter = () => ({ lyric, curIndex, offsetTime })
+let watch_stop_a: WatchStopHandle
+
+watchEffect(async () => {
+  if (desktop_lyric_status.value) {
+
+    console.log('打开歌词')
+
+    window.app_control.desktop_lyric?.({ type: 'open', path: 'desklrc' })
+    watch_stop_a = watchEffect(() => {
+      const curLyric = lyric.value?.lines[curIndex.value]
+      if (curLyric) {
+        window.app_control.desktop_lyric?.({ type: 'data', data: { lyric: curLyric } })
+      }
+
+    })
+
+  } else {
+    console.log('关闭歌词')
+    window.app_control.desktop_lyric?.({ type: 'close' })
+    watch_stop_a?.()
+  }
+})
 window.app_control?.tray_menuitem_event_bind('music_detail', open_song_detail)
 </script>
 
 <template>
   <transition name="slide">
     <div v-if="song_detail_status" class="song-detail">
-      <song-detail :currenPlayTime="currenPlayTime" @close="song_detail_status = false; carousel.next()"></song-detail>
+      <song-detail :lyricInfoGetter="lyricInfoGetter" @close="close_song_detail"></song-detail>
     </div>
   </transition>
   <ul class="container">
@@ -170,7 +195,8 @@ window.app_control?.tray_menuitem_event_bind('music_detail', open_song_detail)
           <i v-if="isPaused" @click="audio.play" class="iconfont icon-play"></i>
           <i v-else @click="audio.pause" class="iconfont icon-pause"></i>
           <i @click=" changeUserClickPlayActionType('next'); next()" class="iconfont icon-audio-next"></i>
-          <span class="lyric">词</span>
+          <span @click="desktop_lyric_status = !desktop_lyric_status" class="lyric"
+            :class="{ desktopLyricOpen: desktop_lyric_status }">词</span>
         </div>
         <div class="bottom">
           <span>{{ formatedCurTime }}</span>
@@ -342,6 +368,12 @@ window.app_control?.tray_menuitem_event_bind('music_detail', open_song_detail)
   .middle {
     display: flex;
     justify-content: center;
+
+    .desktopLyricOpen {
+      color: var(--color-theme);
+      font-weight: bold;
+      transform: scale(1.3);
+    }
 
     .control {
       width: 80%;

@@ -48,6 +48,7 @@ const more = () => {
 }
 
 watchEffect(() => {
+  if (!id.value) return
   const taskA = $http.artistAlbum({ id: id.value, limit: LIMIT }).then(res => aritst.value = $utils.formatList('singerlist', [res.artist], 'middle')[0])
   $http.artistDesc({ id: id.value }).then(({ briefDesc, introduction }) => singerDetai.value = { briefDesc, introduction })
   moreVideo()
