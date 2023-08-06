@@ -7,13 +7,15 @@ const { set_main_page_loading } = useGlobalPropsStore()
  * 将全局loading设为true ，等所有异步任务完成，将loading关闭,并返回异步任务结果
  * *************************/
 export async function loading<T>(tasklist: Promise<T>[]) {
+  let res: T[] = []
   try {
     set_main_page_loading(true)
-    return await Promise.all(tasklist)
+    res = await Promise.all(tasklist)
   } catch (error: any) {
     ElMessageBox({ title: '加载数据失败了', message: error.message, type: 'error' })
   } finally {
     set_main_page_loading(false)
+    return res
   }
 }
 /**

@@ -249,7 +249,7 @@ async function poolCodeStatus(t = 2000) {
         font-weight: 700;
         backdrop-filter: blur(6px);
         // background-color: hotpink;
-
+        font-size: 1.5rem;
       }
 
       img {
@@ -257,9 +257,7 @@ async function poolCodeStatus(t = 2000) {
       }
     }
 
-    &:deep(.el-input-group__append) {
-      // padding: 0 14px;
-    }
+
   }
 }
 </style>

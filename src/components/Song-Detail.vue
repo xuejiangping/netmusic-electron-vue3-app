@@ -9,9 +9,9 @@ const { audioELcontrol } = store
 const { isPaused, currentSong } = storeToRefs(store)
 
 const Lyric_Offset_Y = 50  //歌词滚动居中的偏移
+const route = useRoute()
 
-
-defineEmits(['close'])
+const emit = defineEmits(['close'])
 const props = defineProps<{
   lyricInfoGetter: () => ReturnType<typeof lyric_handler>
 }>()
@@ -78,6 +78,8 @@ watchEffect(() => {
   }
 })
 
+
+watch(() => route.fullPath, () => emit('close'))
 </script>
 
 <template>
@@ -95,14 +97,13 @@ watchEffect(() => {
       <div class="top">
         <h1 class="title">{{ currentSong?.name }}</h1>
         <div>
-          <RouterLink @click="$emit('close')"
-            :to="{ name: 'album', query: { name: currentSong?.album.name, id: currentSong?.album.id } }">
+          <RouterLink :to="{ name: 'album', query: { name: currentSong?.album.name, id: currentSong?.album.id } }">
             {{ currentSong?.album.name }}
           </RouterLink>
         </div>
         <div style="display: flex;justify-content: center;">
           <div v-title style="width: 40%">
-            <RouterLink @click="$emit('close')" v-for="({ name, id }, i) in currentSong?.artists" v-split="[i]"
+            <RouterLink v-for="({ name, id }, i) in currentSong?.artists" v-split="[i]"
               :to="{ name: 'singer', query: { name, id } }">
               {{ name }}
             </RouterLink>
@@ -143,7 +144,7 @@ watchEffect(() => {
         <div v-show="aside_status" class="aside">
           <h4 class="title">包含这首歌的歌单</h4>
           <ListItem v-for="(item) in simiPlaylists" cover_width="2rem" :img1v1-url="item.cover"
-            @click="$emit('close'); $router.push({ name: 'playlist-detail', query: { name: item.name, id: item.id } })">
+            @click=" $router.push({ name: 'playlist-detail', query: { name: item.name, id: item.id } })">
             <span v-title class="name">{{ item.name }}</span>
           </ListItem>
           <h4 class="title">喜欢这首歌的人也喜欢</h4>
@@ -200,7 +201,7 @@ watchEffect(() => {
       // justify-content: space-evenly;
       .swich-aside-btn {
         position: absolute;
-        right: -5px;
+        right: 5px;
         top: 50%;
         z-index: 1;
         writing-mode: vertical-lr;
@@ -210,7 +211,7 @@ watchEffect(() => {
       }
 
       .lyric-container {
-        flex: 1.2;
+        // flex: 1;
         position: relative;
 
         .adjust {
@@ -334,6 +335,7 @@ watchEffect(() => {
       .aside {
         overflow: auto;
         padding: 1rem;
+        flex: 0.8;
 
         .title {
           font-weight: bold;

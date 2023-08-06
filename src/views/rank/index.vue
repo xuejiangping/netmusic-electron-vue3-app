@@ -39,7 +39,7 @@ function asyncComputed<T>(asyncGetter: () => Promise<T>) {
 <template>
   <div v-if="official_list && official_list.length > 0">
     <div class="official">
-      <h3>官方榜</h3>
+      <h3 class="title">官方榜</h3>
       <div class="item" v-for="(item) in official_list">
         <div class="left">
           <RouterLink :to="{ name: 'playlist-detail', query: { name: item.name, id: item.id } }">
@@ -49,11 +49,11 @@ function asyncComputed<T>(asyncGetter: () => Promise<T>) {
         <div class="right">
           <ul>
             <li v-for="(track, i) in item.tracks" @dblclick="updatePlayList(item.tracks, track.id, item.id)">
-              <div class="l"><span v-topN="[i, 3]">{{ i + 1 }}</span>
+              <div class="l" v-title><span v-topN="[i, 3]">{{ i + 1 }}</span>
                 <span>{{ track.name }}</span>
-                <span style="color: var(--color-text);">{{ }}</span>
+                <!-- <span style="color: var(--color-text);">{{ }}</span> -->
               </div>
-              <span class="r">
+              <span class="r" v-title>
                 <RouterLink v-for="({ name, id }, j) in track.artists" v-split="[j]"
                   :to="{ name: 'singer', query: { name, id } }">
                   {{ name }}
@@ -65,7 +65,7 @@ function asyncComputed<T>(asyncGetter: () => Promise<T>) {
       </div>
     </div>
     <div class="global">
-      <h3>全球榜</h3>
+      <h3 class="title">全球榜</h3>
       <div class="container">
         <VideoTable :data-list="global_list" type='playlist'></VideoTable>
       </div>
@@ -76,18 +76,23 @@ function asyncComputed<T>(asyncGetter: () => Promise<T>) {
 <style scoped lang="less">
 @import '@/assets/css/global.less';
 
+.title {
+  font-size: 2rem;
+  margin: 2rem 0;
+}
+
 .official {
+
   .item {
+    font-size: 0.9rem;
     display: flex;
-    margin: 1rem 0;
-    padding: 0.5rem;
-    border-radius: var(--el-border-radius-base);
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border-radius: 10px;
     box-shadow: var(--el-box-shadow);
-    font-size: 0.8rem;
 
     .left {
       flex: 1;
-      margin-right: 2rem;
     }
 
     .right {
@@ -97,15 +102,18 @@ function asyncComputed<T>(asyncGetter: () => Promise<T>) {
       ul {
         display: flex;
         flex-direction: column;
-        justify-content: space-around;
         height: 100%;
+        justify-content: center;
+        padding: 0 2rem;
       }
 
       li {
+        flex: 1;
         display: flex;
         justify-content: space-between;
-        line-height: 1.5rem;
+        align-items: center;
         .hover-scale-mixin;
+        row-gap: 1rem;
 
         .l {
           >* {

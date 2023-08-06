@@ -167,7 +167,7 @@ function commentLike({ liked, commentId }: { liked: boolean, commentId: string }
       </Teleport>
     </div>
 
-    <div v-if="layout !== 'absolute'" class="input-box">
+    <div v-if="layout === 'relative'" class="input-box">
       <el-input v-model="text" resize="none" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea"
         :placeholder="placeholder" :maxlength="word_limit" show-word-limit />
       <div class="send">
@@ -177,7 +177,7 @@ function commentLike({ liked, commentId }: { liked: boolean, commentId: string }
 
     <div v-if="formatedData">
       <div v-for="(comments, type) in formatedData">
-        <h2>{{ type }}</h2>
+        <h2>{{ type }}({{ comments.length }})</h2>
         <div v-for="(comment) in comments" class="comment-item">
           <div class="item1"><el-avatar :src="comment.user.avatarUrl"></el-avatar>
           </div>

@@ -45,6 +45,7 @@ defineEmits(['icon_play_click_handler'])
   align-items: center;
   border-radius: 4px;
   color: var(--color-text);
+  cursor: pointer;
 
   .cover {
     position: relative;
