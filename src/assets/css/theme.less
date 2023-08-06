@@ -1,0 +1,35 @@
+#my-theme {
+  @a: 40%;
+
+  .base(@bg-color) {
+    --bg-color-darken: fadeout(@bg-color, 50%);
+    @text-color: difference(@bg-color, #fff);
+    background-color: @bg-color;
+    color: @text-color;
+  }
+
+  .red {
+    @bg-color: fade(red, @a);
+    .base(@bg-color)
+  }
+
+  .white {
+    @bg-color: fade(white, @a);
+    .base(@bg-color)
+  }
+
+  .black {
+    @bg-color: fade(black, @a);
+    .base(@bg-color)
+  }
+
+  .blue {
+    @bg-color: fade(blue, @a);
+    .base(@bg-color)
+  }
+
+  .pink {
+    @bg-color: fade(pink, @a);
+    .base(@bg-color)
+  }
+}

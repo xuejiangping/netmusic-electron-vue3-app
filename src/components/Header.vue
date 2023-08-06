@@ -3,9 +3,10 @@ import SearchPanel from '@components/SearchPanel.vue'
 import { ElRadio, ElRadioGroup } from 'element-plus'
 import { ArrowLeft, ArrowRight, CaretBottom, Minus, Close, FullScreen } from '@element-plus/icons-vue'
 const { $store, $COMMON, $utils, $confirm, $messageBox } = getCurrentInstance()?.proxy!
-const store = $store.userLoginStore()
-const { setLoginCardVisible, signin, logout } = store
-const { loginStatus, loginCardVisible, userInfo, todaySignedIn } = storeToRefs(store)
+const [store, globalStore] = [$store.userLoginStore(), $store.useGlobalPropsStore()]
+
+const { setLoginCardVisible, signin, logout, set_song_detail_status } = { ...store, ...globalStore }
+const { loginStatus, loginCardVisible, userInfo, todaySignedIn, song_detail_status } = { ...storeToRefs(store), ...storeToRefs(globalStore) }
 
 const debounceSignin = $utils.debounce(signin, 500)
 function logout_confirm() {
@@ -50,16 +51,18 @@ const window_control = {
   <!-- <input type="radio"> -->
   <div class="header">
     <div class="left">
-      <div class="no-drag interact" @click="$router.push('index')">
-        <img class="logo" src="@/assets/img/wangyiyunlogo.png">
-        <span>网易云音乐</span>
+
+      <div class="no-drag logo" @click="$router.push('index')">
+        <el-link v-if="song_detail_status" @click="set_song_detail_status(false)" :underline="false">
+          <i style="color: inherit;font-size:2rem;" class="iconfont icon-arrow "></i>
+        </el-link>
+        <span v-else><img class="icon" src="@/assets/img/wangyiyunlogo.png">
+          <span>网易云音乐</span></span>
       </div>
     </div>
     <div class="middle">
-      <el-button class=" back" color="#d93c3c" @click="$router.back" size="small" type="danger" :icon="ArrowLeft"
-        circle />
-      <el-button class="forward " color="#d93c3c" @click="$router.forward" size="small" type="danger" :icon="ArrowRight"
-        circle />
+      <el-button class=" back" @click="$router.back" size="small" :icon="ArrowLeft" circle />
+      <el-button class="forward " @click="$router.forward" size="small" :icon="ArrowRight" circle />
       <SearchPanel></SearchPanel>
     </div>
     <div class="right">
@@ -67,10 +70,10 @@ const window_control = {
         <!-- 用户资料卡片 -->
         <el-popover v-if="loginStatus" placement="bottom" :width="240" trigger="click">
           <template #reference>
-            <el-link style="color: var(--color-text-white);" :underline="false">
+            <el-link style="color: inherit;" :underline="false">
               <el-avatar class="avatar" size="small"
                 :src="userInfo?.profile.avatarUrl + $COMMON.IMG_SIZE_SEARCH_PARAMS.squar.small" />
-              <span>{{ userInfo?.profile.nickname }}</span>
+              <span class="hover-text">{{ userInfo?.profile.nickname }}</span>
               <el-icon>
                 <CaretBottom />
               </el-icon>
@@ -100,10 +103,9 @@ const window_control = {
           </div>
         </el-popover>
 
-        <el-link v-else style="color: var(--color-text-white);font-size: inherit;" :underline="false"
-          @click="setLoginCardVisible(true)">
+        <el-link v-else style="color: inherit;font-size: inherit;" :underline="false" @click="setLoginCardVisible(true)">
           <el-avatar class="avatar" size='small' />
-          <span>未登录</span>
+          <span class="hover-text">未登录</span>
         </el-link>
         <LoginCard v-if="loginCardVisible"></LoginCard>
       </div>
@@ -157,7 +159,6 @@ const window_control = {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: var(--color-text-white);
   height: 100%;
   overflow-wrap: nowrap;
   font-size: @baseFontSize;
@@ -167,9 +168,13 @@ const window_control = {
     font-size: 16px;
 
     .logo {
-      height: 34px;
-      vertical-align: middle;
-      margin-right: 6px;
+
+      .icon {
+        height: 34px;
+        vertical-align: middle;
+        margin-right: 6px;
+      }
+
     }
   }
 
@@ -188,6 +193,8 @@ const window_control = {
       margin: 0 3px;
       width: 20px;
       height: 20px;
+      color: inherit;
+      background-color: inherit;
     }
   }
 
@@ -201,11 +208,7 @@ const window_control = {
     .icon {
       font-size: @baseFontSize+6px;
       font-weight: bolder;
-      cursor: pointer;
-
-      &:hover {
-        color: blue
-      }
+      .hover-text
     }
 
     >* {
@@ -221,9 +224,6 @@ const window_control = {
       height: 36px;
     }
 
-    .user {
-      color: blue;
-    }
 
   }
 

@@ -4,8 +4,8 @@ import { Directive } from 'vue';
 import { lyric_handler } from '../assets/js/index/lyric'
 const { $store, $http, $notify, $utils } = getCurrentInstance()?.proxy!
 const store = $store.usePlayStateStore()
-const { addSong } = $store.usePlayStateStore()
-const { audioELcontrol } = store
+
+const { audioELcontrol, addSong } = store
 const { isPaused, currentSong } = storeToRefs(store)
 
 const Lyric_Offset_Y = 50  //歌词滚动居中的偏移
@@ -16,7 +16,7 @@ const props = defineProps<{
   lyricInfoGetter: () => ReturnType<typeof lyric_handler>
 }>()
 
-console.log(props.lyricInfoGetter())
+// console.log(props.lyricInfoGetter())
 
 
 const { lyric, curIndex, offsetTime } = props.lyricInfoGetter()
@@ -90,9 +90,7 @@ watch(() => route.fullPath, () => emit('close'))
       <el-button v-if="showCommentBtn" @click="commentRef?.comment" color="#f1f1f1"
         style="position: absolute; left: 50%;bottom: 10px;transform: translate(-50%);" :icon="EditPen" size="small" round>
         发表评论</el-button>
-      <el-link @click="$emit('close')" :underline="false" style="position: absolute;left: 5px;top: 5px;z-index: 1;">
-        <i style="color: #000;font-size:3rem;" class="iconfont icon-arrow "></i>
-      </el-link>
+
 
       <div class="top">
         <h1 class="title">{{ currentSong?.name }}</h1>
@@ -175,7 +173,8 @@ watch(() => route.fullPath, () => emit('close'))
   .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    // padding: 20px;
+    margin-top: var(--header-height);
 
     .top {
       text-align: center;

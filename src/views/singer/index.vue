@@ -34,7 +34,7 @@ function moreVideo() {
   getMoreArtistMv({ id: id.value, limit: LIMIT }).then(res => mvs.value.push(...$utils.formatList('mvlist', res.mvs, 'middle')))
 }
 function getSimiAtrist() {
-  if (loginStatus) {
+  if (loginStatus.value) {
     $http.simiAtrist({ id: id.value, cookie: cookie.value }).then(res => simiAtrist.value = $utils.formatList('singerlist', res.artists, 'middle'))
 
   }

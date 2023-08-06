@@ -8,10 +8,12 @@ import { WatchStopHandle } from 'vue';
 //
 //==========================================================
 const { $utils, $store } = getCurrentInstance()?.proxy!
+const glabalStore = $store.useGlobalPropsStore()
+const { set_song_detail_status } = glabalStore
 
 const PLAYBAR_OPTIONS = 'playbar_options'
 const store = $store.usePlayStateStore()
-const { currentSong, playList, isPaused, loopIndex } = toRefs(store)
+const { currentSong, playList, isPaused, loopIndex, song_detail_status } = { ...storeToRefs(store), ...storeToRefs(glabalStore) }
 const { next, prev, clearPlayList, changeUserClickPlayActionType, setLoopIndex } = store
 // $confirm('双击播放单曲时，用当前歌曲所在的歌曲列表替换播放列？')
 
@@ -62,7 +64,6 @@ window.document.addEventListener('click', () => isShowPlayListBox.value = false)
 //==========================================================
 const carousel = ref()   //左边的轮播组件
 const audio = ref() // audio-box 
-const song_detail_status = ref(false)
 const desktop_lyric_status = ref(false)
 //==========================================================
 
@@ -103,8 +104,9 @@ const formatedCurTime = computed(() => {
 watchEffect(() => {
   currentPlayProgress.value = currentSong.value ? $utils.transformSongTime({ dt: currentSong.value.dt, time: currenPlayTime.value * 1000 }) : 0
 })
-function close_song_detail() { carousel.value.next(); song_detail_status.value = false }
-function open_song_detail() { carousel.value.next(); song_detail_status.value = true }
+watch(song_detail_status, () => carousel.value.next())
+function close_song_detail() { set_song_detail_status(false) }
+function open_song_detail() { set_song_detail_status(true) }
 /***********************创建桌面子窗口 歌词*************************/
 
 
@@ -169,7 +171,12 @@ window.app_control?.tray_menuitem_event_bind('music_detail', open_song_detail)
                 </div>
               </div>
               <div class="info">
-                <div class="name"><span v-title>{{ currentSong.name }}</span></div>
+                <div class="name" v-title><span>{{ currentSong.name }}</span>
+                  <i v-if="currentSong.mv"
+                    @click="$router.push({ name: 'mv-detail', query: { id: currentSong.mv, name: currentSong.name } })"
+                    class=" iconfont icon-mv"></i>
+                  <i class="iconfont icon-vip" v-if="currentSong.fee === $COMMON.Fee.VIP歌曲"></i>
+                </div>
                 <div><router-link v-title
                     :to="{ name: 'singer', query: { name: currentSong.artists[0].name, id: currentSong.artists[0].id } }">{{ currentSong.artists[0].name }}</router-link>
                 </div>
@@ -314,10 +321,18 @@ window.app_control?.tray_menuitem_event_bind('music_detail', open_song_detail)
       flex-direction: column;
       justify-content: space-evenly;
       margin-left: 10px;
+      flex: 1;
 
-      >div {
-        .multi-line(1)
+      .iconfont {
+        font-size: inherit;
       }
+
+      .name {
+        >* {
+          padding-right: 5px;
+        }
+      }
+
     }
 
     .img {

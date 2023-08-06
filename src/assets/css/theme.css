@@ -1,0 +1,25 @@
+#my-theme .red {
+  --bg-color-darken: rgba(255, 0, 0, 0);
+  background-color: rgba(255, 0, 0, 0.4);
+  color: #99ffff;
+}
+#my-theme .white {
+  --bg-color-darken: rgba(255, 255, 255, 0);
+  background-color: rgba(255, 255, 255, 0.4);
+  color: #999999;
+}
+#my-theme .black {
+  --bg-color-darken: rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  color: #ffffff;
+}
+#my-theme .blue {
+  --bg-color-darken: rgba(0, 0, 255, 0);
+  background-color: rgba(0, 0, 255, 0.4);
+  color: #ffff99;
+}
+#my-theme .pink {
+  --bg-color-darken: rgba(255, 192, 203, 0);
+  background-color: rgba(255, 192, 203, 0.4);
+  color: #99b2ae;
+}

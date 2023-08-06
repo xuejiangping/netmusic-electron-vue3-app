@@ -23,8 +23,7 @@
 li {
   list-style: none;
 }
-.iconfont,
-.interact {
+.iconfont {
   cursor: pointer;
 }
 @media screen and (max-width: 600px) {
@@ -85,6 +84,10 @@ li {
 }
 .alias {
   color: var(--color-text-light);
+}
+.hover-text:hover {
+  color: blue;
+  cursor: pointer;
 }
 * {
   padding: 0;

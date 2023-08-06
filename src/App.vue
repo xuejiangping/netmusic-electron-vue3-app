@@ -32,6 +32,8 @@ const { main_page_loading } = storeToRefs(useGlobalPropsStore())
 </template>
 
 <style scoped lang="less">
+@import './assets/css/theme.less';
+
 .container {
   position: relative;
   height: 100%;
@@ -66,8 +68,7 @@ const { main_page_loading } = storeToRefs(useGlobalPropsStore())
   width: 100%;
   left: 0;
   top: 0;
-  // background-color: var(--color-theme);
-  background-color: rgba(255, 0, 0, 0.4);
+  #my-theme.pink;
   backdrop-filter: blur(10px) saturate(3);
   height: var(--header-height);
   z-index: 10;

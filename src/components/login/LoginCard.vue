@@ -187,8 +187,8 @@ async function poolCodeStatus(t = 2000) {
                 <el-checkbox size="small" v-model="autoLogin" label="自动登录" />
               </el-col>
               <el-col :span="10">
-                <my-link @click="mode = 'code'" v-show="mode === 'password'">验证码登录</my-link>
-                <my-link @click="mode = 'password'" v-show="mode === 'code'">密码登录</my-link>
+                <el-link @click="mode = 'code'" v-show="mode === 'password'">验证码登录</el-link>
+                <el-link @click="mode = 'password'" v-show="mode === 'code'">密码登录</el-link>
               </el-col>
             </el-row>
             <el-form-item>
