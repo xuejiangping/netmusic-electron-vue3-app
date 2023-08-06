@@ -2,7 +2,7 @@
 import get_recom_playlist from '../../assets/js/index/hot_playlist'
 const { $utils } = getCurrentInstance()!.appContext.config.globalProperties
 const { playlist_info, more, choosePlayListType } = get_recom_playlist({ limit: 5, offset: 0, cat: '为您推荐' })
-const formatedData = computed(() => $utils.formatList('playlist', playlist_info.playlist_list, 'large'))
+const formatedData = computed(() => $utils.formatList('playlist', playlist_info.playlist_list, 'middle'))
 const currentIndex = ref(-1) //标签：为您推荐
 watch(currentIndex, choosePlayListType)
 

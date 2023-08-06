@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // ipcRenderer.on('test', console.log)
 import { useIpcRenderer } from '@vueuse/electron'
+import { bg } from 'element-plus/es/locale';
 import { reactive, shallowReactive, toRefs, watchEffect } from 'vue';
 
 const ipcRenderer = useIpcRenderer()
@@ -14,31 +15,44 @@ const { lyricData } = toRefs(shallowReactive({
   lyricData: {} as DeskLyric.LyricData
 }))
 
-watchEffect(() => console.log(lyricData.value))
-console.log('ipcRenderer', ipcRenderer)
-function vActive(el: HTMLElement) {
-  const bgEl = document.querySelector('.box') as HTMLElement
-  if (bgEl && el) {
-    el.addEventListener('mouseenter', () => {
-      bgEl.classList.add('bg')
-      bgEl.classList.remove('no-drag')
 
-    })
-    bgEl.addEventListener('mouseleave', () => {
-      bgEl.classList.remove('bg')
-      bgEl.classList.add('drag')
 
-    })
-  }
 
-}
+
+// function getMovementPos(el: HTMLElement) {
+
+//   const pos = ref({ x: 0, y: 0 })
+//   // type Types='mousedown'|'mouseup'|'mousemove'
+//   type Listener_A = Parameters<typeof el.addEventListener<'mousedown'>>['1']
+//   type Listener_B = Parameters<typeof el.addEventListener<'mouseup'>>['1']
+//   type Listener_C = Parameters<typeof el.addEventListener<'mousemove'>>['1']
+
+//   const _c: Listener_C = ({ movementX, movementY }) => pos.value = { x: movementX, y: movementY }
+//   const _a: Listener_A = () => {
+//     el.addEventListener('mousemove', _c)
+//   }
+//   const _b: Listener_B = () => {
+//     el.removeEventListener('mousemove', _c)
+//   }
+//   el.addEventListener('mousedown', _a)
+//   el.addEventListener('mouseup', _b)
+//   return {
+//     clear() {
+//       el.removeEventListener('mousedown', _a)
+//       el.removeEventListener('mouseup', _b)
+//     }, pos
+//   }
+// }
+
+
+
 </script>
 
 <template>
-  <div class="box drag">
-    <div>菜单栏</div>
+  <div class="box ">
+    <div class="drag">菜单栏</div>
     <div class="lyric">
-      <div v-active class="no-drag">
+      <div class="item drag">
         <div class="line">
           <span class="text ">
             <!-- 11111111111111111111111113231111111111111111111111111111111111111111223 -->
@@ -51,22 +65,20 @@ function vActive(el: HTMLElement) {
 </template>
 
 <style scoped lang="less">
-.bg {
-  background-color: rgba(0, 0, 0, 0.3);
-
-}
-
 .box {
-
+  position: relative;
   height: 100%;
   width: 100%;
-  // text-align: center;
   border-radius: 10px;
   padding: 15px;
   box-sizing: border-box;
   font-size: 14px;
-  // text-align: center;
-  cursor: move;
+  transition: 0.5s all;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+
+  }
 
   .lyric {
     display: flex;

@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import defaultImg from '../assets/img/hello.webp'
+// import defaultImg from '../assets/img/hello.webp'
+import defaultImg from '../assets/img/xue-logo.png'
+
 withDefaults(defineProps<{
   aspectRatio?: '1/1' | '16/10' | 'unset' | string,
   src: string,
@@ -19,7 +21,7 @@ defineOptions({ inheritAttrs: false })
   <div class="box">
     <el-image v-bind="$attrs" class="img" :style="{ 'aspect-ratio': aspectRatio }" :src="src" :lazy="lazy">
       <template #placeholder>
-        <img class="img" :src="placeholderSrc" />
+        <img class="img" :style="{ width: '100%', height: '100%' }" :src="placeholderSrc" />
       </template>
     </el-image>
     <img v-if="isAlbum" class="heijiao" src="../assets/img/vinyl.png">

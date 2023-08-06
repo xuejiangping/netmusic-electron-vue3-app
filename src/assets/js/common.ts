@@ -52,6 +52,7 @@ const IMG_SIZE_SEARCH_PARAMS = {
         middle: _IMG_SIZE._get_params(_IMG_SIZE.middle, _IMG_SIZE.aspect),
         large: _IMG_SIZE._get_params(_IMG_SIZE.large, _IMG_SIZE.aspect),
     },
+    custom(w: number, aspect: number) { return _IMG_SIZE._get_params(w, aspect) }
 }
 
 

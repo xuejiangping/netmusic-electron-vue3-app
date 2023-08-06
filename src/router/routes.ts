@@ -1,7 +1,6 @@
 
 import { RouteRecordRaw, } from 'vue-router'
 import views_dir from './views_dir.json'
-const componentsModules = import.meta.glob('@/views/**/*.vue', { import: 'default' })
 
 type RouteLike = Partial<{
   name: string,
@@ -9,7 +8,9 @@ type RouteLike = Partial<{
   component: Function, redirect: string
 }>
 
-console.log('views_dir', views_dir)
+const componentsModules = import.meta.glob('@/views/**/*.vue', { import: 'default' })
+
+// console.log('views_dir', views_dir)
 //根据 views_dir 生成路由
 const generateRoutes = (routesLike: RouteLike[], root = '/src/views') => {
   return routesLike.map(({ name, path, children }) => {
@@ -23,17 +24,18 @@ const generateRoutes = (routesLike: RouteLike[], root = '/src/views') => {
     return route
   })
 }
-const c_routes = generateRoutes(views_dir)
+const c_routes = generateRoutes(views_dir) //二级子路由
 
 c_routes.push({
   path: '',
-  name: 'reredirect-index',
+  name: 'redirect-app-index',
   redirect: 'index'
 })
 
 //==========================================================
 //
-//  之前未考虑弹窗情况，没有做跟路由，所以这里用这种方式补一个根路由       
+//  之前未考虑全局子弹窗情况，没有做跟路由，所以这里用这种方式补一个根路由，
+//   把app 放到  
 //
 //==========================================================
 const routes: RouteLike[] = [
@@ -41,10 +43,10 @@ const routes: RouteLike[] = [
     name: 'app', path: '', children: c_routes, component: () => import('@/App.vue')
   },
   {
-    name: 'desklrc', path: '/desklrc', component: () => import('@/views/desklrc/index.vue')
+    name: 'desklrc', path: '/desklrc', component: () => import('@/views/desklrc/index.vue'),
   }
 
 ]
-console.log('a', routes)
+// console.log('a', routes)
 
 export default routes as Readonly<RouteRecordRaw[]> 

@@ -7,6 +7,10 @@ const store = $store.usePlayStateStore()
 const { addSong } = $store.usePlayStateStore()
 const { audioELcontrol } = store
 const { isPaused, currentSong } = storeToRefs(store)
+
+const Lyric_Offset_Y = 50  //歌词滚动居中的偏移
+
+
 defineEmits(['close'])
 const props = defineProps<{
   lyricInfoGetter: () => ReturnType<typeof lyric_handler>
@@ -67,10 +71,9 @@ watchEffect(() => {
     const el = _lyric_scroll_parentEl.children[curIndex.value] as HTMLElement
     // console.log('el', el)
     if (el) {
-      const offset_y = 50
       const scrollEl = el.offsetParent!
       const y = el.offsetTop - scrollEl.clientHeight / 2
-      scrollEl.scroll({ top: y + offset_y, behavior: 'smooth' })
+      scrollEl.scroll({ top: y + Lyric_Offset_Y, behavior: 'smooth' })
     }
   }
 })
@@ -85,7 +88,7 @@ watchEffect(() => {
       <el-button v-if="showCommentBtn" @click="commentRef?.comment" color="#f1f1f1"
         style="position: absolute; left: 50%;bottom: 10px;transform: translate(-50%);" :icon="EditPen" size="small" round>
         发表评论</el-button>
-      <el-link @click="$emit('close')" :underline="false" style="position: absolute;left: 5px;top: 5px;">
+      <el-link @click="$emit('close')" :underline="false" style="position: absolute;left: 5px;top: 5px;z-index: 1;">
         <i style="color: #000;font-size:3rem;" class="iconfont icon-arrow "></i>
       </el-link>
 

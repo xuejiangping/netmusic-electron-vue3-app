@@ -4,9 +4,9 @@ import VideoTable from '../../components/VideoTable.vue'
 type SingerDetai = { briefDesc: string, introduction: { ti: string, txt: string }[] }
 
 const route = useRoute()
-const id = computed(() => (route.query as { id: string, name: string }).id)
-const name = computed(() => (route.query as { id: string, name: string }).name)
-
+const id: any = computed(() => route.query.id)
+const name: any = computed(() => route.query.name)
+// const { id, name } = toRefs(reactive(route.query))
 // watchEffect(() => query.id)
 // console.log('query', query)
 
@@ -40,15 +40,16 @@ function getSimiAtrist() {
 
   }
 }
-
 const more = () => {
   if (tabIndex.value === tabs.专辑.index) return moreAlbum
   else if (tabIndex.value === tabs.MV.index) return moreVideo
   else return () => 0
 }
 
-watchEffect(() => {
+const stop_a = watchEffect(() => {
   if (!id.value) return
+  console.log('id', id.value, route)
+
   const taskA = $http.artistAlbum({ id: id.value, limit: LIMIT }).then(res => aritst.value = $utils.formatList('singerlist', [res.artist], 'middle')[0])
   $http.artistDesc({ id: id.value }).then(({ briefDesc, introduction }) => singerDetai.value = { briefDesc, introduction })
   moreVideo()
@@ -56,8 +57,7 @@ watchEffect(() => {
   getSimiAtrist()
   $utils2.loading([taskA])
 })
-
-
+onBeforeRouteLeave(() => stop_a())
 </script>
 
 <template>

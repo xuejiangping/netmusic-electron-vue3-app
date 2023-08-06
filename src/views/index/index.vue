@@ -30,7 +30,6 @@ function setCarouselHeigh() {
   carousel_height.value = carousel.value.clientWidth / 2 / ASPECT_RATIO + 30
 }
 
-onUnmounted(() => window.removeEventListener('resize', setCarouselHeigh))
 function bannerClick(banner: typeof banners.value['0']) {
 
   switch (banner.typeTitle) {
@@ -50,18 +49,26 @@ function bannerClick(banner: typeof banners.value['0']) {
   }
 
 }
-// const carousel_height=
+
+
 
 onMounted(() => {
   setCarouselHeigh()
   window.addEventListener('resize', setCarouselHeigh)
+
+
 })
+onUnmounted(() => window.removeEventListener('resize', setCarouselHeigh))
+
+
+
 
 </script>
 
 <template>
   <div>
     <!-- <Icons></Icons> -->
+
     <section ref="carousel">
       <el-carousel class="carousel" type="card" :interval="4000" :height="carousel_height + 'px'">
         <el-carousel-item label="⭕" v-for="banner in banners">
@@ -73,16 +80,16 @@ onMounted(() => {
       </el-carousel>
     </section>
     <section>
-      <h3><span @click="$router.push('playlist')">推荐歌单 <i class="iconfont icon-arrow"> </i></span> </h3>
+      <h3><el-link @click="$router.push('playlist')">推荐歌单 <i class="iconfont icon-arrow"> </i></el-link> </h3>
 
       <VideoTable type='playlist' :data-list="personalizedPlaylist"></VideoTable>
     </section>
     <section>
-      <h3><span>独家放送 <i class="iconfont icon-arrow"> </i></span> </h3>
+      <h3><el-link>独家放送 <i class="iconfont icon-arrow"> </i></el-link> </h3>
       <VideoTable aspect_ratio="16/8" type='video' :data-list="dujiafangsong"></VideoTable>
     </section>
     <section>
-      <h3><span>最新音乐 <i class="iconfont icon-arrow"> </i></span> </h3>
+      <h3><el-link>最新音乐 <i class="iconfont icon-arrow"> </i></el-link> </h3>
       <ul class="musiclist">
         <ListItem type="song" v-for="(song) in topSong" :img1v1-url="song.album.cover"
           @icon_play_click_handler="addSong(song, true)" @dblclick="addSong(song, true)">
@@ -100,7 +107,7 @@ onMounted(() => {
       </ul>
     </section>
     <section>
-      <h3><span>推荐MV <i class="iconfont icon-arrow"> </i> </span></h3>
+      <h3><el-link>推荐MV <i class="iconfont icon-arrow"> </i> </el-link></h3>
       <VideoTable aspect_ratio="16/8" type='video' :data-list="recoMV"></VideoTable>
     </section>
   </div>

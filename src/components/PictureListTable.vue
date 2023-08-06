@@ -20,7 +20,7 @@ watchEffect(() => {
 <template>
   <div v-if="dataList" v-for="({ cover, name, tracks, id }) in dataList" class="item">
     <div class="l">
-      <MyImage @click="$router.push({
+      <MyImage style="cursor: pointer;" @click="$router.push({
         name: 'album', query: { name, id }
       })" aspect-ratio="1/1" :src="cover" :is-album="type === 'album'"></MyImage>
     </div>

@@ -39,7 +39,6 @@ export function create_app_apis(win: BrowserWindow) {
 
   let desktop_lyric_win: BrowserWindow
 
-
   ipcMain.handle('desktop_lyric', (_, info: { type: 'open' | 'close' | 'data', path?: string, data?: any }) => {
 
     if (info.type === 'open') {
@@ -52,10 +51,12 @@ export function create_app_apis(win: BrowserWindow) {
           contextIsolation: false,
         }
       })
-      desktop_lyric_win.webContents.openDevTools()
+
+      // desktop_lyric_win.webContents.on('ipc-message')
+
+      // desktop_lyric_win.webContents.openDevTools()
       // console.log('root_path', root_path)
       desktop_lyric_win.loadURL(root_path + info.path)
-      desktop_lyric_win.webContents.send('test', 'ceshi')
 
     } else if (info.type === 'data') {
       desktop_lyric_win?.webContents.send('lyric_data', JSON.stringify(info.data))
@@ -64,4 +65,6 @@ export function create_app_apis(win: BrowserWindow) {
     }
 
   })
+
+
 }
