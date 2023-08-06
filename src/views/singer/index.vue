@@ -5,7 +5,6 @@ type SingerDetai = { briefDesc: string, introduction: { ti: string, txt: string 
 
 const route = useRoute()
 const id: any = computed(() => route.query.id)
-const name: any = computed(() => route.query.name)
 // const { id, name } = toRefs(reactive(route.query))
 // watchEffect(() => query.id)
 // console.log('query', query)
@@ -48,7 +47,6 @@ const more = () => {
 
 const stop_a = watchEffect(() => {
   if (!id.value) return
-  console.log('id', id.value, route)
 
   const taskA = $http.artistAlbum({ id: id.value, limit: LIMIT }).then(res => aritst.value = $utils.formatList('singerlist', [res.artist], 'middle')[0])
   $http.artistDesc({ id: id.value }).then(({ briefDesc, introduction }) => singerDetai.value = { briefDesc, introduction })
@@ -57,13 +55,13 @@ const stop_a = watchEffect(() => {
   getSimiAtrist()
   $utils2.loading([taskA])
 })
-onBeforeRouteLeave(() => stop_a())
+onBeforeRouteLeave(stop_a)
 </script>
 
 <template>
   <div v-if="aritst">
     <DetailTemplate :cover="aritst.cover" :tag-info-enum="tabs" type="歌手" @handle-tabs-change="i => tabIndex = i">
-      <template #info-line-1><span>{{ name }}</span></template>
+      <template #info-line-1><span>{{ $route.query.name }}</span></template>
 
       <template #info-line-3><span> 单曲数：{{ aritst.musicSize }}</span>
         <span>专辑数：{{ aritst.albumSize }}</span> <span>MV数:{{ }}</span></template>

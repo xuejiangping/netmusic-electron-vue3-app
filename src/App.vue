@@ -11,7 +11,7 @@ const { main_page_loading } = storeToRefs(useGlobalPropsStore())
 
 <template>
   <el-container class="container">
-    <el-header class="header  drag">
+    <el-header class="header-bg drag">
       <Header></Header>
     </el-header>
     <el-container id="container" style=" overflow: auto">
@@ -33,14 +33,18 @@ const { main_page_loading } = storeToRefs(useGlobalPropsStore())
 
 <style scoped lang="less">
 .container {
+  position: relative;
   height: 100%;
   color: var(--color-text-main);
   background-color: #fafafa;
+
 }
 
 .aside {
   width: 20vw;
   min-width: 150px;
+  margin-top: var(--header-height);
+
 }
 
 #main {
@@ -52,12 +56,21 @@ const { main_page_loading } = storeToRefs(useGlobalPropsStore())
     margin: 0 auto;
     max-width: 1000px;
     height: 100%;
+    margin-top: var(--header-height);
+
   }
 }
 
-.header {
-  background-color: var(--color-theme);
+.header-bg {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  top: 0;
+  // background-color: var(--color-theme);
+  background-color: rgba(255, 0, 0, 0.4);
+  backdrop-filter: blur(10px) saturate(3);
   height: var(--header-height);
+  z-index: 10;
 }
 
 

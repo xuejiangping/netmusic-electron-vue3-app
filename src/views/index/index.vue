@@ -25,10 +25,12 @@ $http.dujiafangsong().then(res => dujiafangsong.value = $utils.formatList('video
 $http.topSong().then(res => topSong.value = $utils.formatList('songlist', res.data.slice(0, 12)))
 $http.recoMV().then(res => recoMV.value = $utils.formatList('mvlist', res.result, 'middle'))
 $utils2.loading([taskA, taskB])
-const ASPECT_RATIO = 16 / 7
+const ASPECT_RATIO = 16 / 7  // 轮播图图片的长宽比
+/**************element 的轮播图无法自动适应窗口的缩放，需要监听屏幕宽度，动态设置轮播图高度*****************/
 function setCarouselHeigh() {
   carousel_height.value = carousel.value.clientWidth / 2 / ASPECT_RATIO + 30
 }
+const setCarouselHeigh_debounced = $utils.debounce(setCarouselHeigh, 100)
 
 function bannerClick(banner: typeof banners.value['0']) {
 
@@ -53,12 +55,12 @@ function bannerClick(banner: typeof banners.value['0']) {
 
 
 onMounted(() => {
-  setCarouselHeigh()
-  window.addEventListener('resize', setCarouselHeigh)
+  setCarouselHeigh_debounced()
+  window.addEventListener('resize', setCarouselHeigh_debounced)
 
 
 })
-onUnmounted(() => window.removeEventListener('resize', setCarouselHeigh))
+onUnmounted(() => window.removeEventListener('resize', setCarouselHeigh_debounced))
 
 
 
@@ -80,16 +82,17 @@ onUnmounted(() => window.removeEventListener('resize', setCarouselHeigh))
       </el-carousel>
     </section>
     <section>
-      <h3><el-link @click="$router.push('playlist')">推荐歌单 <i class="iconfont icon-arrow"> </i></el-link> </h3>
+      <h3><el-link type='warning' @click="$router.push('playlist')">推荐歌单 <i class="iconfont icon-arrow"> </i></el-link>
+      </h3>
 
       <VideoTable type='playlist' :data-list="personalizedPlaylist"></VideoTable>
     </section>
     <section>
-      <h3><el-link>独家放送 <i class="iconfont icon-arrow"> </i></el-link> </h3>
+      <h3><el-link type='warning'>独家放送 <i class="iconfont icon-arrow"> </i></el-link> </h3>
       <VideoTable aspect_ratio="16/8" type='video' :data-list="dujiafangsong"></VideoTable>
     </section>
     <section>
-      <h3><el-link>最新音乐 <i class="iconfont icon-arrow"> </i></el-link> </h3>
+      <h3><el-link type='warning'>最新音乐 <i class="iconfont icon-arrow"> </i></el-link> </h3>
       <ul class="musiclist">
         <ListItem type="song" v-for="(song) in topSong" :img1v1-url="song.album.cover"
           @icon_play_click_handler="addSong(song, true)" @dblclick="addSong(song, true)">
@@ -107,7 +110,7 @@ onUnmounted(() => window.removeEventListener('resize', setCarouselHeigh))
       </ul>
     </section>
     <section>
-      <h3><el-link>推荐MV <i class="iconfont icon-arrow"> </i> </el-link></h3>
+      <h3><el-link type='warning'>推荐MV <i class="iconfont icon-arrow"> </i> </el-link></h3>
       <VideoTable aspect_ratio="16/8" type='video' :data-list="recoMV"></VideoTable>
     </section>
   </div>

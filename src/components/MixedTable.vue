@@ -17,8 +17,11 @@ defineProps<{
     <el-tabs class="tabs" type="card" tabPosition="right">
       <el-tab-pane>
         <template #label>
-          <span title="图列模式">
-            <Cherry style="width: 2rem;height: 2rem;" />
+          <span title="图列模式" class="icon">
+            <el-icon>
+              <Cherry />
+            </el-icon>
+
           </span>
         </template>
         <PictureListTable :type="type" :data-list="dataList"></PictureListTable>
@@ -26,8 +29,10 @@ defineProps<{
       </el-tab-pane>
       <el-tab-pane>
         <template #label>
-          <span title="列表模式">
-            <Pear style="width: 2rem;height: 2rem;" />
+          <span title="列表模式" class="icon">
+            <el-icon size="1rem">
+              <Pear />
+            </el-icon>
           </span>
         </template>
         <AlbumTable :type="type" :data-list="dataList"></AlbumTable>
@@ -36,8 +41,11 @@ defineProps<{
 
       <el-tab-pane>
         <template #label>
-          <span title="大图模式">
-            <Apple title="" style="width: 2rem;height: 2rem;" />
+          <span title="大图模式" class="icon">
+            <el-icon size="1rem">
+              <Apple />
+            </el-icon>
+
           </span>
         </template>
         <VideoTable :type="type" :data-list="dataList"></VideoTable>
@@ -50,6 +58,11 @@ defineProps<{
 .tabs {
   &:deep(.el-tabs__item) {
     padding: 0;
+  }
+
+  .icon {
+    font-size: 1rem;
+    padding: 3px;
   }
 }
 </style>
