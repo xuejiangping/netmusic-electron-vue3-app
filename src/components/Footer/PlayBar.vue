@@ -117,25 +117,26 @@ let watch_stop_a: WatchStopHandle
 
 watchEffect(async () => {
   if (desktop_lyric_status.value) {
-
-    console.log('打开歌词')
-
     window.app_control.desktop_lyric?.({ type: 'open', path: 'desklrc' })
     watch_stop_a = watchEffect(() => {
       const curLyric = lyric.value?.lines[curIndex.value]
       if (curLyric) {
         window.app_control.desktop_lyric?.({ type: 'data', data: { lyric: curLyric } })
       }
-
     })
-
   } else {
     console.log('关闭歌词')
     window.app_control.desktop_lyric?.({ type: 'close' })
     watch_stop_a?.()
   }
 })
-window.app_control?.tray_menuitem_event_bind('music_detail', open_song_detail)
+
+if (window.app_control) {
+  window.app_control.ipcRenderer_event_bind('music_detail', open_song_detail)
+  window.app_control.ipcRenderer_event_bind('desktop-lyric-close', () => desktop_lyric_status.value = false)
+
+}
+
 </script>
 
 <template>
@@ -202,8 +203,9 @@ window.app_control?.tray_menuitem_event_bind('music_detail', open_song_detail)
           <i v-if="isPaused" @click="audio.play" class="iconfont icon-play"></i>
           <i v-else @click="audio.pause" class="iconfont icon-pause"></i>
           <i @click=" changeUserClickPlayActionType('next'); next()" class="iconfont icon-audio-next"></i>
-          <span @click="desktop_lyric_status = !desktop_lyric_status" class="lyric"
-            :class="{ desktopLyricOpen: desktop_lyric_status }">词</span>
+          <span @click="desktop_lyric_status = !desktop_lyric_status" class="lyric hover-text"
+            :class="{ desktopLyricOpen: desktop_lyric_status }"> <el-badge :hidden="!desktop_lyric_status"
+              is-dot>词</el-badge></span>
         </div>
         <div class="bottom">
           <span>{{ formatedCurTime }}</span>
@@ -385,9 +387,12 @@ window.app_control?.tray_menuitem_event_bind('music_detail', open_song_detail)
     justify-content: center;
 
     .desktopLyricOpen {
+      position: relative;
       color: var(--color-theme);
-      font-weight: bold;
-      transform: scale(1.3);
+      // font-weight: bold;
+      // transform: scale(1.3);
+
+
     }
 
     .control {

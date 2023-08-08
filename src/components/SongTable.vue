@@ -79,7 +79,7 @@ function row_dbclick(row: SongItem) {
   <el-table :flexible="true" :show-header="showHeader" :size="size" v-if="Boolean(dataList)" @row-dblclick="row_dbclick"
     @row-contextmenu="" class="table" :data="dataList" stripe highlight-current-row>
 
-    <el-table-column v-if="needShowItems.includes('index')">
+    <el-table-column width="50" v-if="needShowItems.includes('index')">
       <template #default="scope">
         <div class="col-1">
           <span v-if="curSongId === scope.row.id"><i class="active iconfont icon-playnum  "></i></span>
@@ -88,7 +88,8 @@ function row_dbclick(row: SongItem) {
       </template>
     </el-table-column>
 
-    <el-table-column v-if="needShowItems.includes('title')" class-name="title" prop="name" :label="tableColums1.name">
+    <el-table-column min-width="100" v-if="needShowItems.includes('title')" class-name="title" prop="name"
+      :label="tableColums1.name">
 
       <template #default="scope">
         <div :class="{ active: scope.row.id === curSongId }" class="title" v-title>
@@ -103,13 +104,13 @@ function row_dbclick(row: SongItem) {
       </template>
     </el-table-column>
 
-    <el-table-column v-if="needShowItems.includes('singer')" prop="singer" :label="tableColums1.artists">
+    <el-table-column min-width="100" v-if="needShowItems.includes('singer')" prop="singer" :label="tableColums1.artists">
       <template #default="scope">
-        <div class="singer" v-title>
-          <router-link v-for="(item, i) in scope.row.artists" v-split="[i]" :to="{ name: 'singer', query: item }">
+        <el-space direction='horizontal' spacer="/" :size="3">
+          <router-link v-title v-for="(item) in scope.row.artists" :to="{ name: 'singer', query: item }">
             <span>{{ item.name }}</span>
           </router-link>
-        </div>
+        </el-space>
       </template>
     </el-table-column>
 
@@ -157,11 +158,7 @@ function row_dbclick(row: SongItem) {
     color: var(--color-text);
   }
 
-  .singer,
-  .title,
-  .album {
-    .multi-line(1)
-  }
+
 
 
 

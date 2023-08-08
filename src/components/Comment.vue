@@ -167,7 +167,7 @@ function commentLike({ liked, commentId }: { liked: boolean, commentId: string }
       </Teleport>
     </div>
 
-    <div v-if="layout === 'relative'" class="input-box">
+    <div v-if="layout !== 'absolute'" class="input-box">
       <el-input v-model="text" resize="none" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea"
         :placeholder="placeholder" :maxlength="word_limit" show-word-limit />
       <div class="send">

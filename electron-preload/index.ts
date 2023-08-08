@@ -20,6 +20,6 @@ window.app_control = {
   window_control(...args) { ipcRenderer.invoke('window_control', ...args) },
   tray_setToolTip(...args) { ipcRenderer.invoke('tray_setToolTip', ...args) },
   tray_setContextMenu_musicName(...args) { ipcRenderer.invoke('tray_setContextMenu_musicName', ...args) },
-  tray_menuitem_event_bind(...args) { ipcRenderer.on(...args) },
+  ipcRenderer_event_bind(...args) { ipcRenderer.on(...args) },
   desktop_lyric(...args) { return ipcRenderer.invoke('desktop_lyric', ...args) }
 }

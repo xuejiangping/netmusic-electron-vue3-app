@@ -190,11 +190,11 @@ export const usePlayStateStore = defineStore('play_state', () => {
   *        绑定托盘 控制 播放功能*
    **************************************************/
   if (window.app_control) {
-    const { tray_setContextMenu_musicName, tray_setToolTip, tray_menuitem_event_bind } = window.app_control
+    const { tray_setContextMenu_musicName, tray_setToolTip, ipcRenderer_event_bind } = window.app_control
 
-    tray_menuitem_event_bind('playMusic', () => state.isPaused ? state.audioELcontrol?.play() : state.audioELcontrol?.pause())
-    tray_menuitem_event_bind('nextMusic', next)
-    tray_menuitem_event_bind('prevMusic', prev)
+    ipcRenderer_event_bind('playMusic', () => state.isPaused ? state.audioELcontrol?.play() : state.audioELcontrol?.pause())
+    ipcRenderer_event_bind('nextMusic', next)
+    ipcRenderer_event_bind('prevMusic', prev)
 
     watchEffect(() => {
       if (state.currentSong) {

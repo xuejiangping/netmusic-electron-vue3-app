@@ -97,7 +97,7 @@ interface AllProps extends BaseProps {
 
 
 
-type Tray_MenuItem_EventName = 'music_detail' | 'playMusic' | 'prevMusic' | 'nextMusic'
+type IpcRenderer_EventName = 'music_detail' | 'playMusic' | 'prevMusic' | 'nextMusic' | 'desktop-lyric-close'
 
 // 定义全局 和 window
 declare global {
@@ -135,7 +135,7 @@ declare global {
       window_control(info: { type: Window_Control_Type }): void
       tray_setToolTip(title: string): void
       tray_setContextMenu_musicName(info: string): void
-      tray_menuitem_event_bind(eventName: Tray_MenuItem_EventName, handler: (...args: any[]) => void): void
+      ipcRenderer_event_bind(eventName: IpcRenderer_EventName, handler: (...args: any[]) => void): void
       desktop_lyric(option: { type: 'open', path: string }): Promise<any>
       desktop_lyric(option: { type: 'data', data: DeskLyric.DeskLrcData }): Promise<any>
       desktop_lyric(option: { type: 'close' }): Promise<any>

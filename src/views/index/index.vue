@@ -98,12 +98,12 @@ onUnmounted(() => window.removeEventListener('resize', setCarouselHeigh_debounce
           @icon_play_click_handler="addSong(song, true)" @dblclick="addSong(song, true)">
           <div class="musiclist-info">
             <div v-title>{{ song.name }}</div>
-            <div v-title>
-              <RouterLink v-for="(artist, i) in song.artists" v-split="[i]"
+            <el-space v-title spacer="/" :size="3">
+              <RouterLink v-for="(artist) in song.artists"
                 :to="{ name: 'singer', query: { name: artist.name, id: artist.id } }">
                 {{ artist.name }}
               </RouterLink>
-            </div>
+            </el-space>
           </div>
         </ListItem>
 

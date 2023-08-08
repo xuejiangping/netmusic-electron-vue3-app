@@ -39,13 +39,14 @@ defineEmits(['icon_play_click_handler'])
 
 .item {
   display: flex;
-  justify-content: space-between;
   padding: 0.2rem 0.4rem;
   font-size: 0.8rem;
   align-items: center;
   border-radius: 4px;
   color: var(--color-text);
   cursor: pointer;
+  justify-content: space-between;
+  column-gap: 2rem;
 
   .cover {
     position: relative;
