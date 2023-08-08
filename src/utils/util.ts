@@ -113,7 +113,7 @@ export default {
    */
   debounce<T extends (...args) => any>(fn: T, t = 1000) {
     let timer = null
-    return function (...args: Parameters<T>): Promise<any> {
+    return function (...args: Parameters<T>): Promise<ReturnType<T>> {
       if (timer) clearTimeout(timer)
       return new Promise(res => timer = setTimeout(() => res(fn(...args)), t))
     }

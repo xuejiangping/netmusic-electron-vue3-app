@@ -134,6 +134,7 @@ if (window.app_control) {
 
   watchEffect(async () => {
     if (desktop_lyric_status.value) {
+
       window.app_control.desktop_lyric({ type: 'open', path: 'desklrc' })
       watch_stop_a = watchEffect(() => {
         const curLyric = lyric.value?.lines[curIndex.value]
@@ -150,7 +151,7 @@ if (window.app_control) {
   window.app_control.ipcRenderer_event_bind('music_detail', open_song_detail)
   window.app_control.ipcRenderer_event_bind('desktop-lyric-close', () => desktop_lyric_status.value = false)
 
-}
+} else { window.console.warn('桌面歌词仅在 electron 下可用') }
 
 </script>
 
@@ -218,7 +219,7 @@ if (window.app_control) {
           <i v-if="isPaused" @click="audio.play" class="iconfont icon-play"></i>
           <i v-else @click="audio.pause" class="iconfont icon-pause"></i>
           <i @click=" changeUserClickPlayActionType('next'); next()" class="iconfont icon-audio-next"></i>
-          <span @click="desktop_lyric_status = !desktop_lyric_status" class="lyric hover-text"
+          <span @click="desktop_lyric_status = !desktop_lyric_status;" class="lyric hover-text"
             :class="{ desktopLyricOpen: desktop_lyric_status }"> <el-badge :hidden="!desktop_lyric_status"
               is-dot>词</el-badge></span>
         </div>

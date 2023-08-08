@@ -2,7 +2,7 @@
 import SearchPanel from '@components/SearchPanel.vue'
 import { ElRadio, ElRadioGroup } from 'element-plus'
 import { ArrowLeft, ArrowRight, CaretBottom, Minus, Close, FullScreen, Sugar } from '@element-plus/icons-vue'
-const { $store, $COMMON, $utils, $confirm, $messageBox } = getCurrentInstance()?.proxy!
+const { $store, $COMMON, $utils, $confirm, $messageBox, $message } = getCurrentInstance()?.proxy!
 const [store, globalStore] = [$store.userLoginStore(), $store.useGlobalPropsStore()]
 
 const { setLoginCardVisible, signin, logout, set_song_detail_status } = { ...store, ...globalStore }
@@ -18,7 +18,7 @@ const exit_type = ref(EXIT_TYPE.minimizeSystemtray)
 const window_control = {
   isElectron() {
     if (window.app_control) return true
-    else $messageBox({ message: ' 该功能在仅electron环境下可用', type: 'error' })
+    else $message({ message: ' 该功能在仅electron环境下可用', type: 'error' })
   },
   minimize() {
     this.isElectron() && window.app_control.window_control({ type: 'min' })

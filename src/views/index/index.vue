@@ -30,7 +30,7 @@ const ASPECT_RATIO = 16 / 7  // 轮播图图片的长宽比
 function setCarouselHeigh() {
   carousel_height.value = carousel.value.clientWidth / 2 / ASPECT_RATIO + 30
 }
-const setCarouselHeigh_debounced = $utils.debounce(setCarouselHeigh, 100)
+const setCarouselHeigh_debounced = $utils.debounce(setCarouselHeigh, 200)
 
 function bannerClick(banner: typeof banners.value['0']) {
 
