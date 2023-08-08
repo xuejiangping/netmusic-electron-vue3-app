@@ -3,7 +3,7 @@ import { Share, StarFilled, Download } from '@element-plus/icons-vue'
 
 import { lyric_handler } from '../../assets/js/index/lyric'
 import { WatchStopHandle } from 'vue';
-
+import { curColor, lastColor } from '../../assets/js/index/theme_color'
 //==========================================================
 //
 //==========================================================
@@ -54,7 +54,7 @@ const baseOption = {
   inputVal: 0,   //输入的播放时间，用于更改播放进度，单位秒
   currenPlayTime: 0,//当前 歌曲播放时间
 }
-const initializationOption: typeof baseOption = $utils.localstorage.save_and_load(PLAYBAR_OPTIONS, () => options) || baseOption
+const initializationOption: typeof baseOption = $utils.localstorage.save_and_load(PLAYBAR_OPTIONS, () => options, true) || baseOption
 const options = reactive(initializationOption)
 const { currenPlayTime, inputVal,
   currentPlayProgress, volume, lastVolume, isShowPlayListBox } = toRefs(options)
@@ -107,31 +107,46 @@ watchEffect(() => {
 watch(song_detail_status, () => carousel.value.next())
 function close_song_detail() { set_song_detail_status(false) }
 function open_song_detail() { set_song_detail_status(true) }
-/***********************创建桌面子窗口 歌词*************************/
 
-
-
-const { lyric, curIndex, offsetTime } = lyric_handler({ currenPlayTimeRef: currenPlayTime, id: toRef(() => currentSong.value!.id) })
-const lyricInfoGetter = () => ({ lyric, curIndex, offsetTime })
-let watch_stop_a: WatchStopHandle
-
-watchEffect(async () => {
-  if (desktop_lyric_status.value) {
-    window.app_control.desktop_lyric?.({ type: 'open', path: 'desklrc' })
-    watch_stop_a = watchEffect(() => {
-      const curLyric = lyric.value?.lines[curIndex.value]
-      if (curLyric) {
-        window.app_control.desktop_lyric?.({ type: 'data', data: { lyric: curLyric } })
-      }
-    })
+//==========================================================
+//     歌曲详情页切换时，更改header的样式
+//==========================================================
+watch(song_detail_status, (val) => {
+  if (val) {
+    setTimeout(() => curColor.value = 'pink', 300);
   } else {
-    console.log('关闭歌词')
-    window.app_control.desktop_lyric?.({ type: 'close' })
-    watch_stop_a?.()
+    curColor.value = lastColor.value
   }
 })
 
+
+const { lyric, curIndex, offsetTime } = lyric_handler({ currenPlayTimeRef: currenPlayTime, id: toRef(() => currentSong.value?.id) })
+const lyricInfoGetter = () => ({ lyric, curIndex, offsetTime })
+
+
+
+/***********************
+ * 在electron 环境下 创建桌面子窗口 歌词
+ * *************************/
+
 if (window.app_control) {
+  let watch_stop_a: WatchStopHandle
+
+  watchEffect(async () => {
+    if (desktop_lyric_status.value) {
+      window.app_control.desktop_lyric({ type: 'open', path: 'desklrc' })
+      watch_stop_a = watchEffect(() => {
+        const curLyric = lyric.value?.lines[curIndex.value]
+        if (curLyric) {
+          window.app_control.desktop_lyric({ type: 'data', data: { lyric: curLyric } })
+        }
+      })
+    } else {
+      console.log('关闭歌词')
+      window.app_control.desktop_lyric({ type: 'close' })
+      watch_stop_a?.()
+    }
+  })
   window.app_control.ipcRenderer_event_bind('music_detail', open_song_detail)
   window.app_control.ipcRenderer_event_bind('desktop-lyric-close', () => desktop_lyric_status.value = false)
 

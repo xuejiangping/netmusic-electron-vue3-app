@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
+    "@types/color": "^3.0.3",
     "@vueuse/electron": "^10.3.0",
     "axios": "^1.4.0",
     "color": "^4.2.3",
+    "default-passive-events": "^2.0.0",
     "element-plus": "^2.3.6",
     "path-browserify": "^1.0.1",
     "pinia": "^2.1.4",

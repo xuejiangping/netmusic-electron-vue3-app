@@ -2,16 +2,14 @@
 import { usePageShowStore } from './store/page-show-state-store'
 import { useGlobalPropsStore } from './store/global-props-store'
 // import hot_recom from './assets/js/index/hot_recom'
-import Color from 'color'
-window.Color = Color
 const { aside, footer } = storeToRefs(usePageShowStore())
-const { main_page_loading, cur_theme_color } = storeToRefs(useGlobalPropsStore())
+const { main_page_loading, } = storeToRefs(useGlobalPropsStore())
 
 </script>
 
 <template>
   <el-container class="container">
-    <el-header class="header-bg drag" :class="[cur_theme_color]">
+    <el-header class="header-bg drag">
       <Header></Header>
     </el-header>
     <el-container id="container" style=" overflow: auto">
@@ -32,8 +30,6 @@ const { main_page_loading, cur_theme_color } = storeToRefs(useGlobalPropsStore()
 </template>
 
 <style scoped lang="less">
-@import './assets/css/theme.less';
-
 .container {
   position: relative;
   height: 100%;
@@ -73,6 +69,10 @@ const { main_page_loading, cur_theme_color } = storeToRefs(useGlobalPropsStore()
   backdrop-filter: blur(10px) saturate(3);
   height: var(--header-height);
   z-index: 10;
+  color: var(--color-text-header);
+  background-color: var(--color-bg-header);
+  fill: var(--color-text-header);
+  transition: all 0.5s;
 }
 
 

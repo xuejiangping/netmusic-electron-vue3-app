@@ -40,6 +40,7 @@ declare module 'vue' {
     ElProgress: typeof import('element-plus/es')['ElProgress']
     ElRow: typeof import('element-plus/es')['ElRow']
     ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
+    ElSlider: typeof import('element-plus/es')['ElSlider']
     ElSpace: typeof import('element-plus/es')['ElSpace']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
@@ -68,6 +69,7 @@ declare module 'vue' {
     SingerTable: typeof import('./../components/SingerTable.vue')['default']
     SongDetail: typeof import('./../components/Song-Detail.vue')['default']
     SongTable: typeof import('./../components/SongTable.vue')['default']
+    ThemeColorBox: typeof import('./../components/ThemeColorBox.vue')['default']
     VideoTable: typeof import('./../components/VideoTable.vue')['default']
   }
   export interface ComponentCustomProperties {

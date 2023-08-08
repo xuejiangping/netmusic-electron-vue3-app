@@ -4,7 +4,7 @@ import ElementPlus from 'element-plus'
 import { createPinia } from 'pinia'
 import './directive'  //全局指令
 import vue3videoPlay from 'vue3-video-play' // 引入组件
-
+import 'default-passive-events'
 /************************************************/
 
 const pinia = createPinia()

@@ -12,6 +12,8 @@
   --color-text-light: #c3c2c2;
   --color-text-white: #f5f5f7;
   --color-theme: #ec4141;
+  --color-bg-header: var(--color-theme);
+  --color-text-header: var(--color-text-white);
   --color-bg-light: #f2f2f3;
   --color-bg-main: #eaeaed;
   --color-border: #dcdfe6;
@@ -19,6 +21,7 @@
   --el-color-primary: var(--color-theme) !important;
   --header-height: 50px;
   --footer-height: 60px;
+  --border-radius: 8px;
 }
 li {
   list-style: none;
