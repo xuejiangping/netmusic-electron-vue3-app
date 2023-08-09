@@ -29,6 +29,7 @@ declare module 'vue' {
 
 
 
+
 declare module 'vue-router' {
   interface RouteMeta {
     // 是可选的

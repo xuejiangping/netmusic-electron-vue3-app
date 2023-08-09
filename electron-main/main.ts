@@ -13,8 +13,8 @@ const createWin = () => {
 
   const win = new BrowserWindow({
     width: 800, height: 560,
-    minWidth: 650,
-    minHeight: 450,
+    minWidth: 760,
+    minHeight: 550,
     frame: false, //去掉 边框
     // skipTaskbar: true,
     title: '网易云音乐',

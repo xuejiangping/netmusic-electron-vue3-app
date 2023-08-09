@@ -1,7 +1,7 @@
 
 //**********************定义axios示例*********************************** */
 /**@module  定义axios示例*/
-import axios, { AxiosInstance } from 'axios';
+import axios from 'axios';
 // import type {} from 'axios'
 import app from '../utils/app.ts'
 const appProxy = app.config.globalProperties
@@ -13,12 +13,13 @@ const instance = axios.create({
   // `validateStatus` 定义对于给定的HTTP 响应状态码是 resolve 或 reject  promise 。
   // 如果 `validateStatus` 返回 `true` (或者设置为 `null` 或 `undefined`)，promise 将被 resolve; 否则，promise 将被 rejecte
   validateStatus: status => status >= 200 && status < 300,
-  baseURL // 服务端域名
+  baseURL, // 服务端域名
 });
 // window.open('https://www.douyin.com')
 // 添加请求拦截器
 instance.interceptors.request.use(function (config) {
   // 在发送请求之前做些什么
+  // config.params = { hhhhh: 'ccccc' }
   return config;
 }, function (error) {
   // 对请求错误做些什么
@@ -51,18 +52,8 @@ instance.interceptors.response.use(function (response) {
 
 
 
-interface API {
-  get: (...args: Parameters<AxiosInstance['get']>) => Promise<any>
-  post: (...args: Parameters<AxiosInstance['post']>) => Promise<any>
-
-}
-
-const api: API = {
-  get: (...args) => instance['get'](...args),
-  post: (...args) => instance['post'](...args)
-}
 
 
 
 // api.get('https://www.baidu.com').then(console.log).catch(console.log)
-export default api;
+export default instance;

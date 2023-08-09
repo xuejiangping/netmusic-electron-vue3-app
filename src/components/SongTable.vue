@@ -5,6 +5,7 @@ const { $COMMON, $store } = getCurrentInstance()?.proxy!
 const store = $store.usePlayStateStore()
 const { updatePlayList, addSong, play } = store
 const { curSongId, includedListIds } = storeToRefs(store)
+const setting = $store.useSettingStore()
 /**序号前补足两位 01 02   */
 const vPad2 = (el: HTMLElement, binding: { value: string }) => {
   const val = binding.value
@@ -56,7 +57,7 @@ function row_dbclick(row: SongItem) {
    * 
    */
 
-  const updatePlayListWhenDbClick = true
+  const updatePlayListWhenDbClick = setting.dbclick_playlist.val === 'updatePlaylist'
   const songId = row.id
 
   // 判断双击 是否更新播放列表，若不是则只添加歌曲到列表
@@ -79,11 +80,12 @@ function row_dbclick(row: SongItem) {
   <el-table :flexible="true" :show-header="showHeader" :size="size" v-if="Boolean(dataList)" @row-dblclick="row_dbclick"
     @row-contextmenu="" class="table" :data="dataList" stripe highlight-current-row>
 
-    <el-table-column width="50" v-if="needShowItems.includes('index')">
+    <el-table-column width="80" v-if="needShowItems.includes('index')">
       <template #default="scope">
         <div class="col-1">
           <span v-if="curSongId === scope.row.id"><i class="active iconfont icon-playnum  "></i></span>
           <span v-else v-pad2="scope.$index"></span>
+          <!-- <span>习</span> -->
         </div>
       </template>
     </el-table-column>
@@ -145,7 +147,6 @@ function row_dbclick(row: SongItem) {
 .active {
   color: var(--color-theme);
   font-size: large;
-  // background-color: rgb(234, 206, 206);
   font-weight: bold;
 }
 
@@ -156,6 +157,8 @@ function row_dbclick(row: SongItem) {
 
   .col-1 {
     color: var(--color-text);
+    display: flex;
+    justify-content: space-evenly;
   }
 
 

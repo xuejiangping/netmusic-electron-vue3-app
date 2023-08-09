@@ -13,6 +13,7 @@ const { set_song_detail_status } = glabalStore
 
 const PLAYBAR_OPTIONS = 'playbar_options'
 const store = $store.usePlayStateStore()
+const setting = $store.useSettingStore()
 const { currentSong, playList, isPaused, loopIndex, song_detail_status } = { ...storeToRefs(store), ...storeToRefs(glabalStore) }
 const { next, prev, clearPlayList, changeUserClickPlayActionType, setLoopIndex } = store
 // $confirm('双击播放单曲时，用当前歌曲所在的歌曲列表替换播放列？')
@@ -54,7 +55,11 @@ const baseOption = {
   inputVal: 0,   //输入的播放时间，用于更改播放进度，单位秒
   currenPlayTime: 0,//当前 歌曲播放时间
 }
-const initializationOption: typeof baseOption = $utils.localstorage.save_and_load(PLAYBAR_OPTIONS, () => options, true) || baseOption
+const options_getter = () => {
+  if (setting.play_progress.val.includes('remember')) return options
+  else return { ...options, currenPlayTime: 0, currentPlayProgress: 0 }
+}
+const initializationOption: typeof baseOption = $utils.localstorage.save_and_load(PLAYBAR_OPTIONS, options_getter, true) || baseOption
 const options = reactive(initializationOption)
 const { currenPlayTime, inputVal,
   currentPlayProgress, volume, lastVolume, isShowPlayListBox } = toRefs(options)
@@ -102,6 +107,7 @@ const formatedCurTime = computed(() => {
  **************************************************/
 
 watchEffect(() => {
+  if (!currentSong.value) return
   currentPlayProgress.value = currentSong.value ? $utils.transformSongTime({ dt: currentSong.value.dt, time: currenPlayTime.value * 1000 }) : 0
 })
 watch(song_detail_status, () => carousel.value.next())

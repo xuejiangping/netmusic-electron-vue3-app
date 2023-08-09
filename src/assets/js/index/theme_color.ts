@@ -1,4 +1,5 @@
 import Color from 'color'
+import $utils from '../../../utils/util'
 
 //==========================================================
 //
@@ -6,10 +7,16 @@ import Color from 'color'
 //
 //==========================================================
 
+const THEME_COLOR = 'theme-color'
+const base = {
+  curColor: 'red',
+  alpha: 50,
+  lastColor: ''
+}
+const state: typeof base = shallowReactive($utils.localstorage.save_and_load(THEME_COLOR, () => state, true) || base)
 
-const alpha = ref(60)
-const curColor = ref('red')
-const lastColor = ref('')
+
+const { curColor, alpha, lastColor } = toRefs(state)
 
 watch(curColor, (_, oloVal) => lastColor.value = oloVal)
 
@@ -28,6 +35,8 @@ function changeColor() {
     rootEl.style.setProperty(styleProps[0], color_bg_header)
     rootEl.style.setProperty(styleProps[1], color_text_header)
     rootEl.style.setProperty(styleProps[2], color_bg_header_darken)
+
+
   }
 
 }

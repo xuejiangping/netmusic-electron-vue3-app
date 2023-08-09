@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import SearchPanel from '@components/SearchPanel.vue'
 import { ElRadio, ElRadioGroup } from 'element-plus'
-import { ArrowLeft, ArrowRight, CaretBottom, Minus, Close, FullScreen, Sugar } from '@element-plus/icons-vue'
+import { ArrowLeft, ArrowRight, CaretBottom, Minus, Close, FullScreen, Sugar, Setting } from '@element-plus/icons-vue'
 const { $store, $COMMON, $utils, $confirm, $messageBox, $message } = getCurrentInstance()?.proxy!
 const [store, globalStore] = [$store.userLoginStore(), $store.useGlobalPropsStore()]
-
+const setting = $store.useSettingStore()
 const { setLoginCardVisible, signin, logout, set_song_detail_status } = { ...store, ...globalStore }
 const { loginStatus, loginCardVisible, userInfo, todaySignedIn, song_detail_status } = { ...storeToRefs(store), ...storeToRefs(globalStore) }
 
@@ -13,8 +13,12 @@ function logout_confirm() {
   $confirm('确定要退出登录吗？').then(logout).catch(console.log)
 
 }
-enum EXIT_TYPE { minimizeSystemtray, exit }
+setting.panel.val == 'exit'
+enum EXIT_TYPE { minimizeSystemtray = 'hide', exit = 'exit' }
+
 const exit_type = ref(EXIT_TYPE.minimizeSystemtray)
+
+watchEffect(() => exit_type.value = setting.panel.val as any)
 const window_control = {
   isElectron() {
     if (window.app_control) return true
@@ -45,7 +49,7 @@ const window_control = {
       } else {
         window.app_control.window_control({ type: 'close' })
       }
-    })
+    }).catch(console.log)
   }
 }
 </script>
@@ -109,7 +113,7 @@ const window_control = {
                 round>{{ todaySignedIn ? '已签到' : '签到' }}</el-button>
             </div>
 
-            <div class="function-list">
+            <div class="lists">
               <ul>
                 <li @click="logout_confirm">退出登录</li>
               </ul>
@@ -124,6 +128,17 @@ const window_control = {
         </el-link>
         <LoginCard v-if="loginCardVisible"></LoginCard>
       </div>
+
+      <span class="icon">
+        <el-popover width="auto" trigger="click">
+          <template #reference>
+            <el-icon>
+              <Setting />
+            </el-icon>
+          </template>
+          <SettingCard></SettingCard>
+        </el-popover>
+      </span>
       <span class="icon">
         <el-popover width="200px" trigger="click">
           <template #reference>
@@ -164,7 +179,7 @@ const window_control = {
 
   }
 
-  .function-list {
+  .lists {
     li {
       padding: 5px;
 
