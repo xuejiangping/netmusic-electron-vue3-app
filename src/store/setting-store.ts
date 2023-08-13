@@ -1,5 +1,5 @@
 
-import { ElAlert, ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus'
 const SETTING_STORE = 'setting-store'
 
 const baseOption = {

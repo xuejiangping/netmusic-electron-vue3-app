@@ -11,14 +11,17 @@ const THEME_COLOR = 'theme-color'
 const base = {
   curColor: 'red',
   alpha: 50,
-  lastColor: ''
+  lastColor: '#fff'
 }
 const state: typeof base = shallowReactive($utils.localstorage.save_and_load(THEME_COLOR, () => state, true) || base)
 
 
 const { curColor, alpha, lastColor } = toRefs(state)
 
-watch(curColor, (_, oloVal) => lastColor.value = oloVal)
+watch(curColor, (_, oldVal) => {
+  lastColor.value = oldVal
+  console.log(_, oldVal)
+})
 
 function changeColor() {
   const rootEl = document.documentElement

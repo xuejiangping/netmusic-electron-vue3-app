@@ -26,7 +26,8 @@
 			"@/": ["src/"],
 			"@components/": ["src/components/"],
 			"@store/": ["src/store/"]
-		}
+		},
+		"skipLibCheck": true
 	},
 	"include": [
 		"src/**/*.ts",

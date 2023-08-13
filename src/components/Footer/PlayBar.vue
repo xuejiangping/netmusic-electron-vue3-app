@@ -149,7 +149,7 @@ if (window.app_control) {
         }
       })
     } else {
-      console.log('关闭歌词')
+      // console.log('关闭歌词')
       window.app_control.desktop_lyric({ type: 'close' })
       watch_stop_a?.()
     }

@@ -1,4 +1,4 @@
-<script setup lang="tsx">
+<script setup lang="ts">
 import MixedTable from '../../components/MixedTable.vue'
 import VideoTable from '../../components/VideoTable.vue'
 type SingerDetai = { briefDesc: string, introduction: { ti: string, txt: string }[] }

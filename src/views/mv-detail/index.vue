@@ -38,7 +38,7 @@ const options = reactive({
 // 显示详细信息
 const isShowDesc = ref(false)
 // 视频源信息
-const videoSoure = ref<{ src: string, resolution: number | string }[]>()
+// const videoSoure = ref<{ src: string, resolution: number | string }[]>()
 
 
 //用户头像 小图片
