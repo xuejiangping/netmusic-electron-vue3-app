@@ -20,7 +20,7 @@ function createWin() {
     frame: false, //去掉 边框
     // skipTaskbar: true,
     title: '网易云音乐',
-    icon: path.join(__dirname, '../public/favicon-640-640.png'),
+    icon: path.join(__dirname, '../public/favicon.ico'),
     // autoHideMenuBar: true, //隐藏菜单
     webPreferences: {
       // 是否在独立 JavaScript 环境中运行 Electron API和指定的preload 脚本.默认为 true

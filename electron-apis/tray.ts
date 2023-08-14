@@ -1,7 +1,7 @@
 import { BrowserWindow, Tray, Menu, MenuItemConstructorOptions, ipcMain } from 'electron'
 import { ref, watchEffect } from 'vue'
 import path from 'path';
-export function userTray(win: BrowserWindow) {
+export function useTray(win: BrowserWindow) {
   // 创建系统托盘
   const tray = new Tray(path.join(__dirname, '../public/favicon.ico')); // 用来存放系统托盘
   // 菜单模板
