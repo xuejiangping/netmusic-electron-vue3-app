@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { alpha, curColor } from '../assets/js/index/theme_color'
 
-const defaultColors = ['white', '#ec4141', 'pink', 'black', 'blue']
+const defaultColors = ['white', '#ec4141', 'pink', 'black', 'blue', 'purple']
 
 
 
@@ -20,7 +20,7 @@ const defaultColors = ['white', '#ec4141', 'pink', 'black', 'blue']
     </div>
     <div>
       <h5 class="title"> 透明度：</h5>
-      <el-slider size="small" :min="50" :debounce="500" label="12" v-model="alpha" />
+      <el-slider size="small" :min="30" :debounce="500" label="12" v-model="alpha" />
     </div>
 
   </div>
@@ -39,7 +39,7 @@ const defaultColors = ['white', '#ec4141', 'pink', 'black', 'blue']
 
 .box {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
 
   .item {

@@ -33,7 +33,7 @@ export default defineConfig({
     electron({
       'entry': path.join(__dirname, './electron-main/main.ts'),
     }),
-    cjsExternals({ externals: ['path', 'fs/promises'] })  //转换cjs的模块为esmodule使用
+    cjsExternals({ externals: ['path'] })  //转换cjs的模块为esmodule使用
   ],
   server: { port: PORT },
   optimizeDeps: {

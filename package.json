@@ -50,7 +50,7 @@
   "build": {
     "appId": "com.xue6474.desktop",
     "productName": "xue6474",
-    "copyright": "Copyright © 2022 xue6474",
+    "copyright": "Copyright © 2022 xuejiangping",
     "directories": {
       "output": "release/${version}"
     },

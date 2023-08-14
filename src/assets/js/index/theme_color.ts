@@ -30,11 +30,11 @@ function changeColor() {
     let styleProps = [`--color-bg-header`, '--color-text-header', '--color-bg-header-darken']
     let color_obj = Color.rgb(curColor.value).alpha(alpha.value / 100)
 
-    const color_bg_header = color_obj.toString()
-    const color_bg_header_darken = color_obj.fade(0.6).toString()
+    const color_bg_header = color_obj.string()
+    const color_bg_header_darken = color_obj.fade(0.6).string()
 
 
-    const color_text_header = color_obj.negate().lighten(0.8).toString()
+    const color_text_header = color_obj.negate().lighten(0.5).alpha(0.9).string()
     rootEl.style.setProperty(styleProps[0], color_bg_header)
     rootEl.style.setProperty(styleProps[1], color_text_header)
     rootEl.style.setProperty(styleProps[2], color_bg_header_darken)

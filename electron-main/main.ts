@@ -8,7 +8,9 @@ import path from 'path'
 import { create_app_apis } from '../electron-apis/index'
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
-const createWin = () => {
+
+
+function createWin() {
   Menu.setApplicationMenu(null)
 
   const win = new BrowserWindow({
@@ -19,7 +21,6 @@ const createWin = () => {
     // skipTaskbar: true,
     title: '网易云音乐',
     icon: path.join(__dirname, '../public/favicon-640-640.png'),
-    // transparent: true,
     // autoHideMenuBar: true, //隐藏菜单
     webPreferences: {
       // 是否在独立 JavaScript 环境中运行 Electron API和指定的preload 脚本.默认为 true
