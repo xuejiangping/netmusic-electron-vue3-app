@@ -3,7 +3,7 @@
 //        桌面歌词
 //
 //==========================================================
-import { ipcMain, BrowserWindow } from 'electron'
+import { ipcMain, BrowserWindow, globalShortcut } from 'electron'
 import path from 'path'
 export function useDesktopLyric(win: BrowserWindow) {
   let desktop_lyric_win: BrowserWindow
@@ -22,18 +22,21 @@ export function useDesktopLyric(win: BrowserWindow) {
           contextIsolation: false,
         }
       })
-      // desktop_lyric_win.webContents.on('ipc-message')
-      // desktop_lyric_win.webContents.openDevTools()
-      // console.log('root_path', root_path)
+
       desktop_lyric_win.loadURL(root_path + info.path)
       desktop_lyric_win.webContents.ipc.handle('close', () => {
         win.webContents.send('desktop-lyric-close')  //这里不直接  desktop_lyric_win.close() 关闭窗口，需要通知主渲染线程 事件，触发下面的close 事件来关闭，
       })
       desktop_lyric_win.on('always-on-top-changed', (e) => e.preventDefault())
+
+      globalShortcut.register('CommandOrControl+Shift+j', function () {
+        desktop_lyric_win.webContents.openDevTools({ 'activate': true, mode: 'undocked' })
+      })
     } else if (info.type === 'data') {
       desktop_lyric_win?.webContents.send('lyric_data', JSON.stringify(info.data))
     } else if (info.type === 'close') {
       desktop_lyric_win?.close()
+      globalShortcut.unregister('CommandOrControl+Shift+j')
 
     }
 

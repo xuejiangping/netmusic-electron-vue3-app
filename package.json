@@ -54,13 +54,13 @@
     "directories": {
       "output": "release/${version}"
     },
-    "asarUnpack": [],
     "files": [
       "dist/**/*",
-      "dist-electron/**/*",
-      "electron-main/**/*",
+      "dist-electron/*",
+      "electron-main/*",
       "electron-preload/*",
-      "electron-apis/*"
+      "electron-apis/*",
+      "public/*"
     ],
     "extends": null,
     "win": {

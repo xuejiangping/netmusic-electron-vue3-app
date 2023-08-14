@@ -23,4 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 dist-electron
-release
+
+/release/1.0.0/*
+!/release/1.0.0/*.exe
+
+
