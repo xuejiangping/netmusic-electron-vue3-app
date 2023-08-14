@@ -90,7 +90,7 @@ function play(id: string) {
   gap: 1.2rem;
 
   .item {
-    font-size: 0.7rem;
+    font-size: 0.9rem;
 
     &:hover {
       .block .iconPlay {

@@ -177,7 +177,7 @@ function commentLike({ liked, commentId }: { liked: boolean, commentId: string }
 
     <div v-if="formatedData">
       <div v-for="(comments, type) in formatedData">
-        <h2>{{ type }}</h2>
+        <h2>{{ type }}({{ comments.length }})</h2>
         <div v-for="(comment) in comments" class="comment-item">
           <div class="item1"><el-avatar :src="comment.user.avatarUrl"></el-avatar>
           </div>
@@ -208,10 +208,12 @@ function commentLike({ liked, commentId }: { liked: boolean, commentId: string }
             {{ $utils.formartDate(comment.time, 'MM月dd日 HH:mm') }}
           </div>
           <div class="item4">
-            <el-link @click="commentLike({ liked: comment.liked, commentId: comment.commentId })"
+            <el-link style="font-size:0.9rem;"
+              @click="commentLike({ liked: comment.liked, commentId: comment.commentId })"
               :type="comment.liked ? 'danger' : 'info'"><span>{{ comment.liked ? '已点赞' : '点赞' }}</span>
               <span v-if="comment.likedCount > 0">({{ comment.likedCount }})</span></el-link>
-            <el-link @click="reply({ commentId: comment.commentId, uname: comment.user.nickname })">回复</el-link>
+            <el-link style="font-size:0.9rem"
+              @click="reply({ commentId: comment.commentId, uname: comment.user.nickname })">回复</el-link>
           </div>
         </div>
       </div>

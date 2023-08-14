@@ -138,81 +138,94 @@ async function poolCodeStatus(t = 2000) {
 
 <template>
   <teleport to="body">
-    <div class="box1-bg">
 
-      <div class="box1">
-        <div class="qr" v-show="mode === 'qr'">
-          <h3>扫码登录</h3>
-          <div class="qr-img" v-loading="statusCode === LOGIN_STATUS.请求二维码">
-            <img :src="qrImg" />
-            <div v-if="statusCode === LOGIN_STATUS.待确认 || statusCode === LOGIN_STATUS.已过期" class="status-block">
-              <span v-show="LOGIN_STATUS.已过期 === statusCode" @click="getQrKey">二维码已过期,点击重新获取</span>
-              <span v-show="LOGIN_STATUS.待确认 === statusCode">已扫描，等待确认</span>
-            </div>
-          </div>
-          <div>
-            <el-link @click="mode = 'password'" color="var(--color-text-main)">选择其它登录方式 &gt;</el-link>
+    <div class="box-login">
+      <span class="close">
+        <el-link @click="setLoginCardVisible(false)">✖️</el-link>
+
+      </span>
+
+      <div class="qr" v-show="mode === 'qr'">
+        <h3>扫码登录</h3>
+        <div class="qr-img" v-loading="statusCode === LOGIN_STATUS.请求二维码">
+          <img :src="qrImg" />
+          <div v-if="statusCode === LOGIN_STATUS.待确认 || statusCode === LOGIN_STATUS.已过期" class="status-block">
+            <span v-show="LOGIN_STATUS.已过期 === statusCode" @click="getQrKey">二维码已过期,点击重新获取</span>
+            <span v-show="LOGIN_STATUS.待确认 === statusCode">已扫描，等待确认</span>
           </div>
         </div>
-        <div class="tel" v-show="mode === 'password' || mode === 'code'">
-
-          <h3> <el-link @click="mode = 'qr'" color="var(--color-text-main)"> &lt; 扫码登录更安全</el-link>
-          </h3>
-
-          <div style="margin: 1rem 0;font-size: 14px;">
-            <el-form ref="formRef" :model="validateForm" :rules="validateRules">
-              <el-form-item prop="tel">
-                <el-input v-model.number="validateForm.tel" placeholder="请输入手机号" :prefix-icon="PhoneFilled" />
-              </el-form-item>
-              <el-form-item prop="password" v-if="mode === 'password'">
-                <el-input type="password" v-model="validateForm.password" placeholder="请输入密码" :prefix-icon="Lock" />
-              </el-form-item>
-
-              <el-form-item prop="code" v-else-if="mode === 'code'">
-                <el-input v-model.number="validateForm.code" placeholder="请输入验证码" :prefix-icon="Key">
-                  <template #append>
-                    <el-button @click="getCode" size="small" :disabled="codeBtnDisabled"
-                      type="danger">{{ codeBtnText }}</el-button>
-                  </template>
-                </el-input>
-              </el-form-item>
-
-
-              <el-row justify='space-between'>
-                <el-col :span="8">
-                  <el-checkbox size="small" v-model="autoLogin" label="自动登录" />
-                </el-col>
-                <el-col :span="10">
-                  <my-link @click="mode = 'code'" v-show="mode === 'password'">验证码登录</my-link>
-                  <my-link @click="mode = 'password'" v-show="mode === 'code'">密码登录</my-link>
-                </el-col>
-              </el-row>
-              <el-form-item>
-                <el-button @click="login" style="width: 100%;" type="primary">登录</el-button>
-              </el-form-item>
-            </el-form>
-
-          </div>
-
+        <div>
+          <el-link @click="mode = 'password'" color="var(--color-text-main)">选择其它登录方式 &gt;</el-link>
         </div>
       </div>
-      <my-link @click="setLoginCardVisible(false)" class="close">✖️</my-link>
+      <div class="tel" v-show="mode === 'password' || mode === 'code'">
 
+        <h3> <el-link @click="mode = 'qr'" color="var(--color-text-main)"> &lt; 扫码登录更安全</el-link>
+        </h3>
+
+        <div style="margin: 1rem 0;font-size: 14px;">
+          <el-form ref="formRef" :model="validateForm" :rules="validateRules">
+            <el-form-item prop="tel">
+              <el-input v-model.number="validateForm.tel" placeholder="请输入手机号" :prefix-icon="PhoneFilled" />
+            </el-form-item>
+            <el-form-item prop="password" v-if="mode === 'password'">
+              <el-input type="password" v-model="validateForm.password" placeholder="请输入密码" :prefix-icon="Lock" />
+            </el-form-item>
+
+            <el-form-item prop="code" v-else-if="mode === 'code'">
+              <el-input v-model.number="validateForm.code" placeholder="请输入验证码" :prefix-icon="Key">
+                <template #append>
+                  <el-button @click="getCode" size="small" :disabled="codeBtnDisabled"
+                    type="danger">{{ codeBtnText }}</el-button>
+                </template>
+              </el-input>
+            </el-form-item>
+
+
+            <el-row justify='space-between'>
+              <el-col :span="8">
+                <el-checkbox size="small" v-model="autoLogin" label="自动登录" />
+              </el-col>
+              <el-col :span="10">
+                <el-link @click="mode = 'code'" v-show="mode === 'password'">验证码登录</el-link>
+                <el-link @click="mode = 'password'" v-show="mode === 'code'">密码登录</el-link>
+              </el-col>
+            </el-row>
+            <el-form-item>
+              <el-button @click="login" style="width: 100%;" type="primary">登录</el-button>
+            </el-form-item>
+          </el-form>
+
+        </div>
+
+      </div>
     </div>
+
 
   </teleport>
 </template>
 
 <style scoped lang="less">
 // background-color: pink;
-.box1-bg {
+
+// background-color: var(--color-bg-light);
+
+
+
+.box-login {
   position: absolute;
   top: 50%;
   left: 50%;
   z-index: 9;
   transform: translate(-50%, -50%);
   max-width: 300px;
-  background-color: var(--color-bg-light);
+
+  backdrop-filter: blur(10px) saturate(2);
+  text-align: center;
+  padding: 1rem 32px;
+  line-height: 20px;
+  box-shadow: var(--el-box-shadow-dark);
+  background-color: #ffffffb5;
 
   .close {
     position: absolute;
@@ -220,46 +233,35 @@ async function poolCodeStatus(t = 2000) {
     top: 5px
   }
 
-  .box1 {
+  .qr-img {
+    position: relative;
+    display: inline-block;
+    margin: 1rem 0;
+    width: 10rem;
+    aspect-ratio: 1/1;
+    background-size: cover;
 
-    backdrop-filter: blur(10px);
-    text-align: center;
-    padding: 1rem 32px;
-    line-height: 20px;
-    box-shadow: var(--el-box-shadow-dark);
-
-    .qr-img {
-      position: relative;
-      display: inline-block;
-      margin: 1rem 0;
-      width: 10rem;
-      aspect-ratio: 1/1;
-      background-size: cover;
-
-      .status-block {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        line-height: 2rem;
-        font-weight: 700;
-        backdrop-filter: blur(6px);
-        // background-color: hotpink;
-
-      }
-
-      img {
-        width: 100%;
-      }
+    .status-block {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      line-height: 2rem;
+      font-weight: 700;
+      backdrop-filter: blur(6px);
+      // background-color: hotpink;
+      font-size: 1.5rem;
     }
 
-    &:deep(.el-input-group__append) {
-      // padding: 0 14px;
+    img {
+      width: 100%;
     }
   }
+
+
 }
 </style>

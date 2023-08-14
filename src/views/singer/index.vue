@@ -1,12 +1,11 @@
-<script setup lang="tsx">
+<script setup lang="ts">
 import MixedTable from '../../components/MixedTable.vue'
 import VideoTable from '../../components/VideoTable.vue'
 type SingerDetai = { briefDesc: string, introduction: { ti: string, txt: string }[] }
 
 const route = useRoute()
-const id = computed(() => (route.query as { id: string, name: string }).id)
-const name = computed(() => (route.query as { id: string, name: string }).name)
-
+const id: any = computed(() => route.query.id)
+// const { id, name } = toRefs(reactive(route.query))
 // watchEffect(() => query.id)
 // console.log('query', query)
 
@@ -35,19 +34,20 @@ function moreVideo() {
   getMoreArtistMv({ id: id.value, limit: LIMIT }).then(res => mvs.value.push(...$utils.formatList('mvlist', res.mvs, 'middle')))
 }
 function getSimiAtrist() {
-  if (loginStatus) {
+  if (loginStatus.value) {
     $http.simiAtrist({ id: id.value, cookie: cookie.value }).then(res => simiAtrist.value = $utils.formatList('singerlist', res.artists, 'middle'))
 
   }
 }
-
 const more = () => {
   if (tabIndex.value === tabs.专辑.index) return moreAlbum
   else if (tabIndex.value === tabs.MV.index) return moreVideo
   else return () => 0
 }
 
-watchEffect(() => {
+const stop_a = watchEffect(() => {
+  if (!id.value) return
+
   const taskA = $http.artistAlbum({ id: id.value, limit: LIMIT }).then(res => aritst.value = $utils.formatList('singerlist', [res.artist], 'middle')[0])
   $http.artistDesc({ id: id.value }).then(({ briefDesc, introduction }) => singerDetai.value = { briefDesc, introduction })
   moreVideo()
@@ -55,14 +55,13 @@ watchEffect(() => {
   getSimiAtrist()
   $utils2.loading([taskA])
 })
-
-
+onBeforeRouteLeave(stop_a)
 </script>
 
 <template>
   <div v-if="aritst">
     <DetailTemplate :cover="aritst.cover" :tag-info-enum="tabs" type="歌手" @handle-tabs-change="i => tabIndex = i">
-      <template #info-line-1><span>{{ name }}</span></template>
+      <template #info-line-1><span>{{ $route.query.name }}</span></template>
 
       <template #info-line-3><span> 单曲数：{{ aritst.musicSize }}</span>
         <span>专辑数：{{ aritst.albumSize }}</span> <span>MV数:{{ }}</span></template>

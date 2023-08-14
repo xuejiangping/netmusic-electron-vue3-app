@@ -1,20 +1,25 @@
 <script setup lang="ts">
 import { EditPen, ArrowDown, ArrowUp } from '@element-plus/icons-vue'
 import { Directive } from 'vue';
-import lyric_handler from '../assets/js/index/lyric'
+import { lyric_handler } from '../assets/js/index/lyric'
 const { $store, $http, $notify, $utils } = getCurrentInstance()?.proxy!
 const store = $store.usePlayStateStore()
-const { addSong } = $store.usePlayStateStore()
-const { audioELcontrol } = store
+
+const { audioELcontrol, addSong } = store
 const { isPaused, currentSong } = storeToRefs(store)
-defineEmits(['close'])
+
+const Lyric_Offset_Y = 50  //歌词滚动居中的偏移
+const route = useRoute()
+
+const emit = defineEmits(['close'])
 const props = defineProps<{
-  currenPlayTime: number,
+  lyricInfoGetter: () => ReturnType<typeof lyric_handler>
 }>()
 
+// console.log(props.lyricInfoGetter())
 
 
-const { lyric, curIndex, offsetTime } = lyric_handler({ currenPlayTimeRef: toRef(props, 'currenPlayTime'), id: toRef(() => currentSong.value?.id!) })
+const { lyric, curIndex, offsetTime } = props.lyricInfoGetter()
 // watchEffect(() => console.log(lyric.value?.lines[curIndex.value]))
 
 const { commentRef, showCommentBtn, aside_status, simiPlaylists, simiSongs } = toRefs(shallowReactive({
@@ -66,14 +71,15 @@ watchEffect(() => {
     const el = _lyric_scroll_parentEl.children[curIndex.value] as HTMLElement
     // console.log('el', el)
     if (el) {
-      const offset_y = 50
       const scrollEl = el.offsetParent!
       const y = el.offsetTop - scrollEl.clientHeight / 2
-      scrollEl.scroll({ top: y + offset_y, behavior: 'smooth' })
+      scrollEl.scroll({ top: y + Lyric_Offset_Y, behavior: 'smooth' })
     }
   }
 })
 
+
+watch(() => route.fullPath, () => emit('close'))
 </script>
 
 <template>
@@ -84,21 +90,18 @@ watchEffect(() => {
       <el-button v-if="showCommentBtn" @click="commentRef?.comment" color="#f1f1f1"
         style="position: absolute; left: 50%;bottom: 10px;transform: translate(-50%);" :icon="EditPen" size="small" round>
         发表评论</el-button>
-      <el-link @click="$emit('close')" :underline="false" style="position: absolute;left: 5px;top: 5px;">
-        <i style="color: #000;font-size:3rem;" class="iconfont icon-arrow "></i>
-      </el-link>
+
 
       <div class="top">
         <h1 class="title">{{ currentSong?.name }}</h1>
         <div>
-          <RouterLink @click="$emit('close')"
-            :to="{ name: 'album', query: { name: currentSong?.album.name, id: currentSong?.album.id } }">
+          <RouterLink :to="{ name: 'album', query: { name: currentSong?.album.name, id: currentSong?.album.id } }">
             {{ currentSong?.album.name }}
           </RouterLink>
         </div>
         <div style="display: flex;justify-content: center;">
           <div v-title style="width: 40%">
-            <RouterLink @click="$emit('close')" v-for="({ name, id }, i) in currentSong?.artists" v-split="[i]"
+            <RouterLink v-for="({ name, id }, i) in currentSong?.artists" v-split="[i]"
               :to="{ name: 'singer', query: { name, id } }">
               {{ name }}
             </RouterLink>
@@ -139,7 +142,7 @@ watchEffect(() => {
         <div v-show="aside_status" class="aside">
           <h4 class="title">包含这首歌的歌单</h4>
           <ListItem v-for="(item) in simiPlaylists" cover_width="2rem" :img1v1-url="item.cover"
-            @click="$emit('close'); $router.push({ name: 'playlist-detail', query: { name: item.name, id: item.id } })">
+            @click=" $router.push({ name: 'playlist-detail', query: { name: item.name, id: item.id } })">
             <span v-title class="name">{{ item.name }}</span>
           </ListItem>
           <h4 class="title">喜欢这首歌的人也喜欢</h4>
@@ -170,7 +173,8 @@ watchEffect(() => {
   .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    // padding: 20px;
+    margin-top: var(--header-height);
 
     .top {
       text-align: center;
@@ -196,7 +200,7 @@ watchEffect(() => {
       // justify-content: space-evenly;
       .swich-aside-btn {
         position: absolute;
-        right: -5px;
+        right: 5px;
         top: 50%;
         z-index: 1;
         writing-mode: vertical-lr;
@@ -206,7 +210,7 @@ watchEffect(() => {
       }
 
       .lyric-container {
-        flex: 1.2;
+        // flex: 1;
         position: relative;
 
         .adjust {
@@ -330,6 +334,7 @@ watchEffect(() => {
       .aside {
         overflow: auto;
         padding: 1rem;
+        flex: 0.8;
 
         .title {
           font-weight: bold;

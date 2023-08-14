@@ -113,7 +113,7 @@ export default {
    */
   debounce<T extends (...args) => any>(fn: T, t = 1000) {
     let timer = null
-    return function (...args: Parameters<T>): Promise<any> {
+    return function (...args: Parameters<T>): Promise<ReturnType<T>> {
       if (timer) clearTimeout(timer)
       return new Promise(res => timer = setTimeout(() => res(fn(...args)), t))
     }
@@ -134,7 +134,11 @@ export default {
       videolist: VideoItem[],
       mvlist: mvItem[]
     }
-
+    const _img_search_handler = (uri: string, imgSearch: string) => {
+      const _url = new URL(uri)
+      _url.search = imgSearch
+      return _url.toString()
+    }
     let val: Result[T]
     const sizeParam = [$common.IMG_SIZE_SEARCH_PARAMS.squar[coverSize], $common.IMG_SIZE_SEARCH_PARAMS.rect[coverSize]]
     switch (listType) {
@@ -143,7 +147,8 @@ export default {
           const { name, id, artists, picUrl, alias, description, publishTime } = item
           return {
             name, id, artists, alias,
-            cover: picUrl + sizeParam[0], publishTime: this.formartDate(publishTime),
+            cover: _img_search_handler(picUrl, sizeParam[0]),
+            publishTime: this.formartDate(publishTime),
             description
           }
         })
@@ -156,7 +161,7 @@ export default {
           return {
             trackCount, playCount: this.formartNum(playCount), name, id, artistName: nickname, avatar: avatarUrl,
             artistId: userId,
-            cover: (coverImgUrl || picUrl) + sizeParam[0],
+            cover: _img_search_handler(coverImgUrl || picUrl, sizeParam[0]),
             createTime, description,
             isOfficial: userType === 10
           }
@@ -167,7 +172,7 @@ export default {
           const { name, id, coverImgUrl, playCount, tracks, trackIds } = item
           return {
             name, id, playCount: this.formartNum(playCount),
-            cover: coverImgUrl + sizeParam[0],
+            cover: _img_search_handler(coverImgUrl, sizeParam[0]),
             tracks, trackIds
           }
         })
@@ -176,7 +181,9 @@ export default {
         val = list.map((item) => {
           const { accountId, id, img1v1Url, trans, name, albumSize, alias, musicSize, songs } = item
           return {
-            accountId, id, cover: img1v1Url + sizeParam[0], albumSize, musicSize,
+            accountId, id,
+            cover: _img_search_handler(img1v1Url, sizeParam[0]),
+            albumSize, musicSize,
             tracks: songs,
             trans, name, alias
           }
@@ -201,7 +208,7 @@ export default {
           return {
             artistName, name, id, artists, duration: duration && this.formatSongTime(duration),
             playCount: this.formartNum(playCount),
-            cover: (cover || sPicUrl) + sizeParam[1]
+            cover: _img_search_handler(cover || sPicUrl, sizeParam[1])
           }
         })
         break;
@@ -211,7 +218,8 @@ export default {
           return {
             artistName, name, id, duration: duration && this.formatSongTime(duration),
             playCount: this.formartNum(playCount),
-            cover: (imgurl16v9 || picUrl) + sizeParam[1], publishTime
+            cover: _img_search_handler(imgurl16v9 || picUrl, sizeParam[1]),
+            publishTime
 
           }
         })

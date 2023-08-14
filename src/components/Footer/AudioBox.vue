@@ -2,8 +2,13 @@
 
 const { $notify, $store } = getCurrentInstance()?.proxy!
 const store = $store.usePlayStateStore()
-const { isUpdateCurTime, userClickPlayActionType, currentSong, playList } = storeToRefs(store)
-const { setPauseState, prev, continuePlay, initAudioELcontrol, play } = store
+const { isUpdateCurTime, userClickPlayActionType, currentSong, playList, autoplay } = storeToRefs(store)
+const { setPauseState, prev, continuePlay, initAudioELcontrol, play, setAutoPlayStatus } = store
+const setting = $store.useSettingStore()
+
+if (setting.autoplay.val.includes('autoplay')) setAutoPlayStatus(true)
+
+
 /**
  * inputVal  输入值，用来更新播放器的curtime
  */
@@ -72,7 +77,7 @@ function setPlayProgress(val: number) {
  **************************************************/
 function errorSong() {
   if (navigator.onLine) {
-    $notify(`歌曲 ${currentSong.value?.name} 播放出错`)
+    $notify({ message: `歌曲 ${currentSong.value?.name} 播放出错`, type: 'error' })
     if (userClickPlayActionType.value === 'prev') prev();
     else continuePlay()
   } else {
@@ -89,11 +94,10 @@ function updateSongTime() {
   emit('updateSongTime', time)
 
 }
-function canplaySong() {
-  audioEL.value?.play()
-}
+
+
 function playSong() {
-  // console.log('playSong', playSong)
+  // setPauseState(false)
 
 }
 
@@ -120,7 +124,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <audio v-if="currentSong" ref="audioEL" preload="auto" @canplay="canplaySong" @playing="playSong" @ended="endedSong"
+  <audio v-if="currentSong" ref="audioEL" preload="auto" :autoplay="autoplay" @playing="playSong" @ended="endedSong"
     @play="setPauseState(false)" @pause="setPauseState(true)" @error="errorSong" @timeupdate="updateSongTime"
     :src="currentSong.audioUrl"></audio>
 </template>

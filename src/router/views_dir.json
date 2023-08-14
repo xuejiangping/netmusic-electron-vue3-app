@@ -1,47 +1,47 @@
 [
   {
     "name": "index",
-    "path": "/index"
+    "path": "index"
   },
   {
     "name": "search",
-    "path": "/search"
+    "path": "search"
   },
   {
     "name": "playlist",
-    "path": "/playlist",
+    "path": "playlist",
     "children": []
   },
   {
     "name": "playlist-detail",
-    "path": "/playlist-detail"
+    "path": "playlist-detail"
   },
   {
     "name": "mvlist",
-    "path": "/mvlist"
+    "path": "mvlist"
   },
   {
     "name": "mv-detail",
-    "path": "/mv-detail"
+    "path": "mv-detail"
   },
   {
     "name": "rank",
-    "path": "/rank"
+    "path": "rank"
   },
   {
     "name": "artistlist",
-    "path": "/artistlist"
+    "path": "artistlist"
   },
   {
     "name": "singer",
-    "path": "/singer"
+    "path": "singer"
   },
   {
     "name": "album",
-    "path": "/album"
+    "path": "album"
   },
   {
     "name": "cloud-song",
-    "path": "/cloud-song"
+    "path": "cloud-song"
   }
 ]

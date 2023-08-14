@@ -1,9 +1,9 @@
-import { BrowserWindow, Tray, Menu, MenuItemConstructorOptions } from 'electron'
+import { BrowserWindow, Tray, Menu, MenuItemConstructorOptions, ipcMain } from 'electron'
 import { ref, watchEffect } from 'vue'
-const path = require('path');
-export function createTray(win: BrowserWindow) {
+import path from 'path';
+export function useTray(win: BrowserWindow) {
   // 创建系统托盘
-  const tray = new Tray(path.join(__dirname, '../src/assets/img/favicon.ico')); // 用来存放系统托盘
+  const tray = new Tray(path.join(__dirname, '../public/favicon.ico')); // 用来存放系统托盘
   // 菜单模板
   const menu_template: MenuItemConstructorOptions[] = [
     {
@@ -55,5 +55,19 @@ export function createTray(win: BrowserWindow) {
 
   // 托盘图标单击
   tray.on('click', () => win.show());
+
+
+
+
+
+  ipcMain.handle('tray_setContextMenu_musicName', (_, info: string) => {
+    menu_template_ref.value[0].label = info
+  })
+  ipcMain.handle('tray_setToolTip', (_, title: string) => {
+    toolTip.value = title
+  })
+
+
+
   return { tray, menu_template_ref, toolTip }
 }

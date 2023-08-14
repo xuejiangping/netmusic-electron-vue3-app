@@ -1,7 +1,8 @@
 import LyricHandler from '../../../utils/lyricHandler.ts'
+
 // const store = $store.usePlayStateStore()
 
-export default function ({ currenPlayTimeRef, id }: { currenPlayTimeRef: Ref<number>, id: Ref<string> }) {
+export function lyric_handler({ currenPlayTimeRef, id }: { currenPlayTimeRef: Ref<number | undefined>, id: Ref<string | undefined> }) {
   const { $http } = getCurrentInstance()?.proxy!
 
   const { lyric, offsetTime, curIndex } = toRefs(shallowReactive({
@@ -12,14 +13,14 @@ export default function ({ currenPlayTimeRef, id }: { currenPlayTimeRef: Ref<num
   }))
 
 
-  // let lastIndex: number
+  const watch_stop_a = watchEffect(() => {
+    if (id.value) {
+      $http.lyrics({ id: id.value }).then(res => lyric.value = new LyricHandler(res.lrc.lyric))
 
-  watchEffect(() => {
-    $http.lyrics({ id: id.value })
-      .then(res => lyric.value = new LyricHandler(res.lrc.lyric))
+    }
   })
-  watchEffect(() => {
-    if (lyric.value) {
+  const watch_stop_b = watchEffect(() => {
+    if (lyric.value && currenPlayTimeRef.value) {
       const t = currenPlayTimeRef.value * 1000 + offsetTime.value
       const _lyric = unref(lyric)!
       const _curIndex = _lyric._findCurNum(t)
@@ -28,6 +29,15 @@ export default function ({ currenPlayTimeRef, id }: { currenPlayTimeRef: Ref<num
       curIndex.value = _curIndex
     }
   })
+
+  onBeforeUnmount(() => {
+    watch_stop_a()
+    watch_stop_b()
+  })
+
+  // let lastIndex: number
+
+
 
   return {
     offsetTime, curIndex, lyric

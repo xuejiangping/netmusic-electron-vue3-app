@@ -58,8 +58,8 @@ interface API {
 }
 
 const api: API = {
-  get: (...args) => instance['get'](...args),
-  post: (...args) => instance['post'](...args)
+  get: (...args) => instance.get(...args),
+  post: (...args) => instance.post(...args)
 }
 
 

@@ -2,21 +2,18 @@
 import { usePageShowStore } from './store/page-show-state-store'
 import { useGlobalPropsStore } from './store/global-props-store'
 // import hot_recom from './assets/js/index/hot_recom'
-
-
 const { aside, footer } = storeToRefs(usePageShowStore())
-const { main_page_loading } = storeToRefs(useGlobalPropsStore())
+const { main_page_loading, } = storeToRefs(useGlobalPropsStore())
 
 </script>
 
 <template>
-  <el-container style="height: 100%">
-
-    <el-header class="header  drag">
+  <el-container class="container">
+    <el-header class="header-bg drag">
       <Header></Header>
     </el-header>
     <el-container id="container" style=" overflow: auto">
-      <el-aside v-show="aside" class="aside" style="background-color: antiquewhite">
+      <el-aside v-show="aside" class="aside">
         <AsideNav></AsideNav>
       </el-aside>
       <el-main id="main">
@@ -33,9 +30,19 @@ const { main_page_loading } = storeToRefs(useGlobalPropsStore())
 </template>
 
 <style scoped lang="less">
+.container {
+  position: relative;
+  height: 100%;
+  color: var(--color-text-main);
+  background-color: var(--color-bg);
+
+}
+
 .aside {
   width: 20vw;
   min-width: 150px;
+  margin-top: var(--header-height);
+
 }
 
 #main {
@@ -47,12 +54,25 @@ const { main_page_loading } = storeToRefs(useGlobalPropsStore())
     margin: 0 auto;
     max-width: 1000px;
     height: 100%;
+    margin-top: var(--header-height);
+
   }
 }
 
-.header {
-  background-color: var(--color-theme);
+.header-bg {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  top: 0;
+  // &:extend(.my-theme .blue);
+  // #my-theme.red;
+  backdrop-filter: blur(10px) saturate(3);
   height: var(--header-height);
+  z-index: 10;
+  color: var(--color-text-header);
+  background-color: var(--color-bg-header);
+  fill: var(--color-text-header);
+  transition: all 0.5s;
 }
 
 

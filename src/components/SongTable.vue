@@ -5,6 +5,7 @@ const { $COMMON, $store } = getCurrentInstance()?.proxy!
 const store = $store.usePlayStateStore()
 const { updatePlayList, addSong, play } = store
 const { curSongId, includedListIds } = storeToRefs(store)
+const setting = $store.useSettingStore()
 /**序号前补足两位 01 02   */
 const vPad2 = (el: HTMLElement, binding: { value: string }) => {
   const val = binding.value
@@ -56,7 +57,7 @@ function row_dbclick(row: SongItem) {
    * 
    */
 
-  const updatePlayListWhenDbClick = true
+  const updatePlayListWhenDbClick = setting.dbclick_playlist.val === 'updatePlaylist'
   const songId = row.id
 
   // 判断双击 是否更新播放列表，若不是则只添加歌曲到列表
@@ -79,16 +80,18 @@ function row_dbclick(row: SongItem) {
   <el-table :flexible="true" :show-header="showHeader" :size="size" v-if="Boolean(dataList)" @row-dblclick="row_dbclick"
     @row-contextmenu="" class="table" :data="dataList" stripe highlight-current-row>
 
-    <el-table-column v-if="needShowItems.includes('index')">
+    <el-table-column width="80" v-if="needShowItems.includes('index')">
       <template #default="scope">
         <div class="col-1">
           <span v-if="curSongId === scope.row.id"><i class="active iconfont icon-playnum  "></i></span>
           <span v-else v-pad2="scope.$index"></span>
+          <!-- <span>习</span> -->
         </div>
       </template>
     </el-table-column>
 
-    <el-table-column v-if="needShowItems.includes('title')" class-name="title" prop="name" :label="tableColums1.name">
+    <el-table-column min-width="100" v-if="needShowItems.includes('title')" class-name="title" prop="name"
+      :label="tableColums1.name">
 
       <template #default="scope">
         <div :class="{ active: scope.row.id === curSongId }" class="title" v-title>
@@ -103,13 +106,13 @@ function row_dbclick(row: SongItem) {
       </template>
     </el-table-column>
 
-    <el-table-column v-if="needShowItems.includes('singer')" prop="singer" :label="tableColums1.artists">
+    <el-table-column min-width="100" v-if="needShowItems.includes('singer')" prop="singer" :label="tableColums1.artists">
       <template #default="scope">
-        <div class="singer" v-title>
-          <router-link v-for="(item, i) in scope.row.artists" v-split="[i]" :to="{ name: 'singer', query: item }">
+        <el-space direction='horizontal' spacer="/" :size="3">
+          <router-link v-title v-for="(item) in scope.row.artists" :to="{ name: 'singer', query: item }">
             <span>{{ item.name }}</span>
           </router-link>
-        </div>
+        </el-space>
       </template>
     </el-table-column>
 
@@ -144,7 +147,6 @@ function row_dbclick(row: SongItem) {
 .active {
   color: var(--color-theme);
   font-size: large;
-  // background-color: rgb(234, 206, 206);
   font-weight: bold;
 }
 
@@ -155,13 +157,11 @@ function row_dbclick(row: SongItem) {
 
   .col-1 {
     color: var(--color-text);
+    display: flex;
+    justify-content: space-evenly;
   }
 
-  .singer,
-  .title,
-  .album {
-    .multi-line(1)
-  }
+
 
 
 

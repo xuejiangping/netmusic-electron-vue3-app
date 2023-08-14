@@ -19,7 +19,8 @@ const { tracks, playlist } = toRefs(reactive({
 const currentComponent = shallowRef<any>(SongTable)
 
 
-watchEffect(() => {
+const stop_a = watchEffect(() => {
+  if (!id.value) return
   const idVal = toValue(id) as string
   const tastA = $http.playlistdetail({ id: idVal }).then(res => {
     playlist.value = $utils.formatList('playlist', [res.playlist], 'middle')[0]
@@ -27,6 +28,7 @@ watchEffect(() => {
   })
   $utils2.loading([tastA])
 })
+onBeforeRouteLeave(stop_a)
 
 const handleTabsChange = (index: number) => {
   console.log('index', index)

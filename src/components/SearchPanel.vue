@@ -9,7 +9,7 @@ const SEARCH_HISTORY = 'searchHistory'
 // window.addEventListener('unload', () => window.localStorage.setItem(SEARCH_HISTORY, JSON.stringify([...history.value])))
 // const initedHistory = JSON.parse(window.localStorage.getItem(SEARCH_HISTORY) || 'null')
 
-const initedHistory: string[] = $utils.localstorage.save_and_load(SEARCH_HISTORY, () => [...history.value])
+const initedHistory: string[] = $utils.localstorage.save_and_load(SEARCH_HISTORY, () => [...history.value], true)
 const { isOpen, defaultKeywords, keywordsRaw, suggestData, hots, history } = toRefs(reactive({
   suggestData: null as any,
   keywordsRaw: '',
@@ -64,7 +64,7 @@ watch(keywords, debounced_getSuggestData)
 <template>
   <div class="search">
     <div>
-      <el-input :input-style="{ color: '#fff' }" @focus=" isOpen = true" size="small" class="input" @click.stop
+      <el-input :input-style="{ color: 'inherit' }" @focus="isOpen = true" size="small" class="input" @click.stop
         :prefix-icon="Search" @keydown.enter="search(keywords)" v-model="keywordsRaw" :placeholder="defaultKeywords" />
 
     </div>
@@ -107,15 +107,14 @@ watch(keywords, debounced_getSuggestData)
 </template>
 
 <style scoped lang="less">
-@import '@/assets/css/global.less';
-
+// @import '@/assets/css/global.less';
 
 
 
 
 .search {
   position: relative;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
 
 
 
@@ -123,12 +122,12 @@ watch(keywords, debounced_getSuggestData)
     flex: 1;
     padding: 0 16px;
     height: 28px;
+    // color: inherit;
 
     :deep(.el-input__wrapper) {
       border-radius: 20px;
-      background-color: #e03e3e;
-      box-shadow: none;
-      color: #fff;
+      background-color: var(--color-theme-darken) !important;
+      // box-shadow: none;
     }
   }
 
@@ -166,7 +165,6 @@ watch(keywords, debounced_getSuggestData)
             top: 23%;
             display: none;
             font-size: small;
-
           }
 
           &:hover i {

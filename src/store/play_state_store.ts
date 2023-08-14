@@ -19,7 +19,7 @@ interface PlayState {
   currentSong: SongItem | null,
   userClickPlayActionType: PlayAciton
   includedListIds: string[] // 播放列表包含的歌单的id
-
+  autoplay: boolean  // 自动播放
 }
 
 /***********************循环播放的选项*************************/
@@ -37,7 +37,6 @@ export const usePlayStateStore = defineStore('play_state', () => {
   // play_state_store
   const PLAY_STATE_STORE = 'play_state_store'
   const baseOption = {
-    isPaused: true, // 当前播放状态
     playList: [], // 播放列表
     playIndex: 0, // 当前播放歌曲在播放列表的所有位置
     // isShowPlayListTips: false, // 添加及播放成功后，播放列表按钮提示的文字
@@ -46,12 +45,11 @@ export const usePlayStateStore = defineStore('play_state', () => {
     loopIndex: LoopEnum.顺序播放,
     audioELcontrol: null,
     currentSong: null,
-    userClickPlayActionType: 'next'  //用户手动点击的 类型,上一曲或下一曲
+    userClickPlayActionType: 'next', //用户手动点击的 类型,上一曲或下一曲
   }
 
-
-  const initializationOption = $utils.localstorage.save_and_load(PLAY_STATE_STORE, () => ({ ...state, isPaused: true }), true) || baseOption
-  const state: PlayState = reactive(initializationOption)
+  const initializationOption = $utils.localstorage.save_and_load(PLAY_STATE_STORE, () => ({ ...baseOption, ...state }), true) || baseOption
+  const state: PlayState = reactive({ ...initializationOption, isPaused: true, autoplay: false })
 
   watch(() => state.loopIndex, (_, lastIndex) => {
     if (lastIndex === LoopEnum.随机播放) {
@@ -66,7 +64,7 @@ export const usePlayStateStore = defineStore('play_state', () => {
   /***********************改变播放状态*************************/
   function setPauseState(val: boolean) { state.isPaused = val }
 
-
+  function setAutoPlayStatus(val: boolean) { state.autoplay = val }
 
   //==========================================================
   //
@@ -83,9 +81,9 @@ export const usePlayStateStore = defineStore('play_state', () => {
 
   /**根据 playIndex 更新播放的音乐 */
   function updateCurSong() {
+    if (!state.autoplay) state.autoplay = true
     state.currentSong = curPlayingList.value[state.playIndex]
   }
-
   function setLoopIndex(val: LoopEnum) { state.loopIndex = val }
 
   /**根据 songId 更新playindex */
@@ -190,11 +188,11 @@ export const usePlayStateStore = defineStore('play_state', () => {
   *        绑定托盘 控制 播放功能*
    **************************************************/
   if (window.app_control) {
-    const { tray_setContextMenu_musicName, tray_setToolTip, tray_menuitem_event_bind } = window.app_control
+    const { tray_setContextMenu_musicName, tray_setToolTip, ipcRenderer_event_bind } = window.app_control
 
-    tray_menuitem_event_bind('playMusic', () => state.isPaused ? state.audioELcontrol?.play() : state.audioELcontrol?.pause())
-    tray_menuitem_event_bind('nextMusic', next)
-    tray_menuitem_event_bind('prevMusic', prev)
+    ipcRenderer_event_bind('playMusic', () => state.isPaused ? state.audioELcontrol?.play() : state.audioELcontrol?.pause())
+    ipcRenderer_event_bind('nextMusic', next)
+    ipcRenderer_event_bind('prevMusic', prev)
 
     watchEffect(() => {
       if (state.currentSong) {
@@ -213,7 +211,8 @@ export const usePlayStateStore = defineStore('play_state', () => {
     ...toRefs(state),
     changeUserClickPlayActionType, continuePlay,
     clearPlayList, curSongId, initAudioELcontrol,
-    setPauseState, next, prev, addSong, updatePlayList, addPlayList,
+    setPauseState, next, prev, addSong, updatePlayList,
+    addPlayList, setAutoPlayStatus,
     currentSong, play, setIsUpdateCurTime, setLoopIndex
   }
 })

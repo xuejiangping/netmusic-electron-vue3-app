@@ -16,7 +16,7 @@ defineEmits(['icon_play_click_handler'])
   <div class="item">
     <!-- <img class="img" :src="img1v1Url"> -->
     <div class="left">
-      <div class="cover" :style="{ width: cover_width }">
+      <div class="cover" :style="{ width: cover_width, aspectRatio: '1/1' }">
         <MyImage :is-album="type === 'album'" :src="img1v1Url"></MyImage>
         <i v-if="type === 'song'" @click="$emit('icon_play_click_handler')" class="iconfont icon-play"></i>
       </div>
@@ -39,12 +39,14 @@ defineEmits(['icon_play_click_handler'])
 
 .item {
   display: flex;
-  justify-content: space-between;
   padding: 0.2rem 0.4rem;
   font-size: 0.8rem;
   align-items: center;
   border-radius: 4px;
   color: var(--color-text);
+  cursor: pointer;
+  justify-content: space-between;
+  column-gap: 2rem;
 
   .cover {
     position: relative;

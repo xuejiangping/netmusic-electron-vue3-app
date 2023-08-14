@@ -16,8 +16,8 @@ const { type, area, initial, data } = toRefs(reactive({
   data: [] as any[]
 }))
 
-function getData(...args: [any]) {
-  $http.artistList(...args)
+function getData(arg: Parameters<typeof $http.artistList>['0']) {
+  $http.artistList(arg)
     .then(res => $utils.formatList('singerlist', res.artists, 'middle'))
     .then(val => data.value.push(...val))
 }

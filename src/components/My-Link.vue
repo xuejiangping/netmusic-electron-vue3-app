@@ -1,15 +1,15 @@
 <script setup lang="ts">
 withDefaults(defineProps<{
   color?: string,
+  size?: string
 }>(), {
-  color: 'var(--color-text-link)'
+  color: 'var(--color-text-link)',
+  size: '1rem'
 })
 </script>
 
 <template>
-  <a href="javascript:;" :style="{ color }">
-    <slot></slot>
-  </a>
+  <el-link :style="{ color, fontSize: size }"></el-link>
 </template>
 
 <style scoped></style>

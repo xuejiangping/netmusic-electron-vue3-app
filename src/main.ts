@@ -4,7 +4,7 @@ import ElementPlus from 'element-plus'
 import { createPinia } from 'pinia'
 import './directive'  //全局指令
 import vue3videoPlay from 'vue3-video-play' // 引入组件
-
+import 'default-passive-events'
 /************************************************/
 
 const pinia = createPinia()
@@ -21,6 +21,7 @@ import './assets/css/global.less'
 import 'element-plus/dist/index.css'
 import './assets/fonts/fonts.css'
 import 'vue3-video-play/dist/style.css' // 引入css
+// import './assets/css/theme.less'
 
 
 
@@ -47,6 +48,7 @@ app.config.globalProperties['$COMMON'] = $common;
 app.config.errorHandler = function (err) { console.log('err', err) }
 
 // window.$http = $http
+
 
 //*********************************************************** */
 app.use(vue3videoPlay)

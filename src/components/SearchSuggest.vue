@@ -65,7 +65,7 @@ const emit = defineEmits(['close'])
 <template>
   <div class="box">
     <div v-for="item1 in formatedData" class="item">
-      <h5 class="title"> <span><i class="iconfont" :class="item1.icon"></i> {{ item1.title }}</span></h5>
+      <h4 class="title"> <span><i class="iconfont" :class="item1.icon"></i> {{ item1.title }}</span></h4>
       <ul>
         <li v-title v-for="(item2) in item1.data" @click="handleClick(item1.key, item2); emit('close')"
           class="text-in-oneline"><span class="name">{{ item2.name }}</span>
