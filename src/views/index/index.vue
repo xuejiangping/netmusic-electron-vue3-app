@@ -29,8 +29,8 @@ const ASPECT_RATIO = 16 / 7  // 轮播图图片的长宽比
 /**************element 的轮播图无法自动适应窗口的缩放，需要监听屏幕宽度，动态设置轮播图高度*****************/
 function setCarouselHeigh() {
   carousel_height.value = carousel.value.clientWidth / 2 / ASPECT_RATIO + 30
-  console.log('carousel_height.value', carousel_height.value)
-  console.log('carousel.value.clientWidth', carousel.value.clientWidth)
+  // console.log('carousel_height.value', carousel_height.value)
+  // console.log('carousel.value.clientWidth', carousel.value.clientWidth)
 }
 const setCarouselHeigh_debounced = $utils.debounce(setCarouselHeigh, 200)
 
@@ -55,12 +55,10 @@ function bannerClick(banner: typeof banners.value['0']) {
 }
 
 
-
 onMounted(() => {
-  setCarouselHeigh_debounced()
-  window.addEventListener('resize', setCarouselHeigh_debounced)
-
-
+  setCarouselHeigh_debounced().then(() => {
+    window.addEventListener('resize', setCarouselHeigh_debounced)
+  })
 })
 onUnmounted(() => window.removeEventListener('resize', setCarouselHeigh_debounced))
 

@@ -5,7 +5,7 @@
  **************************************************/
 import { app, BrowserWindow, Menu, globalShortcut } from 'electron'
 import path from 'path'
-import { create_app_apis } from '../electron-apis'
+import { create_app_apis } from '../electron-apis/index'
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 const createWin = () => {
@@ -18,7 +18,7 @@ const createWin = () => {
     frame: false, //去掉 边框
     // skipTaskbar: true,
     title: '网易云音乐',
-
+    icon: path.join(__dirname, '../public/favicon-640-640.png'),
     // transparent: true,
     // autoHideMenuBar: true, //隐藏菜单
     webPreferences: {
@@ -41,6 +41,7 @@ const createWin = () => {
     win.loadURL(process.env.VITE_DEV_SERVER_URL || url) // If you want to test on a real device you should use this URL. Learn more about that at https://codege
   }
   // win.loadFile(path.join(__dirname, '../index.html'))
+  // win.loadFile(path.join(__dirname, '../dist/index.html'))
   // win.loadFile(path.join(__dirname, '../dist/index.html'))
 
 

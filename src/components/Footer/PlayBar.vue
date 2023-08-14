@@ -119,7 +119,7 @@ function open_song_detail() { set_song_detail_status(true) }
 //==========================================================
 watch(song_detail_status, (val) => {
   if (val) {
-    setTimeout(() => curColor.value = 'pink', 300);
+    setTimeout(() => curColor.value = '#c2c2c4', 300);
   } else {
     curColor.value = lastColor.value
   }
@@ -141,7 +141,7 @@ if (window.app_control) {
   watchEffect(async () => {
     if (desktop_lyric_status.value) {
 
-      window.app_control.desktop_lyric({ type: 'open', path: 'desklrc' })
+      window.app_control.desktop_lyric({ type: 'open', path: '#desklrc' })
       watch_stop_a = watchEffect(() => {
         const curLyric = lyric.value?.lines[curIndex.value]
         if (curLyric) {

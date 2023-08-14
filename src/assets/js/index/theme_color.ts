@@ -20,7 +20,7 @@ const { curColor, alpha, lastColor } = toRefs(state)
 
 watch(curColor, (_, oldVal) => {
   lastColor.value = oldVal
-  console.log(_, oldVal)
+  // console.log(_, oldVal)
 })
 
 function changeColor() {

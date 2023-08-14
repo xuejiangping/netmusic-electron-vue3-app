@@ -7,5 +7,3 @@
 
 // ipcRenderer
 window.app_control.ipcRenderer = require('electron').ipcRenderer
-
-console.log('11111111', 11111111)

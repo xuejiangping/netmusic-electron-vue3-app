@@ -3,17 +3,19 @@
   "private": true,
   "version": "1.0.0",
   "type": "commonjs",
-  "main": "./dist-electron/main.js",
+  "main": "dist-electron/main.js",
   "author": {
     "name": "xuejiangping",
     "email": "1127523185@qq.com"
   },
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc && vite build && electron-builder",
+    "build": "vue-tsc && vite build",
+    "electron:build": "vue-tsc && vite build && electron-builder",
     "preview": "vite preview",
     "test": "pwsh powershell/test.ps1",
-    "views": "pwsh powershell/create_views.ps1"
+    "views": "pwsh powershell/create_views.ps1",
+    "electron:generate-icons": "electron-icon-builder --input=./public/xue-logo.png --output=dist --flatten"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
@@ -48,16 +50,21 @@
   "build": {
     "appId": "com.xue6474.desktop",
     "productName": "xue6474",
-    "asar": true,
     "copyright": "Copyright © 2022 xue6474",
     "directories": {
       "output": "release/${version}"
     },
+    "asarUnpack": [],
     "files": [
-      "dist"
+      "dist/**/*",
+      "dist-electron/**/*",
+      "electron-main/**/*",
+      "electron-preload/*",
+      "electron-apis/*"
     ],
     "extends": null,
     "win": {
+      "icon": "public/favicon-640-640.png",
       "target": [
         {
           "target": "nsis",
@@ -72,7 +79,9 @@
       "oneClick": false,
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
-      "deleteAppDataOnUninstall": false
+      "deleteAppDataOnUninstall": false,
+      "installerIcon": "public/favicon.ico",
+      "uninstallerIcon": "public/favicon.ico"
     },
     "publish": [
       {
