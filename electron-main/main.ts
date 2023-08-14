@@ -41,9 +41,7 @@ function createWin() {
     const url = 'http://localhost:5173/'
     win.loadURL(process.env.VITE_DEV_SERVER_URL || url) // If you want to test on a real device you should use this URL. Learn more about that at https://codege
   }
-  // win.loadFile(path.join(__dirname, '../index.html'))
-  // win.loadFile(path.join(__dirname, '../dist/index.html'))
-  // win.loadFile(path.join(__dirname, '../dist/index.html'))
+
 
 
   return win
