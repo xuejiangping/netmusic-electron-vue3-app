@@ -116,7 +116,7 @@ onBeforeMount(() => {
 
 .back {
   display: inline-block;
-  font-size: 2rem;
+  font-size: 1.5rem;
   vertical-align: middle;
   transform: rotate(90deg);
 }

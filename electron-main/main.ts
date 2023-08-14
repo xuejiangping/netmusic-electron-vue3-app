@@ -41,6 +41,7 @@ const createWin = () => {
     win.loadURL(process.env.VITE_DEV_SERVER_URL || url) // If you want to test on a real device you should use this URL. Learn more about that at https://codege
   }
   // win.loadFile(path.join(__dirname, '../index.html'))
+  // win.loadFile(path.join(__dirname, '../dist/index.html'))
 
 
   return win
@@ -54,7 +55,7 @@ app.whenReady().then(() => {
 
   /***********************快捷键*************************/
   globalShortcut.register('CommandOrControl+Shift+i', function () {
-    win.webContents.openDevTools()
+    win.webContents.openDevTools({ 'activate': true, mode: 'undocked' })
   })
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWin();

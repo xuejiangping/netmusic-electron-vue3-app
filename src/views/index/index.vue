@@ -91,7 +91,7 @@ onUnmounted(() => window.removeEventListener('resize', setCarouselHeigh_debounce
     </section>
     <section>
       <h3><el-link type='warning'>独家放送 <i class="iconfont icon-arrow"> </i></el-link> </h3>
-      <VideoTable aspect_ratio="16/8" type='video' :data-list="dujiafangsong"></VideoTable>
+      <VideoTable aspect_ratio="16/9" type='video' :data-list="dujiafangsong"></VideoTable>
     </section>
     <section>
       <h3><el-link type='warning'>最新音乐 <i class="iconfont icon-arrow"> </i></el-link> </h3>
@@ -113,7 +113,7 @@ onUnmounted(() => window.removeEventListener('resize', setCarouselHeigh_debounce
     </section>
     <section>
       <h3><el-link type='warning'>推荐MV <i class="iconfont icon-arrow"> </i> </el-link></h3>
-      <VideoTable aspect_ratio="16/8" type='video' :data-list="recoMV"></VideoTable>
+      <VideoTable aspect_ratio="16/9" type='video' :data-list="recoMV"></VideoTable>
     </section>
   </div>
 </template>

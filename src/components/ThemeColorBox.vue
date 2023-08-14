@@ -15,7 +15,6 @@ const defaultColors = ['white', '#ec4141', 'pink', 'black', 'blue']
       <div class="box">
         <div class="item" v-for="(c) in defaultColors" :style="{ backgroundColor: c }" @click="curColor = c"
           :class="{ active: c === curColor }"></div>
-
       </div>
 
     </div>
