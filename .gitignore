@@ -23,7 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 dist-electron
-
+# 只上传 release文件下的打包exe安装文件
+/release/*
+!/release/1.0.0
 /release/1.0.0/*
 !/release/1.0.0/*.exe
 
