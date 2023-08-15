@@ -29,6 +29,7 @@ function createWin() {
       preload: path.join(__dirname, '../electron-preload/index.ts'),
       // 跨域同源策略
       webSecurity: false
+
     }
   })
   // win.webContents.openDevTools
