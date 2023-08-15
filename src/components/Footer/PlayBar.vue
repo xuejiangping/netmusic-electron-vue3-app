@@ -141,7 +141,7 @@ if (window.app_control) {
   watchEffect(async () => {
     if (desktop_lyric_status.value) {
 
-      window.app_control.desktop_lyric({ type: 'open', path: '#desklrc' })
+      window.app_control.desktop_lyric({ type: 'open', path: '#/desklrc' })
       watch_stop_a = watchEffect(() => {
         const curLyric = lyric.value?.lines[curIndex.value]
         if (curLyric) {
