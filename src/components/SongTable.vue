@@ -72,73 +72,102 @@ function row_dbclick(row: SongItem) {
   }
 }
 
+const state = ref({ x: 0, y: 0, isShow: false })
+const menu = [
+  { label: '查看评论' },
+  { label: '播放' },
+  { label: '下一首播放' }
+]
+function contextmenuHandler(row, col, e: MouseEvent) {
+  // console.log('e', e)
+  const { clientX, clientY } = e
+  // state.value = { x: clientX, y: clientY,  }
+  state.value.isShow = false
+  nextTick(() => {
+    state.value = { x: clientX, y: clientY, isShow: true }
+  })
 
+}
+function close() {
+  state.value = { x: 0, y: 0, isShow: false }
+
+}
+document.addEventListener('click', close, true)
+onBeforeUnmount(() => {
+  document.removeEventListener('click', close)
+})
 
 </script>
 
 <template>
-  <el-table :flexible="true" :show-header="showHeader" :size="size" v-if="Boolean(dataList)" @row-dblclick="row_dbclick"
-    @row-contextmenu="" class="table" :data="dataList" stripe highlight-current-row>
+  <div>
+    <context-menu :state="state" :menu="menu"></context-menu>
 
-    <el-table-column width="80" v-if="needShowItems.includes('index')">
-      <template #default="scope">
-        <div class="col-1">
-          <span v-if="curSongId === scope.row.id"><i class="active iconfont icon-playnum  "></i></span>
-          <span v-else v-pad2="scope.$index"></span>
-          <!-- <span>习</span> -->
-        </div>
-      </template>
-    </el-table-column>
+    <el-table :flexible="true" :show-header="showHeader" :size="size" v-if="Boolean(dataList)" @row-dblclick="row_dbclick"
+      @row-contextmenu="contextmenuHandler" class="table" :data="dataList" stripe highlight-current-row>
 
-    <el-table-column min-width="100" v-if="needShowItems.includes('title')" class-name="title" prop="name"
-      :label="tableColums1.name">
+      <el-table-column width="80" v-if="needShowItems.includes('index')">
+        <template #default="scope">
+          <div class="col-1">
+            <span v-if="curSongId === scope.row.id"><i class="active iconfont icon-playnum  "></i></span>
+            <span v-else v-pad2="scope.$index"></span>
+            <!-- <span>习</span> -->
+          </div>
+        </template>
+      </el-table-column>
 
-      <template #default="scope">
-        <div :class="{ active: scope.row.id === curSongId }" class="title" v-title>
-          <span>
-            <slot name="title-prefix" :song="(scope.row as SongItem)"></slot>
-          </span>
-          <span>{{ scope.row.name }}</span>
-          <router-link v-if="scope.row.mv" :to="{ name: 'mv-detail', query: { id: scope.row.mv, name: scope.row.name } }">
-            <i class=" iconfont icon-mv"></i></router-link>
-          <i class="iconfont icon-vip" v-if="scope.row.fee === $COMMON.Fee.VIP歌曲"></i>
-        </div>
-      </template>
-    </el-table-column>
+      <el-table-column min-width="100" v-if="needShowItems.includes('title')" class-name="title" prop="name"
+        :label="tableColums1.name">
 
-    <el-table-column min-width="100" v-if="needShowItems.includes('singer')" prop="singer" :label="tableColums1.artists">
-      <template #default="scope">
-        <el-space direction='horizontal' spacer="/" :size="3">
-          <router-link v-title v-for="(item) in scope.row.artists" :to="{ name: 'singer', query: item }">
-            <span>{{ item.name }}</span>
-          </router-link>
-        </el-space>
-      </template>
-    </el-table-column>
+        <template #default="scope">
+          <div :class="{ active: scope.row.id === curSongId }" class="title" v-title>
+            <span>
+              <slot name="title-prefix" :song="(scope.row as SongItem)"></slot>
+            </span>
+            <span>{{ scope.row.name }}</span>
+            <router-link v-if="scope.row.mv"
+              :to="{ name: 'mv-detail', query: { id: scope.row.mv, name: scope.row.name } }">
+              <i class=" iconfont icon-mv"></i></router-link>
+            <i class="iconfont icon-vip" v-if="scope.row.fee === $COMMON.Fee.VIP歌曲"></i>
+          </div>
+        </template>
+      </el-table-column>
 
-    <el-table-column v-if="needShowItems.includes('album')" prop="album" :label="tableColums1.album">
-      <template #default="scope">
-        <div class="album" v-title>
-          <router-link :to="{ name: 'album', query: scope.row.album }">
-            <span>{{ scope.row.album.name }}</span>
-          </router-link>
-        </div>
-      </template>
-    </el-table-column>
+      <el-table-column min-width="100" v-if="needShowItems.includes('singer')" prop="singer"
+        :label="tableColums1.artists">
+        <template #default="scope">
+          <el-space direction='horizontal' spacer="/" :size="3">
+            <router-link v-title v-for="(item) in scope.row.artists" :to="{ name: 'singer', query: item }">
+              <span>{{ item.name }}</span>
+            </router-link>
+          </el-space>
+        </template>
+      </el-table-column>
 
-    <el-table-column v-if="needShowItems.includes('duration')" prop="duration" :label="tableColums1.duration">
-      <template #default="scope">
-        {{ scope.row.duration }}
-      </template>
-    </el-table-column>
-    <el-table-column v-if="needShowItems.includes('pop')" prop="pop" :label="tableColums1.pop">
-      <template #default="scope">
-        <el-progress color="pink" :show-text="false" :percentage="scope.row.pop" />
-      </template>
-    </el-table-column>
+      <el-table-column v-if="needShowItems.includes('album')" prop="album" :label="tableColums1.album">
+        <template #default="scope">
+          <div class="album" v-title>
+            <router-link :to="{ name: 'album', query: scope.row.album }">
+              <span>{{ scope.row.album.name }}</span>
+            </router-link>
+          </div>
+        </template>
+      </el-table-column>
+
+      <el-table-column v-if="needShowItems.includes('duration')" prop="duration" :label="tableColums1.duration">
+        <template #default="scope">
+          {{ scope.row.duration }}
+        </template>
+      </el-table-column>
+      <el-table-column v-if="needShowItems.includes('pop')" prop="pop" :label="tableColums1.pop">
+        <template #default="scope">
+          <el-progress color="pink" :show-text="false" :percentage="scope.row.pop" />
+        </template>
+      </el-table-column>
 
 
-  </el-table>
+    </el-table>
+  </div>
 </template>
 
 <style scoped lang="less">
