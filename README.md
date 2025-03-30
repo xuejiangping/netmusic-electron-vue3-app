@@ -1,18 +1,33 @@
-# Vue 3 + TypeScript + Vite
+### 应用截图
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+- **2023 年 5 月**
 
-## Recommended IDE Setup
+> ![](.\doc\imgs\202306\0b83c128-f39a-40f2-aa1e-98d25eb023d6.png)
+>
+> ![](.\doc\imgs\202306\0e7fae04-a2bd-46bb-94a6-5f096c919ace.png)
+>
+> ![](.\doc\imgs\202306\5c6f7841-5c68-4885-9a11-a9f54c179c0d.png)
+>
+> ![](.\doc\imgs\202306\88f177e3-0872-4244-a567-01249d5841f3.png)
+>
+> ![](.\doc\imgs\202306\8cb16f9d-ac89-4e8e-b58f-6e2f477addf0.png)
+>
+> ![](.\doc\imgs\202306\9c009d5c-3e1a-4586-a5d5-ec48f833d1f9.png)
+>
+> ![](.\doc\imgs\202306\eee13ae5-472b-449b-b6d5-f647b80638da.png)
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+> **2024 年 8 月**
 
-## Type Support For `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
-
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
-
-1. Disable the built-in TypeScript Extension
-   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+> ![](.\doc\imgs\202308\Snipaste_2023-08-15_04-58-07.png)
+>
+> ![](.\doc\imgs\202308\Snipaste_2023-08-15_04-58-47.png)
+>
+> ![](.\doc\imgs\202308\Snipaste_2023-08-15_04-58-58.png)
+>
+> ![](.\doc\imgs\202308\Snipaste_2023-08-15_05-00-10.png)
+>
+> ![](.\doc\imgs\202308\Snipaste_2023-08-15_05-00-51.png)
+>
+> ![](.\doc\imgs\202308\Snipaste_2023-08-15_05-01-50.png)
+>
+> ![](.\doc\imgs\202308\Snipaste_2023-08-15_05-02-45.png)
