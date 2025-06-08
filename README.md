@@ -1,8 +1,7 @@
 ### 应用截图
 
 - #### 2022 年 5 月
-  2022 年 5 月， 这是项目([netMusicSPA](https://github.com/xuejiangping/netMusicSPA))的第一版截图，使用了 **vue2** 来做。作为第一个项目，整体上非常青涩，只能说勉强初具形态。
-  如果说有一个桌面 app 的影子，却只能在网页中展示，那确实很奇怪
+  项目([netMusicSPA](https://github.com/xuejiangping/netMusicSPA))的第一版截图,整体比较青涩
 
 > ![](/doc/imgs/202205/0b83c128-f39a-40f2-aa1e-98d25eb023d6.png)
 >
@@ -22,9 +21,8 @@
 
 - #### 2023 年 8 月
 
-这是项目([netmusic-electron-vue3-app](https://gitee.com/xue6474/netmusic-electron-vue3-app))第二版截图，又学习了一年多，并且借鉴了[trtst/Vue3.x 网易云音乐\_PC 音乐播放器](https://gitee.com/trtst/vue3-music) 项目部分设计， 用 **electron+vue3** 重写这个项目。整体虽然还是有不少瑕疵，但已经有了一个桌面 app 的样子。可以有多窗口，有桌面级别歌词显示，有系统托盘控制播放。
+这是项目([netmusic-electron-vue3-app](https://gitee.com/xue6474/netmusic-electron-vue3-app))第二版截图，又学习了一年多，并且借鉴了[trtst/Vue3.x 网易云音乐\_PC 音乐播放器](https://gitee.com/trtst/vue3-music) 项目， 用 **electron+vue3** 重写。整体还是不够完善，但已经有了一个桌面 app基本的样子,比如 多窗口，桌面级别歌词显示，系统托盘控制等
 
-想做的部分其实还蛮多的，但出于种种原因，因该是到此为止了
 
 > ![](/doc/imgs/202308/Snipaste_2023-08-15_04-58-07.png)
 >
